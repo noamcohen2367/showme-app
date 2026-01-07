@@ -1,0 +1,227 @@
+// ============================================
+// ShowME App - Show Card Component (Dark Theme)
+// ============================================
+
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import { Show } from '../types/types';
+import { colors, typography, spacing } from '../theme/theme';
+import { getTheaterById } from '../data/theaters';
+import Badge from './Badge';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const CARD_WIDTH = SCREEN_WIDTH * 0.7;
+const CARD_WIDTH_SMALL = SCREEN_WIDTH * 0.42;
+
+interface ShowCardProps {
+  show: Show;
+  onPress: () => void;
+  size?: 'large' | 'small';
+  showTheater?: boolean;
+}
+
+export default function ShowCard({ 
+  show, 
+  onPress, 
+  size = 'large',
+  showTheater = true,
+}: ShowCardProps) {
+  const { t, i18n } = useTranslation();
+  const isHebrew = i18n.language === 'he';
+  const isRussian = i18n.language === 'ru';
+  
+  const theater = getTheaterById(show.theaterId);
+  
+  const title = isHebrew ? show.titleHe : isRussian ? show.titleRu : show.title;
+  const theaterName = theater 
+    ? (isHebrew ? theater.nameHe : isRussian ? theater.nameRu : theater.name)
+    : '';
+
+  const cardWidth = size === 'large' ? CARD_WIDTH : CARD_WIDTH_SMALL;
+  const imageHeight = size === 'large' ? 180 : 130;
+
+  return (
+    <TouchableOpacity 
+      style={[styles.container, { width: cardWidth }]} 
+      onPress={onPress}
+      activeOpacity={0.9}
+    >
+      {/* Image */}
+      <View style={[styles.imageContainer, { height: imageHeight }]}>
+        <Image
+          source={{ uri: show.imageUrl }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        
+        {/* Gradient overlay */}
+        <LinearGradient
+          colors={['transparent', 'rgba(10, 10, 15, 0.8)']}
+          style={styles.imageGradient}
+        />
+        
+        {/* Badges */}
+        {show.badges && show.badges.length > 0 && (
+          <View style={styles.badgeContainer}>
+            <Badge type={show.badges[0]} />
+          </View>
+        )}
+        
+        {/* Last Minute Deal Indicator */}
+        {show.availableDates?.some(d => d.times?.some(t => t.isLastMinuteDeal)) && (
+          <View style={styles.lastMinuteBadge}>
+            <Ionicons name="flash" size={12} color={colors.semantic.warning} />
+            <Text style={styles.lastMinuteText}>{t('home.lastMinute')}</Text>
+          </View>
+        )}
+
+        {/* Rating on image */}
+        <View style={styles.ratingBadge}>
+          <Ionicons name="star" size={12} color={colors.semantic.warning} />
+          <Text style={styles.ratingBadgeText}>{show.rating}</Text>
+        </View>
+      </View>
+
+      {/* Content */}
+      <View style={styles.content}>
+        <Text style={styles.title} numberOfLines={2}>
+          {title}
+        </Text>
+        
+        {showTheater && theaterName && (
+          <View style={styles.theaterRow}>
+            <Ionicons 
+              name="location-outline" 
+              size={12} 
+              color={colors.neutral.textTertiary} 
+            />
+            <Text style={styles.theaterName} numberOfLines={1}>
+              {theaterName}
+            </Text>
+          </View>
+        )}
+
+        {/* Price */}
+        <View style={styles.priceRow}>
+          <Text style={styles.priceLabel}>{t('common.from')}</Text>
+          <Text style={styles.price}>₪{show.startingPrice}</Text>
+          {show.originalPrice && (
+            <Text style={styles.originalPrice}>₪{show.originalPrice}</Text>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.dark[700],
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginRight: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.dark[500],
+  },
+  imageContainer: {
+    width: '100%',
+    backgroundColor: colors.dark[600],
+    position: 'relative',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  imageGradient: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  badgeContainer: {
+    position: 'absolute',
+    top: spacing.sm,
+    left: spacing.sm,
+  },
+  lastMinuteBadge: {
+    position: 'absolute',
+    bottom: spacing.sm,
+    left: spacing.sm,
+    backgroundColor: 'rgba(245, 158, 11, 0.2)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(245, 158, 11, 0.3)',
+  },
+  lastMinuteText: {
+    ...typography.labelSmall,
+    color: colors.semantic.warning,
+    marginLeft: spacing.xxs,
+  },
+  ratingBadge: {
+    position: 'absolute',
+    bottom: spacing.sm,
+    right: spacing.sm,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+    borderRadius: 10,
+  },
+  ratingBadgeText: {
+    ...typography.labelSmall,
+    color: colors.neutral.white,
+    marginLeft: spacing.xxs,
+  },
+  content: {
+    padding: spacing.md,
+  },
+  title: {
+    ...typography.labelLarge,
+    color: colors.neutral.text,
+    marginBottom: spacing.xs,
+  },
+  theaterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  theaterName: {
+    ...typography.bodySmall,
+    color: colors.neutral.textTertiary,
+    marginLeft: spacing.xxs,
+    flex: 1,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  priceLabel: {
+    ...typography.bodySmall,
+    color: colors.neutral.textSecondary,
+    marginRight: spacing.xxs,
+  },
+  price: {
+    ...typography.labelLarge,
+    color: colors.primary.main,
+    fontWeight: '700',
+  },
+  originalPrice: {
+    ...typography.bodySmall,
+    color: colors.neutral.textTertiary,
+    textDecorationLine: 'line-through',
+    marginLeft: spacing.sm,
+  },
+});
