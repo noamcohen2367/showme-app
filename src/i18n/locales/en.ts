@@ -40,6 +40,7 @@ export default {
     hebrew: 'Hebrew',
     continue: 'Continue',
     bookNow: 'Book Now',
+    notifyMe: 'Notify Me',
   },
 
   // Navigation
@@ -65,9 +66,23 @@ export default {
     lastMinute: 'Last Minute',
     lastMinuteInfo: 'Discounted tickets available 45 min before showtime',
     newShows: 'New Shows',
+    newShowsInfo: 'Fresh from the stage! Check out our newest additions',
     enableLocation: 'Enable location for personalized recommendations',
     permissionDenied: 'Location permission denied. Showing general results.',
     selectLocation: 'Select Location',
+    // New keys for enhanced HomeScreen
+    thisWeekend: 'This Weekend',
+    weekendInfo: 'Grab your tickets for this weekend!',
+    recommendedForYou: 'Recommended For You',
+    recommendedInfo: 'Based on your preferences',
+    comingSoon: 'Coming Soon',
+    notifyMe: 'Notify Me',
+    browseByCategory: 'Browse by Category',
+    specialFeatures: 'Special Features',
+    groupBooking: 'Group Booking',
+    groupBookingDesc: 'Up to 20% off for groups',
+    specialOccasions: 'Special Occasions',
+    specialOccasionsDesc: 'Birthday, Anniversary & more',
   },
 
   // Locations
@@ -93,6 +108,9 @@ export default {
     romance: 'Romance',
     new: 'New',
     long_running: 'Long Running',
+    family: 'Family',
+    dance: 'Dance',
+    opera: 'Opera',
   },
 
   // Show Badges
