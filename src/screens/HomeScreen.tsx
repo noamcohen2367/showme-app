@@ -34,7 +34,7 @@ import {
 } from '../types/types';
 import { shows } from '../data/shows';
 import { theaters } from '../data/theaters';
-
+import DateFilter, { DateFilterValue } from '../components/DateFilter';
 import {
   ShowCard,
   FilterChip,
@@ -489,6 +489,8 @@ export default function HomeScreen() {
   const [selectedStoryIndex, setSelectedStoryIndex] = useState(0);
   const [activePromoIndex, setActivePromoIndex] = useState(0);
   const promoScrollRef = useRef<FlatList>(null);
+  const [showDateModal, setShowDateModal] = useState(false);
+  const [dateFilter, setDateFilter] = useState<DateFilterValue | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -510,17 +512,44 @@ export default function HomeScreen() {
 
   const filteredShows = useMemo(() => {
     return shows.filter((show) => {
+      // Location filter
       if (selectedLocation) {
         const theaterLocation = theaterLocationMap.get(show.theaterId);
         if (theaterLocation !== selectedLocation) return false;
       }
+      // Category filter
       if (selectedCategories.length > 0) {
         if (!show.categories.some((cat) => selectedCategories.includes(cat)))
           return false;
       }
+      // Date filter
+      if (dateFilter) {
+        if (!show.availableDates || show.availableDates.length === 0)
+          return false;
+
+        if (dateFilter.type === 'today' || dateFilter.type === 'specific') {
+          // Check if show has the specific date
+          const hasDate = show.availableDates.some(
+            (d) => d.date === dateFilter.date
+          );
+          if (!hasDate) return false;
+        } else if (
+          dateFilter.type === 'range' &&
+          dateFilter.startDate &&
+          dateFilter.endDate
+        ) {
+          // Check if show has any date in range
+          const hasDateInRange = show.availableDates.some((d) => {
+            return (
+              d.date >= dateFilter.startDate! && d.date <= dateFilter.endDate!
+            );
+          });
+          if (!hasDateInRange) return false;
+        }
+      }
       return true;
     });
-  }, [selectedLocation, selectedCategories, theaterLocationMap]);
+  }, [selectedLocation, selectedCategories, dateFilter, theaterLocationMap]);
 
   const topShows = useMemo(
     () =>
@@ -598,6 +627,39 @@ export default function HomeScreen() {
         ? prev.filter((c) => c !== category)
         : [...prev, category]
     );
+  };
+
+  const getDateFilterLabel = () => {
+    if (!dateFilter) return t('common.date');
+
+    if (dateFilter.type === 'today') {
+      return t('common.today');
+    }
+    if (dateFilter.type === 'specific' && dateFilter.date) {
+      const date = new Date(dateFilter.date);
+      return date.toLocaleDateString(isHebrew ? 'he-IL' : 'en-US', {
+        day: 'numeric',
+        month: 'short',
+      });
+    }
+    if (
+      dateFilter.type === 'range' &&
+      dateFilter.startDate &&
+      dateFilter.endDate
+    ) {
+      const start = new Date(dateFilter.startDate);
+      const end = new Date(dateFilter.endDate);
+      const startStr = start.toLocaleDateString(isHebrew ? 'he-IL' : 'en-US', {
+        day: 'numeric',
+        month: 'short',
+      });
+      const endStr = end.toLocaleDateString(isHebrew ? 'he-IL' : 'en-US', {
+        day: 'numeric',
+        month: 'short',
+      });
+      return `${startStr} - ${endStr}`;
+    }
+    return t('common.date');
   };
 
   const navigateToShow = (showId: string) =>
@@ -772,6 +834,7 @@ export default function HomeScreen() {
             selected={selectedLocation !== null}
             onPress={() => setShowLocationModal(true)}
             showClear={selectedLocation !== null}
+            onClear={() => setSelectedLocation(null)}
           />
           <FilterChip
             label={
@@ -783,11 +846,15 @@ export default function HomeScreen() {
             selected={selectedCategories.length > 0}
             onPress={() => setShowCategoryModal(true)}
             showClear={selectedCategories.length > 0}
+            onClear={() => setSelectedCategories([])}
           />
           <FilterChip
-            label={t('common.date')}
+            label={getDateFilterLabel()}
             icon="calendar-outline"
-            onPress={() => {}}
+            selected={dateFilter !== null}
+            onPress={() => setShowDateModal(true)}
+            showClear={dateFilter !== null}
+            onClear={() => setDateFilter(null)}
           />
         </ScrollView>
       </View>
@@ -1157,6 +1224,7 @@ export default function HomeScreen() {
         }}
         onClose={() => setShowLocationModal(false)}
       />
+
       <CategoryFilter
         visible={showCategoryModal}
         selectedCategories={selectedCategories}
@@ -1164,6 +1232,14 @@ export default function HomeScreen() {
         onClose={() => setShowCategoryModal(false)}
         onClearAll={() => setSelectedCategories([])}
       />
+
+      <DateFilter
+        visible={showDateModal}
+        onClose={() => setShowDateModal(false)}
+        onApply={(filter) => setDateFilter(filter)}
+        currentFilter={dateFilter}
+      />
+
       <StoryViewer
         visible={storyViewerVisible}
         stories={STORIES}

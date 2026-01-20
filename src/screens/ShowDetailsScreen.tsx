@@ -410,6 +410,7 @@ const styles = StyleSheet.create({
     ...typography.headingMedium,
     color: colors.neutral.text,
     maxWidth: SCREEN_WIDTH * 0.6,
+    height: 24,
   },
   headerButton: {
     width: 40,
@@ -444,7 +445,7 @@ const styles = StyleSheet.create({
   },
   badgesContainer: {
     position: 'absolute',
-    bottom: spacing.xl,
+    bottom: spacing.xxxl,
     left: spacing.lg,
     flexDirection: 'row',
     gap: spacing.sm,
