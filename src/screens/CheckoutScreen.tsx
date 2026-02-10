@@ -24,7 +24,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
-import { getShowById } from '../data/shows';
+import { useShow } from '../hooks/useShows';
 import { getTheaterById } from '../data/theaters';
 import { currentUser, userSubscriptions } from '../data/user';
 
@@ -41,7 +41,7 @@ export default function CheckoutScreen() {
   const isHebrew = i18n.language === 'he';
 
   const { showId, date, time, seats, totalPrice } = route.params;
-  const show = getShowById(showId);
+  const { show } = useShow(showId);
   const theater = show ? getTheaterById(show.theaterId) : null;
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit_card');

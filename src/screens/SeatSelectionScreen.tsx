@@ -30,7 +30,7 @@ import Svg, {
 
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
-import { getShowById } from '../data/shows';
+import { useShow } from '../hooks/useShows';
 import {
   ALL_LAYOUTS,
   SeatData,
@@ -57,7 +57,7 @@ export default function SeatSelectionScreen() {
   const insets = useSafeAreaInsets();
 
   const { showId, date, time } = route.params;
-  const show = getShowById(showId);
+  const { show } = useShow(showId);
 
   // Get the hall layout from the show's hallLayoutId
   const layoutId = show?.hallLayoutId || 'traditional';

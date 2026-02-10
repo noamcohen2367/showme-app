@@ -23,8 +23,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList, ShowCategory, Show } from '../types/types';
-import { shows } from '../data/shows';
+import { useShows } from '../hooks/useShows';
 import { ShowCard } from '../components/components';
+import { ShowListSkeleton } from '../components/Skeleton';
 
 type SearchNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -84,6 +85,8 @@ export default function SearchScreen() {
   const navigation = useNavigation<SearchNavigationProp>();
   const insets = useSafeAreaInsets();
 
+  const { shows, loading } = useShows();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ShowCategory | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -94,17 +97,17 @@ export default function SearchScreen() {
       return fuzzySearch(searchQuery, shows);
     }
     return [];
-  }, [searchQuery]);
+  }, [searchQuery, shows]);
 
   // Category filtered results
   const categoryResults = useMemo(() => {
     if (selectedCategory) {
-      return shows.filter(show => 
+      return shows.filter(show =>
         show.categories.includes(selectedCategory) && show.isActive
       );
     }
     return [];
-  }, [selectedCategory]);
+  }, [selectedCategory, shows]);
 
   const handleCategoryPress = (category: ShowCategory) => {
     setSelectedCategory(category);
@@ -185,7 +188,11 @@ export default function SearchScreen() {
         </View>
       )}
 
-      {showResults ? (
+      {loading && shows.length === 0 ? (
+        <View style={styles.resultsContainer}>
+          <ShowListSkeleton count={4} size="small" />
+        </View>
+      ) : showResults ? (
         // Results View
         <FlatList
           data={searchQuery.trim().length > 0 ? searchResults : categoryResults}

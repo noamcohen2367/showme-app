@@ -25,7 +25,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
 import { getActorById } from '../data/actors';
-import { shows } from '../data/shows';
+import { useShows } from '../hooks/useShows';
 import { ShowCard } from '../components/components';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -42,6 +42,7 @@ export default function ActorProfileScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const actor = getActorById(route.params.actorId);
+  const { shows } = useShows();
 
   const isHebrew = i18n.language === 'he';
   const isRussian = i18n.language === 'ru';

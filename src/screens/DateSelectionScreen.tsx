@@ -21,7 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
-import { getShowById } from '../data/shows';
+import { useShow } from '../hooks/useShows';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DAY_WIDTH = (SCREEN_WIDTH - spacing.lg * 2 - spacing.xs * 12) / 7;
@@ -40,7 +40,7 @@ export default function DateSelectionScreen() {
   const isHebrew = i18n.language === 'he';
 
   const { showId } = route.params;
-  const show = getShowById(showId);
+  const { show } = useShow(showId);
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);

@@ -3,7 +3,8 @@
 // ============================================
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -32,7 +33,9 @@ export default function ActorCard({ actor, onPress, size = 'small' }: ActorCardP
         <Image
           source={{ uri: actor.imageUrl }}
           style={styles.image}
-          resizeMode="cover"
+          contentFit="cover"
+          transition={200}
+          recyclingKey={actor.id}
         />
         <LinearGradient
           colors={['transparent', 'rgba(168, 85, 247, 0.3)']}

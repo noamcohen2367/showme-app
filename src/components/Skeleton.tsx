@@ -192,6 +192,29 @@ export function SearchResultsSkeleton({ count = 4 }: { count?: number }) {
   );
 }
 
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// Show Details Skeleton
+export function ShowDetailsSkeleton() {
+  return (
+    <View style={styles.showDetailsSkeleton}>
+      <SkeletonShimmer width={SCREEN_WIDTH} height={SCREEN_HEIGHT * 0.45} borderRadius={0} />
+      <View style={styles.showDetailsContent}>
+        <SkeletonShimmer width={SCREEN_WIDTH * 0.7} height={28} style={{ marginBottom: spacing.sm }} />
+        <SkeletonShimmer width={SCREEN_WIDTH * 0.3} height={18} style={{ marginBottom: spacing.lg }} />
+        <View style={{ flexDirection: 'row', gap: spacing.md, marginBottom: spacing.lg }}>
+          <SkeletonShimmer width={100} height={16} />
+          <SkeletonShimmer width={80} height={16} />
+          <SkeletonShimmer width={60} height={16} />
+        </View>
+        <SkeletonShimmer width="100%" height={14} style={{ marginBottom: spacing.sm }} />
+        <SkeletonShimmer width="100%" height={14} style={{ marginBottom: spacing.sm }} />
+        <SkeletonShimmer width="70%" height={14} />
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   skeletonBase: {
     backgroundColor: colors.dark[600],

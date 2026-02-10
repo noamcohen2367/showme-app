@@ -21,7 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
-import { getShowById } from '../data/shows';
+import { useShow } from '../hooks/useShows';
 import { getTheaterById } from '../data/theaters';
 
 type OrderConfirmationNavigationProp = NativeStackNavigationProp<RootStackParamList, 'OrderConfirmation'>;
@@ -35,7 +35,7 @@ export default function OrderConfirmationScreen() {
   const isHebrew = i18n.language === 'he';
 
   const { orderId, showId, date, time, seats, totalPrice } = route.params;
-  const show = getShowById(showId);
+  const { show } = useShow(showId);
   const theater = show ? getTheaterById(show.theaterId) : null;
 
   const scaleAnim = useRef(new Animated.Value(0)).current;

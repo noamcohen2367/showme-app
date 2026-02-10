@@ -20,7 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList, ShowTime } from '../types/types';
-import { getShowById } from '../data/shows';
+import { useShow } from '../hooks/useShows';
 
 type TimeSelectionNavigationProp = NativeStackNavigationProp<RootStackParamList, 'TimeSelection'>;
 type TimeSelectionRouteProp = RouteProp<RootStackParamList, 'TimeSelection'>;
@@ -33,7 +33,7 @@ export default function TimeSelectionScreen() {
   const isHebrew = i18n.language === 'he';
 
   const { showId, date } = route.params;
-  const show = getShowById(showId);
+  const { show } = useShow(showId);
 
   const [selectedTime, setSelectedTime] = useState<ShowTime | null>(null);
 

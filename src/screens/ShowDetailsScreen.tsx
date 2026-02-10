@@ -8,13 +8,13 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   TouchableOpacity,
   Dimensions,
   StatusBar,
   Animated,
   FlatList,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -25,7 +25,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
-import { getShowById } from '../data/shows';
+import { useShow } from '../hooks/useShows';
 import { getTheaterById } from '../data/theaters';
 import { getActorById } from '../data/actors';
 import Badge from '../components/Badge';
@@ -49,12 +49,20 @@ export default function ShowDetailsScreen() {
   const isRussian = i18n.language === 'ru';
 
   const { showId } = route.params;
-  const show = getShowById(showId);
+  const { show, loading } = useShow(showId);
   const theater = show ? getTheaterById(show.theaterId) : null;
 
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  if (loading) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{t('common.loading') || 'Loading...'}</Text>
+      </View>
+    );
+  }
 
   if (!show || !theater) {
     return (
@@ -173,7 +181,8 @@ export default function ShowDetailsScreen() {
           <Image
             source={{ uri: galleryImages[selectedImageIndex] }}
             style={styles.heroImage}
-            resizeMode="cover"
+            contentFit="cover"
+            transition={400}
           />
           <LinearGradient
             colors={[
@@ -210,6 +219,9 @@ export default function ShowDetailsScreen() {
                   <Image
                     source={{ uri: image }}
                     style={styles.galleryThumbImage}
+                    contentFit="cover"
+                    transition={200}
+                    recyclingKey={`thumb-${index}`}
                   />
                 </TouchableOpacity>
               ))}
@@ -304,6 +316,8 @@ export default function ShowDetailsScreen() {
               <Image
                 source={{ uri: theater.imageUrl }}
                 style={styles.venueImage}
+                contentFit="cover"
+                transition={200}
               />
               <View style={styles.venueInfo}>
                 <Text style={styles.venueName}>{theaterName}</Text>

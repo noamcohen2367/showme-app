@@ -12,12 +12,12 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
-  Image,
   Animated,
-  ImageBackground,
   Modal,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { Image } from 'expo-image';
+import { PullToRefreshScrollView } from '../components/PullToRefresh';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -32,8 +32,9 @@ import {
   ShowCategory,
   Show,
 } from '../types/types';
-import { shows } from '../data/shows';
 import { theaters } from '../data/theaters';
+import { useShows } from '../hooks/useShows';
+import { HomeScreenSkeleton } from '../components/Skeleton';
 import DateFilter, { DateFilterValue } from '../components/DateFilter';
 import {
   ShowCard,
@@ -379,7 +380,8 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
             <Image
               source={{ uri: currentSlide.imageUrl }}
               style={styles.storyViewerImage}
-              resizeMode="cover"
+              contentFit="cover"
+              transition={300}
             />
             <LinearGradient
               colors={['rgba(0,0,0,0.6)', 'transparent', 'rgba(0,0,0,0.8)']}
@@ -413,6 +415,8 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
                 <Image
                   source={{ uri: currentStory.avatarUrl }}
                   style={styles.storyViewerAvatar}
+                  contentFit="cover"
+                  transition={200}
                 />
                 <Text style={styles.storyViewerName}>
                   {isHebrew
@@ -476,6 +480,8 @@ export default function HomeScreen() {
   const navigation = useNavigation<HomeNavigationProp>();
   const insets = useSafeAreaInsets();
   const isHebrew = i18n.language === 'he';
+
+  const { shows, loading, error, refetch } = useShows();
 
   const [selectedLocation, setSelectedLocation] = useState<LocationArea | null>(
     null
@@ -691,7 +697,7 @@ export default function HomeScreen() {
         style={styles.storyRing}
       >
         <View style={styles.storyAvatarContainer}>
-          <Image source={{ uri: item.avatarUrl }} style={styles.storyAvatar} />
+          <Image source={{ uri: item.avatarUrl }} style={styles.storyAvatar} contentFit="cover" transition={200} />
         </View>
       </LinearGradient>
       <Text style={styles.storyName} numberOfLines={1}>
@@ -707,11 +713,13 @@ export default function HomeScreen() {
       activeOpacity={0.9}
       onPress={() => item.showId && navigateToShow(item.showId)}
     >
-      <ImageBackground
-        source={{ uri: item.imageUrl }}
-        style={styles.promoImage}
-        imageStyle={styles.promoImageStyle}
-      >
+      <View style={styles.promoImage}>
+        <Image
+          source={{ uri: item.imageUrl }}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          transition={400}
+        />
         <LinearGradient
           colors={item.gradient}
           style={styles.promoGradient}
@@ -742,7 +750,7 @@ export default function HomeScreen() {
             </View>
           </View>
         </LinearGradient>
-      </ImageBackground>
+      </View>
     </TouchableOpacity>
   );
 
@@ -759,7 +767,7 @@ export default function HomeScreen() {
         style={styles.comingSoonCard}
         onPress={() => navigateToShow(item.id)}
       >
-        <Image source={{ uri: item.imageUrl }} style={styles.comingSoonImage} />
+        <Image source={{ uri: item.imageUrl }} style={styles.comingSoonImage} contentFit="cover" transition={300} />
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.9)']}
           style={styles.comingSoonGradient}
@@ -859,7 +867,11 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      <ScrollView
+      {loading && shows.length === 0 ? (
+        <HomeScreenSkeleton />
+      ) : (
+      <PullToRefreshScrollView
+        onRefresh={refetch}
         style={styles.content}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
@@ -1213,7 +1225,8 @@ export default function HomeScreen() {
         </View>
 
         <View style={{ height: 120 }} />
-      </ScrollView>
+      </PullToRefreshScrollView>
+      )}
 
       <LocationFilter
         visible={showLocationModal}
@@ -1448,7 +1461,6 @@ const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
   promoImage: { width: '100%', height: '100%' },
-  promoImageStyle: { borderRadius: 20 },
   promoGradient: {
     flex: 1,
     padding: spacing.lg,

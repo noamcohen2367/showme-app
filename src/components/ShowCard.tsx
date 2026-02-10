@@ -8,9 +8,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -62,7 +62,9 @@ export default function ShowCard({
         <Image
           source={{ uri: show.imageUrl }}
           style={styles.image}
-          resizeMode="cover"
+          contentFit="cover"
+          transition={300}
+          recyclingKey={show.id}
         />
         
         {/* Gradient overlay */}

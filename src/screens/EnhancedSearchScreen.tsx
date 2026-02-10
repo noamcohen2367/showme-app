@@ -25,8 +25,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
-import { shows } from '../data/shows';
 import { theaters } from '../data/theaters';
+import { useShows } from '../hooks/useShows';
 import { RootStackParamList, Show, ShowCategory, LocationArea } from '../types/types';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -88,6 +88,7 @@ export default function EnhancedSearchScreen() {
   const navigation = useNavigation<SearchNavigationProp>();
   const insets = useSafeAreaInsets();
   const searchInputRef = useRef<TextInput>(null);
+  const { shows } = useShows();
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
