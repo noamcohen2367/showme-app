@@ -139,6 +139,22 @@ export const theaters: Theater[] = [
     imageUrl: 'https://picsum.photos/seed/herzliya/800/400',
     seatingCapacity: 350,
   },
+  {
+    id: 'theater-9',
+    name: 'Tomix Productions',
+    nameHe: 'הפקות טומיקס',
+    nameRu: 'Томикс Продакшнс',
+    address: 'Various venues across Israel',
+    addressHe: 'אולמות שונים ברחבי הארץ',
+    addressRu: 'Различные площадки по всему Израилю',
+    location: 'tel_aviv',
+    coordinates: {
+      latitude: 32.0731,
+      longitude: 34.7795,
+    },
+    imageUrl: 'https://www.eventer.co.il/images/tomix-logo.png',
+    seatingCapacity: 500,
+  },
 ];
 
 // Helper function to get theater by ID
@@ -149,6 +165,13 @@ export const getTheaterById = (id: string): Theater | undefined => {
 // Helper function to get theaters by location
 export const getTheatersByLocation = (location: string): Theater[] => {
   return theaters.filter((theater) => theater.location === location);
+};
+
+// Register a dynamic theater (from API data) if it doesn't already exist
+export const registerDynamicTheater = (theater: Theater): void => {
+  if (!theaters.find((t) => t.id === theater.id)) {
+    theaters.push(theater);
+  }
 };
 
 export default theaters;

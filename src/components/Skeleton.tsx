@@ -312,6 +312,13 @@ const styles = StyleSheet.create({
     marginLeft: spacing.md,
     justifyContent: 'center',
   },
+  showDetailsSkeleton: {
+    flex: 1,
+    backgroundColor: colors.neutral.background,
+  },
+  showDetailsContent: {
+    padding: spacing.lg,
+  },
 });
 
 export default {
@@ -323,4 +330,5 @@ export default {
   ProfileHeaderSkeleton,
   ActorCardSkeleton,
   SearchResultsSkeleton,
+  ShowDetailsSkeleton,
 };

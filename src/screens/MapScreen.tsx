@@ -10,9 +10,9 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   Dimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -156,7 +156,7 @@ export default function MapScreen() {
       ]}
       onPress={() => setSelectedTheater(theater)}
     >
-      <Image source={{ uri: theater.image }} style={styles.theaterImage} />
+      <Image source={{ uri: theater.image }} style={styles.theaterImage} contentFit="cover" transition={300} />
       <LinearGradient
         colors={['transparent', 'rgba(0,0,0,0.8)']}
         style={styles.theaterImageGradient}
@@ -220,9 +220,9 @@ export default function MapScreen() {
               uri: 'https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/34.78,32.08,10,0/600x800?access_token=placeholder',
             }}
             style={styles.mapImage}
-            defaultSource={{
-              uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-            }}
+            placeholder={{ uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==' }}
+            contentFit="cover"
+            transition={300}
           />
           <LinearGradient
             colors={[
@@ -338,6 +338,8 @@ export default function MapScreen() {
             <Image
               source={{ uri: selectedTheater.image }}
               style={styles.panelImage}
+              contentFit="cover"
+              transition={200}
             />
             <View style={styles.panelInfo}>
               <Text style={styles.panelName}>{selectedTheater.name}</Text>

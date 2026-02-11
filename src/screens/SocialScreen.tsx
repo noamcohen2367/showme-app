@@ -10,9 +10,9 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   TextInput,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -104,7 +104,7 @@ export default function SocialScreen() {
     <View key={review.id} style={styles.reviewCard}>
       <View style={styles.reviewHeader}>
         <TouchableOpacity style={styles.userInfo}>
-          <Image source={{ uri: review.user.avatar }} style={styles.userAvatar} />
+          <Image source={{ uri: review.user.avatar }} style={styles.userAvatar} contentFit="cover" transition={200} />
           <View style={[styles.levelBadge, { backgroundColor: getLevelColor(review.user.level) }]} />
           <View>
             <Text style={styles.userName}>{review.user.name}</Text>
@@ -114,7 +114,7 @@ export default function SocialScreen() {
       </View>
 
       <TouchableOpacity style={styles.showInfo}>
-        <Image source={{ uri: review.showImage }} style={styles.showThumbnail} />
+        <Image source={{ uri: review.showImage }} style={styles.showThumbnail} contentFit="cover" transition={200} />
         <View style={styles.showDetails}>
           <Text style={styles.showName}>{review.showName}</Text>
           <View style={styles.ratingRow}>
@@ -162,7 +162,7 @@ export default function SocialScreen() {
       {FRIENDS.map((friend) => (
         <TouchableOpacity key={friend.id} style={styles.friendCard}>
           <View style={styles.friendAvatarContainer}>
-            <Image source={{ uri: friend.avatar }} style={styles.friendAvatar} />
+            <Image source={{ uri: friend.avatar }} style={styles.friendAvatar} contentFit="cover" transition={200} />
             {friend.online && <View style={styles.onlineIndicator} />}
           </View>
           <View style={styles.friendInfo}>
@@ -188,7 +188,7 @@ export default function SocialScreen() {
       {[1, 2, 3].map((i) => (
         <TouchableOpacity key={i} style={styles.topReviewerCard}>
           <Text style={styles.rankBadge}>#{i}</Text>
-          <Image source={{ uri: `https://picsum.photos/seed/top${i}/100/100` }} style={styles.topReviewerAvatar} />
+          <Image source={{ uri: `https://picsum.photos/seed/top${i}/100/100` }} style={styles.topReviewerAvatar} contentFit="cover" transition={200} />
           <View style={styles.topReviewerInfo}>
             <Text style={styles.topReviewerName}>Reviewer {i}</Text>
             <Text style={styles.topReviewerStats}>{50 - i * 10} reviews</Text>

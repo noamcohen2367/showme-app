@@ -10,12 +10,12 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   Share,
   TextInput,
   Alert,
   Animated,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -298,7 +298,7 @@ export default function ShareTicketScreen() {
       >
         {/* Ticket Preview */}
         <View style={styles.ticketPreview}>
-          <Image source={{ uri: MOCK_TICKET.imageUrl }} style={styles.ticketImage} />
+          <Image source={{ uri: MOCK_TICKET.imageUrl }} style={styles.ticketImage} contentFit="cover" transition={300} />
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.8)']}
             style={styles.ticketGradient}

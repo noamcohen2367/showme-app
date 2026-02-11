@@ -10,10 +10,10 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   Platform,
   Alert,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -116,20 +116,24 @@ export default function DigitalWalletScreen() {
                 <Text style={styles.passType}>Event Ticket</Text>
               </View>
               {isIOS ? (
-                <Image 
+                <Image
                   source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Apple_Wallet_icon.svg/1200px-Apple_Wallet_icon.svg.png' }}
                   style={styles.walletIcon}
+                  contentFit="cover"
+                  transition={200}
                 />
               ) : (
-                <Image 
+                <Image
                   source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Google_Wallet_2022_icon.svg/1200px-Google_Wallet_2022_icon.svg.png' }}
                   style={styles.walletIcon}
+                  contentFit="cover"
+                  transition={200}
                 />
               )}
             </View>
 
             {/* Show Image */}
-            <Image source={{ uri: MOCK_PASS.imageUrl }} style={styles.passImage} />
+            <Image source={{ uri: MOCK_PASS.imageUrl }} style={styles.passImage} contentFit="cover" transition={300} />
 
             {/* Pass Details */}
             <View style={styles.passDetails}>

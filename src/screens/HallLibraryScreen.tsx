@@ -10,9 +10,9 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   TextInput,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -93,7 +93,7 @@ export default function HallLibraryScreen() {
         onPress={() => navigation.navigate('HallDetails', { hallId: hall.id })}
         activeOpacity={0.8}
       >
-        <Image source={{ uri: hall.imageUrl }} style={styles.hallImage} />
+        <Image source={{ uri: hall.imageUrl }} style={styles.hallImage} contentFit="cover" transition={300} />
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.8)']}
           style={styles.hallGradient}

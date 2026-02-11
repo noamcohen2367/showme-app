@@ -10,8 +10,8 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -158,7 +158,7 @@ export default function NotificationsScreen() {
         {/* Icon or Image */}
         <View style={styles.notificationLeft}>
           {notification.image ? (
-            <Image source={{ uri: notification.image }} style={styles.notificationImage} />
+            <Image source={{ uri: notification.image }} style={styles.notificationImage} contentFit="cover" transition={200} />
           ) : (
             <View style={[styles.iconContainer, { backgroundColor: `${iconConfig.color}20` }]}>
               <Ionicons name={iconConfig.icon} size={22} color={iconConfig.color} />

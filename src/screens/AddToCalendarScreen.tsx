@@ -10,10 +10,10 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   Switch,
   Alert,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -119,7 +119,7 @@ export default function AddToCalendarScreen() {
       >
         {/* Event Preview */}
         <View style={styles.eventCard}>
-          <Image source={{ uri: MOCK_EVENT.imageUrl }} style={styles.eventImage} />
+          <Image source={{ uri: MOCK_EVENT.imageUrl }} style={styles.eventImage} contentFit="cover" transition={300} />
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.8)']}
             style={styles.eventGradient}

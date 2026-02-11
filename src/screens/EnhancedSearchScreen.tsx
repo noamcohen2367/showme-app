@@ -15,8 +15,9 @@ import {
   Modal,
   Animated,
   Dimensions,
-  Image,
+  RefreshControl,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -28,6 +29,9 @@ import { colors, typography, spacing } from '../theme/theme';
 import { theaters } from '../data/theaters';
 import { useShows } from '../hooks/useShows';
 import { RootStackParamList, Show, ShowCategory, LocationArea } from '../types/types';
+import { SearchResultsSkeleton } from '../components/Skeleton';
+import { usePullToRefresh } from '../components/PullToRefresh';
+import ErrorState from '../components/ErrorState';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -88,7 +92,8 @@ export default function EnhancedSearchScreen() {
   const navigation = useNavigation<SearchNavigationProp>();
   const insets = useSafeAreaInsets();
   const searchInputRef = useRef<TextInput>(null);
-  const { shows } = useShows();
+  const { shows, loading, error, refetch } = useShows();
+  const { refreshControlProps } = usePullToRefresh(refetch);
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -215,7 +220,7 @@ export default function EnhancedSearchScreen() {
         style={styles.resultCard}
         onPress={() => navigation.navigate('ShowDetails', { showId: item.id })}
       >
-        <Image source={{ uri: item.imageUrl }} style={styles.resultImage} />
+        <Image source={{ uri: item.imageUrl }} style={styles.resultImage} contentFit="cover" transition={200} recyclingKey={item.id} />
         <View style={styles.resultContent}>
           <Text style={styles.resultTitle} numberOfLines={1}>{item.title}</Text>
           <Text style={styles.resultTheater} numberOfLines={1}>{theater?.name}</Text>
@@ -552,79 +557,93 @@ export default function EnhancedSearchScreen() {
 
       {/* Search Results */}
       {!isSearchFocused && (
-        <>
-          {/* Active Filters */}
-          {activeFiltersCount > 0 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.activeFilters}
-              contentContainerStyle={styles.activeFiltersContent}
-            >
-              {selectedCategories.map((cat) => (
-                <TouchableOpacity
-                  key={cat}
-                  style={styles.activeFilterChip}
-                  onPress={() => toggleCategory(cat)}
-                >
-                  <Text style={styles.activeFilterText}>{cat}</Text>
-                  <Ionicons name="close" size={14} color={colors.primary.main} />
-                </TouchableOpacity>
-              ))}
-              {selectedLocations.map((loc) => (
-                <TouchableOpacity
-                  key={loc}
-                  style={styles.activeFilterChip}
-                  onPress={() => toggleLocation(loc)}
-                >
-                  <Text style={styles.activeFilterText}>{loc.replace('_', ' ')}</Text>
-                  <Ionicons name="close" size={14} color={colors.primary.main} />
-                </TouchableOpacity>
-              ))}
-              {selectedPriceRange !== 'any' && (
-                <TouchableOpacity
-                  style={styles.activeFilterChip}
-                  onPress={() => setSelectedPriceRange('any')}
-                >
-                  <Text style={styles.activeFilterText}>
-                    {PRICE_RANGES.find(p => p.id === selectedPriceRange)?.label}
-                  </Text>
-                  <Ionicons name="close" size={14} color={colors.primary.main} />
-                </TouchableOpacity>
-              )}
-            </ScrollView>
-          )}
-
-          {/* Results Count */}
-          <View style={styles.resultsHeader}>
-            <Text style={styles.resultsCount}>{sortedShows.length} shows found</Text>
-            <TouchableOpacity
-              style={styles.sortButton}
-              onPress={() => setShowFiltersModal(true)}
-            >
-              <Ionicons name="swap-vertical" size={18} color={colors.neutral.textSecondary} />
-              <Text style={styles.sortButtonText}>
-                {SORT_OPTIONS.find(s => s.id === selectedSort)?.label}
-              </Text>
-            </TouchableOpacity>
+        loading && shows.length === 0 ? (
+          <View style={styles.resultsList}>
+            <SearchResultsSkeleton count={4} />
           </View>
+        ) : (
+          <>
+            {/* Active Filters */}
+            {activeFiltersCount > 0 && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.activeFilters}
+                contentContainerStyle={styles.activeFiltersContent}
+              >
+                {selectedCategories.map((cat) => (
+                  <TouchableOpacity
+                    key={cat}
+                    style={styles.activeFilterChip}
+                    onPress={() => toggleCategory(cat)}
+                  >
+                    <Text style={styles.activeFilterText}>{cat}</Text>
+                    <Ionicons name="close" size={14} color={colors.primary.main} />
+                  </TouchableOpacity>
+                ))}
+                {selectedLocations.map((loc) => (
+                  <TouchableOpacity
+                    key={loc}
+                    style={styles.activeFilterChip}
+                    onPress={() => toggleLocation(loc)}
+                  >
+                    <Text style={styles.activeFilterText}>{loc.replace('_', ' ')}</Text>
+                    <Ionicons name="close" size={14} color={colors.primary.main} />
+                  </TouchableOpacity>
+                ))}
+                {selectedPriceRange !== 'any' && (
+                  <TouchableOpacity
+                    style={styles.activeFilterChip}
+                    onPress={() => setSelectedPriceRange('any')}
+                  >
+                    <Text style={styles.activeFilterText}>
+                      {PRICE_RANGES.find(p => p.id === selectedPriceRange)?.label}
+                    </Text>
+                    <Ionicons name="close" size={14} color={colors.primary.main} />
+                  </TouchableOpacity>
+                )}
+              </ScrollView>
+            )}
 
-          {/* Results List */}
-          <FlatList
-            data={sortedShows}
-            renderItem={renderSearchResult}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.resultsList}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <View style={styles.emptyState}>
-                <Ionicons name="search" size={48} color={colors.neutral.textTertiary} />
-                <Text style={styles.emptyTitle}>No shows found</Text>
-                <Text style={styles.emptyText}>Try adjusting your filters or search terms</Text>
-              </View>
-            }
-          />
-        </>
+            {/* Results Count */}
+            <View style={styles.resultsHeader}>
+              <Text style={styles.resultsCount}>{sortedShows.length} shows found</Text>
+              <TouchableOpacity
+                style={styles.sortButton}
+                onPress={() => setShowFiltersModal(true)}
+              >
+                <Ionicons name="swap-vertical" size={18} color={colors.neutral.textSecondary} />
+                <Text style={styles.sortButtonText}>
+                  {SORT_OPTIONS.find(s => s.id === selectedSort)?.label}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Results List */}
+            <FlatList
+              data={sortedShows}
+              renderItem={renderSearchResult}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.resultsList}
+              showsVerticalScrollIndicator={false}
+              refreshControl={<RefreshControl {...refreshControlProps} />}
+              ListEmptyComponent={
+                error && shows.length === 0 ? (
+                  <ErrorState
+                    message={t('errors.network')}
+                    onRetry={refetch}
+                  />
+                ) : (
+                  <View style={styles.emptyState}>
+                    <Ionicons name="search" size={48} color={colors.neutral.textTertiary} />
+                    <Text style={styles.emptyTitle}>No shows found</Text>
+                    <Text style={styles.emptyText}>Try adjusting your filters or search terms</Text>
+                  </View>
+                )
+              }
+            />
+          </>
+        )
       )}
 
       {renderFiltersModal()}

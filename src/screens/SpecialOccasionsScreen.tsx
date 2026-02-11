@@ -10,9 +10,9 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   Dimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -197,7 +197,7 @@ export default function SpecialOccasionsScreen() {
         </View>
       )}
       
-      <Image source={{ uri: pkg.image }} style={styles.packageImage} />
+      <Image source={{ uri: pkg.image }} style={styles.packageImage} contentFit="cover" transition={300} />
       <LinearGradient
         colors={['transparent', 'rgba(0,0,0,0.8)']}
         style={styles.packageImageGradient}
@@ -358,6 +358,8 @@ export default function SpecialOccasionsScreen() {
             <Image
               source={{ uri: 'https://picsum.photos/seed/testimonial/50/50' }}
               style={styles.testimonialAvatar}
+              contentFit="cover"
+              transition={200}
             />
             <View>
               <Text style={styles.testimonialName}>David & Sarah</Text>

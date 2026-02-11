@@ -10,6 +10,7 @@ import {
   ScrollView,
   StatusBar,
   FlatList,
+  RefreshControl,
   TouchableOpacity,
   TextInput,
   Keyboard,
@@ -25,7 +26,9 @@ import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList, ShowCategory, Show } from '../types/types';
 import { useShows } from '../hooks/useShows';
 import { ShowCard } from '../components/components';
-import { ShowListSkeleton } from '../components/Skeleton';
+import { SearchResultsSkeleton } from '../components/Skeleton';
+import { usePullToRefresh } from '../components/PullToRefresh';
+import NetworkBanner from '../components/NetworkBanner';
 
 type SearchNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -85,7 +88,9 @@ export default function SearchScreen() {
   const navigation = useNavigation<SearchNavigationProp>();
   const insets = useSafeAreaInsets();
 
-  const { shows, loading } = useShows();
+  const { shows, loading, isUsingFallback, refetch } = useShows();
+  const { refreshControlProps } = usePullToRefresh(refetch);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ShowCategory | null>(null);
@@ -171,6 +176,12 @@ export default function SearchScreen() {
         </View>
       </View>
 
+      <NetworkBanner
+        visible={isUsingFallback && !bannerDismissed}
+        onRetry={refetch}
+        onDismiss={() => setBannerDismissed(true)}
+      />
+
       {/* Category Filter Badge */}
       {selectedCategory && (
         <View style={styles.activeFilterContainer}>
@@ -190,7 +201,7 @@ export default function SearchScreen() {
 
       {loading && shows.length === 0 ? (
         <View style={styles.resultsContainer}>
-          <ShowListSkeleton count={4} size="small" />
+          <SearchResultsSkeleton count={4} />
         </View>
       ) : showResults ? (
         // Results View
@@ -202,6 +213,7 @@ export default function SearchScreen() {
           contentContainerStyle={styles.resultsContainer}
           columnWrapperStyle={styles.resultsRow}
           showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl {...refreshControlProps} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Ionicons name="search-outline" size={48} color={colors.neutral.textTertiary} />

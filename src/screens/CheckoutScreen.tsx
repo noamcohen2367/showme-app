@@ -10,11 +10,11 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Image,
   TextInput,
   Switch,
   Alert,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -135,7 +135,7 @@ export default function CheckoutScreen() {
           <Text style={styles.sectionTitle}>{t('checkout.orderSummary')}</Text>
           <View style={styles.orderCard}>
             {show && (
-              <Image source={{ uri: show.imageUrl }} style={styles.orderImage} />
+              <Image source={{ uri: show.imageUrl }} style={styles.orderImage} contentFit="cover" transition={200} />
             )}
             <View style={styles.orderInfo}>
               <Text style={styles.orderTitle}>{title}</Text>

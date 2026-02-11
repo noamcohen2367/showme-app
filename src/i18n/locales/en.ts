@@ -441,6 +441,9 @@ export default {
     sessionExpired: 'Your session has expired. Please log in again.',
     showNotFound: 'Show not found',
     actorNotFound: 'Actor not found',
+    showingCachedData: 'Showing cached data. Pull to refresh.',
+    tapToRetry: 'Tap to retry',
+    noShows: 'No shows available',
   },
 
   // Date/Time

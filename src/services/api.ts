@@ -2,7 +2,8 @@
 // ShowME App - API Service Layer
 // ============================================
 
-import { Show, ShowDate, ShowCategory, ShowBadge } from '../types/types';
+import { Show, ShowDate, ShowCategory, ShowBadge, LocationArea } from '../types/types';
+import { registerDynamicTheater } from '../data/theaters';
 
 // ============================================
 // Cameri API Types (raw response)
@@ -534,12 +535,366 @@ async function transformHaifaShows(allEvents: HaifaEvent[]): Promise<Show[]> {
 }
 
 // ============================================
+// Eventer/Tomix API Types (JSON response)
+// ============================================
+
+interface EventerTicketType {
+  _id: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  remaining: number;
+}
+
+interface EventerEvent {
+  _id: string;
+  name: string;
+  locationDescription: string;
+  schedule: {
+    start: string; // ISO datetime
+    end: string;
+    openDoors: string;
+  };
+  ticketTypes: EventerTicketType[];
+  eventDesc: string; // HTML
+  tags: string[];
+  linkName: string;
+  soldOut?: boolean;
+  totalRemaining: number;
+  producerListImage?: string;
+  thumbnail?: string;
+}
+
+interface EventerApiResponse {
+  events: EventerEvent[];
+  _id: string;
+  linkName: string;
+}
+
+// ============================================
+// Eventer/Tomix Data Transformation
+// ============================================
+
+function transformTomixShows(apiResponse: EventerApiResponse): Show[] {
+  const events = apiResponse.events;
+
+  // Group events by show name (same show can have multiple dates/venues)
+  const showGroups = new Map<string, EventerEvent[]>();
+  for (const event of events) {
+    // Use normalized name as key (strip CANDLELIVE suffix for grouping)
+    const groupKey = event.name.replace(/\s*\|\s*CANDLELIVE\s*/i, '').trim();
+    const existing = showGroups.get(groupKey) || [];
+    existing.push(event);
+    showGroups.set(groupKey, existing);
+  }
+
+  const shows: Show[] = [];
+
+  for (const [showName, groupEvents] of showGroups) {
+    const firstEvent = groupEvents[0];
+
+    // Build available dates
+    const dateMap = new Map<string, { times: ShowDate['times']; hasSoldOut: boolean }>();
+
+    for (const event of groupEvents) {
+      const startDate = new Date(event.schedule.start);
+      const datePart = startDate.toISOString().split('T')[0];
+      const timePart = startDate.toLocaleTimeString('he-IL', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+
+      const existing = dateMap.get(datePart) || { times: [], hasSoldOut: false };
+
+      // Get lowest price from ticket types
+      const prices = event.ticketTypes
+        .map(t => t.price)
+        .filter(p => p > 0);
+      const lowestPrice = prices.length > 0 ? Math.min(...prices) : 0;
+
+      existing.times.push({
+        id: event._id,
+        time: timePart,
+        availableSeats: event.soldOut ? 0 : (event.totalRemaining > 0 ? event.totalRemaining : 100),
+        totalSeats: 200,
+        price: lowestPrice,
+        isLastMinuteDeal: false,
+      });
+
+      if (event.soldOut) existing.hasSoldOut = true;
+      dateMap.set(datePart, existing);
+    }
+
+    const availableDates: ShowDate[] = Array.from(dateMap.entries())
+      .map(([date, data]) => ({
+        date,
+        times: data.times,
+        availability: data.hasSoldOut
+          ? 'sold_out' as const
+          : 'available' as const,
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    // Find image from any event in the group
+    let imageUrl = '';
+    let thumbnail = '';
+    for (const event of groupEvents) {
+      if (event.producerListImage) {
+        imageUrl = event.producerListImage;
+        break;
+      }
+      if (event.thumbnail) {
+        thumbnail = event.thumbnail;
+      }
+    }
+    if (!imageUrl && thumbnail) imageUrl = thumbnail;
+
+    const galleryImages: string[] = [];
+    if (imageUrl) galleryImages.push(imageUrl);
+
+    // Get lowest price across all events
+    const allPrices = groupEvents
+      .flatMap(e => e.ticketTypes.map(t => t.price))
+      .filter(p => p > 0);
+    const startingPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+
+    const description = stripHtml(firstEvent.eventDesc || '');
+    const isSoldOut = groupEvents.every(e => e.soldOut);
+
+    const badges: ShowBadge[] = [];
+    if (isSoldOut) badges.push('selling_fast');
+    if (groupEvents.length > 3) badges.push('popular_in_area');
+
+    // Build venue info from locationDescription
+    const venues = [...new Set(groupEvents.map(e => e.locationDescription).filter(Boolean))];
+    const venueText = venues.join(' | ');
+
+    const show: Show = {
+      id: `tomix_${firstEvent._id}`,
+      title: showName,
+      titleHe: showName,
+      titleRu: showName,
+      description: description || venueText,
+      descriptionHe: description || venueText,
+      descriptionRu: description || venueText,
+      imageUrl,
+      galleryImages,
+      theaterId: 'theater-9', // Tomix Productions
+      categories: ['popular'],
+      duration: 120,
+      rating: 0,
+      reviewCount: 0,
+      startingPrice,
+      badges,
+      actorIds: [],
+      availableDates,
+      isActive: !isSoldOut,
+      premiereDate: availableDates[0]?.date || new Date().toISOString().split('T')[0],
+    };
+
+    shows.push(show);
+  }
+
+  // Sort by number of available dates (popularity proxy)
+  shows.sort((a, b) => b.availableDates.length - a.availableDates.length);
+  return shows;
+}
+
+// ============================================
+// Hulyo API Types (JSON response)
+// ============================================
+
+interface HulyoShow {
+  dealType: string;
+  id: string;
+  supplierId: string;   // Supplier name in Hebrew
+  name: string;
+  availableSeats: number;
+  sellingPrice: number;
+  date: string;          // YYYY-MM-DD
+  time: string;          // HH:MM
+  areaName: string;
+  address: string;
+  category: string;
+  imageUrl: string;
+  placeName: string;     // Venue name
+  description: string;
+  soldOut: boolean;
+  vendorId: string;      // English vendor ID
+}
+
+interface HulyoApiResponse {
+  products: Record<string, HulyoShow>;
+}
+
+// Suppliers to exclude (we already fetch from these theaters directly)
+const HULYO_EXCLUDED_SUPPLIERS = new Set([
+  'התיאטרון הלאומי הבימה',  // Habima
+  'התיאטרון הקאמרי',        // Cameri
+  'תיאטרון חיפה',           // Haifa
+  'תיאטרון גשר',            // Gesher
+  'תיאטרון בית לסין',       // Beit Lessin
+]);
+
+// ============================================
+// Hulyo Data Transformation
+// ============================================
+
+// Map Hebrew area names to LocationArea
+function hulyoAreaToLocation(areaName: string): LocationArea {
+  const areaMap: Record<string, LocationArea> = {
+    'תל אביב': 'tel_aviv',
+    'ירושלים': 'jerusalem',
+    'חיפה': 'haifa',
+    'באר שבע': 'beer_sheva',
+    'הרצליה': 'herzliya',
+    'השרון': 'sharon',
+    'הדרום': 'south',
+    'הצפון': 'north',
+  };
+  return areaMap[areaName] || 'tel_aviv';
+}
+
+function transformHulyoShows(apiResponse: HulyoApiResponse): Show[] {
+  const allItems = Object.values(apiResponse.products);
+
+  // Filter: only theater category, exclude existing theater suppliers
+  const theaterItems = allItems.filter(
+    item => item.category === 'תאטרון' && !HULYO_EXCLUDED_SUPPLIERS.has(item.supplierId)
+  );
+
+  // Register a dynamic theater for each unique supplier
+  const supplierTheaterIds = new Map<string, string>();
+  const seenSuppliers = new Map<string, HulyoShow>();
+
+  for (const item of theaterItems) {
+    if (!seenSuppliers.has(item.supplierId)) {
+      seenSuppliers.set(item.supplierId, item);
+    }
+  }
+
+  let dynamicIndex = 0;
+  for (const [supplierName, sampleItem] of seenSuppliers) {
+    const theaterId = `hulyo_${dynamicIndex++}`;
+    supplierTheaterIds.set(supplierName, theaterId);
+
+    registerDynamicTheater({
+      id: theaterId,
+      name: supplierName,
+      nameHe: supplierName,
+      nameRu: supplierName,
+      address: sampleItem.address || sampleItem.placeName || '',
+      addressHe: sampleItem.address || sampleItem.placeName || '',
+      addressRu: sampleItem.address || sampleItem.placeName || '',
+      location: hulyoAreaToLocation(sampleItem.areaName),
+      coordinates: { latitude: 32.0731, longitude: 34.7795 },
+      imageUrl: '',
+      seatingCapacity: 300,
+    });
+  }
+
+  // Group by show name + supplier (same show from same producer)
+  const showGroups = new Map<string, HulyoShow[]>();
+  for (const item of theaterItems) {
+    const groupKey = `${item.name}__${item.supplierId}`;
+    const existing = showGroups.get(groupKey) || [];
+    existing.push(item);
+    showGroups.set(groupKey, existing);
+  }
+
+  const shows: Show[] = [];
+
+  for (const [, groupItems] of showGroups) {
+    const firstItem = groupItems[0];
+
+    // Build available dates
+    const dateMap = new Map<string, { times: ShowDate['times']; hasSoldOut: boolean }>();
+
+    for (const item of groupItems) {
+      const existing = dateMap.get(item.date) || { times: [], hasSoldOut: false };
+
+      existing.times.push({
+        id: item.id,
+        time: item.time,
+        availableSeats: item.soldOut ? 0 : item.availableSeats,
+        totalSeats: 200,
+        price: item.sellingPrice,
+        isLastMinuteDeal: false,
+      });
+
+      if (item.soldOut) existing.hasSoldOut = true;
+      dateMap.set(item.date, existing);
+    }
+
+    const availableDates: ShowDate[] = Array.from(dateMap.entries())
+      .map(([date, data]) => ({
+        date,
+        times: data.times,
+        availability: data.hasSoldOut
+          ? 'sold_out' as const
+          : data.times[0].availableSeats < 20
+          ? 'limited' as const
+          : 'available' as const,
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    // Get lowest price
+    const prices = groupItems.map(i => i.sellingPrice).filter(p => p > 0);
+    const startingPrice = prices.length > 0 ? Math.min(...prices) : 0;
+
+    const imageUrl = firstItem.imageUrl || '';
+    const galleryImages = imageUrl ? [imageUrl] : [];
+
+    const description = firstItem.description
+      ? stripHtml(firstItem.description).slice(0, 500)
+      : '';
+
+    const isSoldOut = groupItems.every(i => i.soldOut);
+
+    const badges: ShowBadge[] = [];
+    if (isSoldOut) badges.push('selling_fast');
+    if (groupItems.length > 3) badges.push('popular_in_area');
+
+    const show: Show = {
+      id: `hulyo_${firstItem.id}`,
+      title: firstItem.name,
+      titleHe: firstItem.name,
+      titleRu: firstItem.name,
+      description: description || `${firstItem.placeName}, ${firstItem.areaName}`,
+      descriptionHe: description || `${firstItem.placeName}, ${firstItem.areaName}`,
+      descriptionRu: description || `${firstItem.placeName}, ${firstItem.areaName}`,
+      imageUrl,
+      galleryImages,
+      theaterId: supplierTheaterIds.get(firstItem.supplierId) || 'hulyo_0',
+      categories: ['drama'],
+      duration: 120,
+      rating: 0,
+      reviewCount: 0,
+      startingPrice,
+      badges,
+      actorIds: [],
+      availableDates,
+      isActive: !isSoldOut,
+      premiereDate: availableDates[0]?.date || new Date().toISOString().split('T')[0],
+    };
+
+    shows.push(show);
+  }
+
+  shows.sort((a, b) => b.availableDates.length - a.availableDates.length);
+  return shows;
+}
+
+// ============================================
 // API Fetching
 // ============================================
 
 const CAMERI_API_URL = 'https://www.cameri.co.il/na_ajax.php?action=get_shows';
 const HABIMA_API_URL = 'https://www.habima.co.il/wp-content/themes/tyco-wp/cache/allData.json';
 const HAIFA_SCHEDULE_URL = 'https://www.ht1.co.il/Show/_ShowList';
+const TOMIX_API_URL = 'https://www.eventer.co.il/user/tomix/getData?hideExcludedEvents=true&lang=he_IL';
+const HULYO_API_URL = 'https://www.hulyo.co.il/dynamic/client/shows.json';
 
 export async function fetchCameriShows(): Promise<Show[]> {
   const response = await fetch(CAMERI_API_URL);
@@ -595,11 +950,35 @@ export async function fetchHaifaShows(): Promise<Show[]> {
   return transformHaifaShows(allEvents);
 }
 
+export async function fetchTomixShows(): Promise<Show[]> {
+  const response = await fetch(TOMIX_API_URL);
+
+  if (!response.ok) {
+    throw new Error(`Tomix API error: ${response.status}`);
+  }
+
+  const data: EventerApiResponse = await response.json();
+  return transformTomixShows(data);
+}
+
+export async function fetchHulyoShows(): Promise<Show[]> {
+  const response = await fetch(HULYO_API_URL);
+
+  if (!response.ok) {
+    throw new Error(`Hulyo API error: ${response.status}`);
+  }
+
+  const data: HulyoApiResponse = await response.json();
+  return transformHulyoShows(data);
+}
+
 export async function fetchAllShows(): Promise<Show[]> {
   const results = await Promise.allSettled([
     fetchCameriShows(),
     fetchHabimaShows(),
     fetchHaifaShows(),
+    fetchTomixShows(),
+    fetchHulyoShows(),
   ]);
 
   const allShows: Show[] = [];

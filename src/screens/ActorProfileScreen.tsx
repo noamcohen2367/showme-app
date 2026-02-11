@@ -8,13 +8,13 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   TouchableOpacity,
   FlatList,
   Dimensions,
   StatusBar,
   Animated,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -27,6 +27,7 @@ import { RootStackParamList } from '../types/types';
 import { getActorById } from '../data/actors';
 import { useShows } from '../hooks/useShows';
 import { ShowCard } from '../components/components';
+import { ShowListSkeleton } from '../components/Skeleton';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const HEADER_HEIGHT = SCREEN_HEIGHT * 0.4;
@@ -42,7 +43,7 @@ export default function ActorProfileScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const actor = getActorById(route.params.actorId);
-  const { shows } = useShows();
+  const { shows, loading } = useShows();
 
   const isHebrew = i18n.language === 'he';
   const isRussian = i18n.language === 'ru';
@@ -140,7 +141,8 @@ export default function ActorProfileScreen() {
           <Image
             source={{ uri: actor.imageUrl }}
             style={styles.heroImage}
-            resizeMode="cover"
+            contentFit="cover"
+            transition={400}
           />
           <LinearGradient
             colors={[
@@ -156,7 +158,8 @@ export default function ActorProfileScreen() {
               <Image
                 source={{ uri: actor.imageUrl }}
                 style={styles.profileImage}
-                resizeMode="cover"
+                contentFit="cover"
+                transition={300}
               />
               <LinearGradient
                 colors={['transparent', 'rgba(168, 85, 247, 0.3)']}
@@ -183,7 +186,7 @@ export default function ActorProfileScreen() {
                 color={colors.primary.main}
               />
             </LinearGradient>
-            <Text style={styles.statNumber}>{actorShows.length}</Text>
+            <Text style={styles.statNumber}>{loading && shows.length === 0 ? '-' : actorShows.length}</Text>
             <Text style={styles.statLabel}>{t('actor.activeShows')}</Text>
           </View>
           <View style={styles.statDivider} />
@@ -225,7 +228,9 @@ export default function ActorProfileScreen() {
                   <Image
                     source={{ uri: photo }}
                     style={styles.photoImage}
-                    resizeMode="cover"
+                    contentFit="cover"
+                    transition={200}
+                    recyclingKey={`photo-${index}`}
                   />
                   <LinearGradient
                     colors={['transparent', 'rgba(10, 10, 15, 0.5)']}
@@ -238,9 +243,11 @@ export default function ActorProfileScreen() {
         )}
 
         {/* Current Shows */}
-        {actorShows.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('actor.currentShows')}</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('actor.currentShows')}</Text>
+          {loading && shows.length === 0 ? (
+            <ShowListSkeleton count={3} size="small" />
+          ) : actorShows.length > 0 ? (
             <FlatList
               data={actorShows}
               horizontal
@@ -257,8 +264,14 @@ export default function ActorProfileScreen() {
               )}
               contentContainerStyle={styles.showsContainer}
             />
-          </View>
-        )}
+          ) : (
+            <View style={{ paddingVertical: spacing.lg, alignItems: 'center' }}>
+              <Text style={{ ...typography.bodyMedium, color: colors.neutral.textTertiary }}>
+                {t('common.noResults')}
+              </Text>
+            </View>
+          )}
+        </View>
 
         {/* Follow Button */}
         <View style={styles.followSection}>

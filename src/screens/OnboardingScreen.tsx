@@ -12,8 +12,8 @@ import {
   FlatList,
   Animated,
   StatusBar,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -150,7 +150,8 @@ export default function OnboardingScreen({
           <Image
             source={{ uri: item.image }}
             style={styles.backgroundImage}
-            resizeMode="cover"
+            contentFit="cover"
+            transition={300}
           />
           <LinearGradient
             colors={[

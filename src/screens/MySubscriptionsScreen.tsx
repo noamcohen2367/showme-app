@@ -10,8 +10,8 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -152,9 +152,11 @@ export default function MySubscriptionsScreen() {
                 >
                   {/* Card Header */}
                   <View style={styles.cardHeader}>
-                    <Image 
-                      source={{ uri: theater.imageUrl }} 
+                    <Image
+                      source={{ uri: theater.imageUrl }}
                       style={styles.theaterImage}
+                      contentFit="cover"
+                      transition={200}
                     />
                     <View style={styles.headerInfo}>
                       <Text style={styles.theaterName}>{theaterName}</Text>

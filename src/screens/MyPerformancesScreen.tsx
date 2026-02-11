@@ -10,9 +10,9 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -164,7 +164,7 @@ export default function MyPerformancesScreen() {
               >
                 {/* Ticket Top */}
                 <View style={styles.ticketTop}>
-                  <Image source={{ uri: show.imageUrl }} style={styles.ticketImage} />
+                  <Image source={{ uri: show.imageUrl }} style={styles.ticketImage} contentFit="cover" transition={300} />
                   <LinearGradient
                     colors={['transparent', 'rgba(10, 10, 15, 0.9)']}
                     style={styles.ticketImageGradient}

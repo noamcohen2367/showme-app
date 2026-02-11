@@ -10,11 +10,11 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   Dimensions,
   FlatList,
   Animated,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -59,7 +59,7 @@ export default function HallDetailsScreen() {
   });
 
   const renderPhotoItem = ({ item, index }: { item: string; index: number }) => (
-    <Image source={{ uri: item }} style={styles.galleryImage} />
+    <Image source={{ uri: item }} style={styles.galleryImage} contentFit="cover" transition={200} />
   );
 
   const renderZoneCard = (section: HallSection) => {
@@ -128,7 +128,7 @@ export default function HallDetailsScreen() {
       >
         {/* Hero Image */}
         <View style={styles.heroContainer}>
-          <Image source={{ uri: hall.imageUrl }} style={styles.heroImage} />
+          <Image source={{ uri: hall.imageUrl }} style={styles.heroImage} contentFit="cover" transition={300} />
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.7)', colors.neutral.background]}
             style={styles.heroGradient}

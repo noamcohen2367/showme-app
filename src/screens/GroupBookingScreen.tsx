@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   StatusBar,
   TextInput,
-  Image,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';

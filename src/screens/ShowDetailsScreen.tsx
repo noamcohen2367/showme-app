@@ -30,6 +30,7 @@ import { getTheaterById } from '../data/theaters';
 import { getActorById } from '../data/actors';
 import Badge from '../components/Badge';
 import ActorCard from '../components/ActorCard';
+import { ShowDetailsSkeleton } from '../components/Skeleton';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const HEADER_HEIGHT = SCREEN_HEIGHT * 0.45;
@@ -57,11 +58,7 @@ export default function ShowDetailsScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   if (loading) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{t('common.loading') || 'Loading...'}</Text>
-      </View>
-    );
+    return <ShowDetailsSkeleton />;
   }
 
   if (!show || !theater) {

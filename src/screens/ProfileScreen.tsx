@@ -10,8 +10,8 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -102,9 +102,11 @@ export default function ProfileScreen() {
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
             {currentUser.profileImageUrl ? (
-              <Image 
-                source={{ uri: currentUser.profileImageUrl }} 
+              <Image
+                source={{ uri: currentUser.profileImageUrl }}
                 style={styles.avatar}
+                contentFit="cover"
+                transition={200}
               />
             ) : (
               <LinearGradient

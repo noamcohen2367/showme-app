@@ -35,6 +35,8 @@ import {
 import { theaters } from '../data/theaters';
 import { useShows } from '../hooks/useShows';
 import { HomeScreenSkeleton } from '../components/Skeleton';
+import NetworkBanner from '../components/NetworkBanner';
+import ErrorState from '../components/ErrorState';
 import DateFilter, { DateFilterValue } from '../components/DateFilter';
 import {
   ShowCard,
@@ -481,7 +483,8 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const isHebrew = i18n.language === 'he';
 
-  const { shows, loading, error, refetch } = useShows();
+  const { shows, loading, error, isUsingFallback, refetch } = useShows();
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   const [selectedLocation, setSelectedLocation] = useState<LocationArea | null>(
     null
@@ -555,7 +558,7 @@ export default function HomeScreen() {
       }
       return true;
     });
-  }, [selectedLocation, selectedCategories, dateFilter, theaterLocationMap]);
+  }, [shows, selectedLocation, selectedCategories, dateFilter, theaterLocationMap]);
 
   const topShows = useMemo(
     () =>
@@ -867,7 +870,18 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      {loading && shows.length === 0 ? (
+      <NetworkBanner
+        visible={isUsingFallback && !bannerDismissed}
+        onRetry={refetch}
+        onDismiss={() => setBannerDismissed(true)}
+      />
+
+      {!loading && shows.length === 0 && error ? (
+        <ErrorState
+          message={t('errors.network')}
+          onRetry={refetch}
+        />
+      ) : loading && shows.length === 0 ? (
         <HomeScreenSkeleton />
       ) : (
       <PullToRefreshScrollView

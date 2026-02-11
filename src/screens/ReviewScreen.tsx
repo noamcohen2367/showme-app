@@ -10,11 +10,11 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   TextInput,
   Animated,
   Alert,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -266,7 +266,7 @@ export default function ReviewScreen() {
       >
         {/* Show Info */}
         <View style={styles.showCard}>
-          <Image source={{ uri: MOCK_SHOW.imageUrl }} style={styles.showImage} />
+          <Image source={{ uri: MOCK_SHOW.imageUrl }} style={styles.showImage} contentFit="cover" transition={200} />
           <View style={styles.showInfo}>
             <Text style={styles.showTitle}>{MOCK_SHOW.title}</Text>
             <Text style={styles.showMeta}>{MOCK_SHOW.date} • {MOCK_SHOW.venue}</Text>

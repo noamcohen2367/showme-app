@@ -422,6 +422,9 @@ export default {
     sessionExpired: 'הסשן פג. התחברו שוב.',
     showNotFound: 'ההצגה לא נמצאה',
     actorNotFound: 'השחקן לא נמצא',
+    showingCachedData: 'מציג נתונים שמורים. משכו לרענון.',
+    tapToRetry: 'לחצו לניסיון נוסף',
+    noShows: 'אין הצגות זמינות',
   },
 
   // Date/Time

@@ -10,7 +10,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Image,
   TextInput,
   Platform,
   Alert,

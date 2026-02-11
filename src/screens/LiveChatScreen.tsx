@@ -13,9 +13,9 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Image,
   Animated,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -193,7 +193,7 @@ export default function LiveChatScreen() {
         {!isUser && (
           <View style={styles.avatarContainer}>
             {isAgent ? (
-              <Image source={{ uri: message.agentAvatar }} style={styles.avatar} />
+              <Image source={{ uri: message.agentAvatar }} style={styles.avatar} contentFit="cover" transition={200} />
             ) : (
               <View style={styles.botAvatar}>
                 <Ionicons name="sparkles" size={16} color={colors.primary.main} />
@@ -280,9 +280,11 @@ export default function LiveChatScreen() {
             <View style={[styles.messageContainer, styles.otherMessageContainer]}>
               <View style={styles.avatarContainer}>
                 {isAgentConnected ? (
-                  <Image 
-                    source={{ uri: 'https://picsum.photos/seed/sarah/100/100' }} 
-                    style={styles.avatar} 
+                  <Image
+                    source={{ uri: 'https://picsum.photos/seed/sarah/100/100' }}
+                    style={styles.avatar}
+                    contentFit="cover"
+                    transition={200}
                   />
                 ) : (
                   <View style={styles.botAvatar}>

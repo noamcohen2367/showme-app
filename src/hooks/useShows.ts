@@ -42,6 +42,7 @@ interface UseShowsResult {
   shows: Show[];
   loading: boolean;
   error: string | null;
+  isUsingFallback: boolean;
   refetch: () => Promise<void>;
 }
 
@@ -49,6 +50,7 @@ export function useShows(): UseShowsResult {
   const [shows, setShows] = useState<Show[]>(cachedShows || []);
   const [loading, setLoading] = useState(!cachedShows);
   const [error, setError] = useState<string | null>(null);
+  const [isUsingFallback, setIsUsingFallback] = useState(false);
 
   const fetchData = useCallback(async (forceRefresh = false) => {
     setLoading(true);
@@ -57,10 +59,12 @@ export function useShows(): UseShowsResult {
     try {
       const data = await getShows(forceRefresh);
       setShows(data);
+      setIsUsingFallback(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load shows');
       // Still show mock data on error
       setShows(mockShows);
+      setIsUsingFallback(true);
     } finally {
       setLoading(false);
     }
@@ -75,7 +79,7 @@ export function useShows(): UseShowsResult {
     await fetchData(true);
   }, [fetchData]);
 
-  return { shows, loading, error, refetch };
+  return { shows, loading, error, isUsingFallback, refetch };
 }
 
 interface UseShowResult {
