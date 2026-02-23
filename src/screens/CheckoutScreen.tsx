@@ -59,7 +59,7 @@ export default function CheckoutScreen() {
   const finalTotal = totalPrice + ticketProtectCost + serviceFee - promoDiscount;
 
   const handleApplyPromo = () => {
-    if (promoCode.toUpperCase() === 'SHOWME20') {
+    if (promoCode.toUpperCase() === 'SHOWMI20') {
       setPromoApplied(true);
       Alert.alert(t('checkout.promoApplied'), t('checkout.promoSuccess'));
     } else {

@@ -29,31 +29,33 @@ interface ShowCardProps {
   onPress: () => void;
   size?: 'large' | 'small';
   showTheater?: boolean;
+  fullWidth?: boolean;
 }
 
-export default function ShowCard({ 
-  show, 
-  onPress, 
+export default function ShowCard({
+  show,
+  onPress,
   size = 'large',
   showTheater = true,
+  fullWidth = false,
 }: ShowCardProps) {
   const { t, i18n } = useTranslation();
   const isHebrew = i18n.language === 'he';
   const isRussian = i18n.language === 'ru';
-  
+
   const theater = getTheaterById(show.theaterId);
-  
+
   const title = isHebrew ? show.titleHe : isRussian ? show.titleRu : show.title;
-  const theaterName = theater 
+  const theaterName = theater
     ? (isHebrew ? theater.nameHe : isRussian ? theater.nameRu : theater.name)
     : '';
 
-  const cardWidth = size === 'large' ? CARD_WIDTH : CARD_WIDTH_SMALL;
-  const imageHeight = size === 'large' ? 180 : 130;
+  const cardWidth = fullWidth ? '100%' : size === 'large' ? CARD_WIDTH : CARD_WIDTH_SMALL;
+  const imageHeight = size === 'large' || fullWidth ? 200 : 130;
 
   return (
-    <TouchableOpacity 
-      style={[styles.container, { width: cardWidth }]} 
+    <TouchableOpacity
+      style={[styles.container, { width: cardWidth }]}
       onPress={onPress}
       activeOpacity={0.9}
     >
@@ -66,20 +68,20 @@ export default function ShowCard({
           transition={300}
           recyclingKey={show.id}
         />
-        
+
         {/* Gradient overlay */}
         <LinearGradient
           colors={['transparent', 'rgba(10, 10, 15, 0.8)']}
           style={styles.imageGradient}
         />
-        
+
         {/* Badges */}
         {show.badges && show.badges.length > 0 && (
           <View style={styles.badgeContainer}>
             <Badge type={show.badges[0]} />
           </View>
         )}
-        
+
         {/* Last Minute Deal Indicator */}
         {show.availableDates?.some(d => d.times?.some(t => t.isLastMinuteDeal)) && (
           <View style={styles.lastMinuteBadge}>
@@ -100,13 +102,13 @@ export default function ShowCard({
         <Text style={styles.title} numberOfLines={2}>
           {title}
         </Text>
-        
+
         {showTheater && theaterName && (
           <View style={styles.theaterRow}>
-            <Ionicons 
-              name="location-outline" 
-              size={12} 
-              color={colors.neutral.textTertiary} 
+            <Ionicons
+              name="location-outline"
+              size={12}
+              color={colors.neutral.textTertiary}
             />
             <Text style={styles.theaterName} numberOfLines={1}>
               {theaterName}

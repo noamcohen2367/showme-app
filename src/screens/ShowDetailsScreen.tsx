@@ -139,7 +139,7 @@ export default function ShowDetailsScreen() {
         ]}
         onPress={() => navigation.goBack()}
       >
-        <Ionicons name="arrow-back" size={24} color={colors.neutral.white} />
+        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
       </TouchableOpacity>
 
       {/* Share & Wishlist Buttons */}
@@ -150,7 +150,7 @@ export default function ShowDetailsScreen() {
           <Ionicons
             name="share-outline"
             size={24}
-            color={colors.neutral.white}
+            color="#FFFFFF"
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -160,7 +160,7 @@ export default function ShowDetailsScreen() {
           <Ionicons
             name={isWishlisted ? 'heart' : 'heart-outline'}
             size={24}
-            color={isWishlisted ? colors.secondary.main : colors.neutral.white}
+            color={isWishlisted ? colors.secondary.main : '#FFFFFF'}
           />
         </TouchableOpacity>
       </View>
@@ -185,7 +185,7 @@ export default function ShowDetailsScreen() {
             colors={[
               'transparent',
               'rgba(10, 10, 15, 0.6)',
-              colors.neutral.background,
+              colors.dark[900],
             ]}
             style={styles.heroGradient}
           />
@@ -359,7 +359,7 @@ export default function ShowDetailsScreen() {
           </View>
           <TouchableOpacity style={styles.bookButton} onPress={handleBookNow}>
             <LinearGradient
-              colors={[colors.primary.main, colors.secondary.main]}
+              colors={[colors.primary.main, colors.primary.dark]}
               style={styles.bookButtonGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
@@ -368,7 +368,7 @@ export default function ShowDetailsScreen() {
               <Ionicons
                 name="arrow-forward"
                 size={20}
-                color={colors.neutral.white}
+                color="#FFFFFF"
               />
             </LinearGradient>
           </TouchableOpacity>
@@ -381,13 +381,13 @@ export default function ShowDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: colors.dark[900],
   },
   errorContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.neutral.background,
+    backgroundColor: colors.dark[900],
   },
   errorText: {
     ...typography.bodyLarge,
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     ...typography.labelLarge,
-    color: colors.neutral.white,
+    color: '#FFFFFF',
   },
   animatedHeader: {
     position: 'absolute',
@@ -636,6 +636,6 @@ const styles = StyleSheet.create({
   },
   bookButtonText: {
     ...typography.labelLarge,
-    color: colors.neutral.white,
+    color: '#FFFFFF',
   },
 });

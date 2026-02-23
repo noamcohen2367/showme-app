@@ -1,275 +1,308 @@
 // ============================================
 // ShowME App - Theme Configuration
 // ============================================
-// A dark, cinematic theater theme with aurora
-// purple/magenta glows and minimalist aesthetic
 
 import { Platform, TextStyle } from 'react-native';
 
 // ============================================
-// Color Palette - Dark Aurora Theme
+// Brand Constants (never change)
+// ============================================
+
+export const brand = {
+  blue:   '#2F7BFF',
+  purple: '#7C3AED',
+  teal:   '#2AD3C2',
+  glow:   '#A78BFA',
+};
+
+// ============================================
+// Theme Type
+// ============================================
+
+export interface Theme {
+  background: {
+    primary:   string;
+    secondary: string;
+    tertiary:  string;
+  };
+  surface: {
+    glass:    string;
+    card:     string;
+    elevated: string;
+  };
+  text: {
+    primary:   string;
+    secondary: string;
+    tertiary:  string;
+    inverse:   string;
+  };
+  border: {
+    subtle: string;
+    strong: string;
+  };
+  divider: string;
+  accent: {
+    primary:   string;
+    secondary: string;
+    pressed:   string;
+    disabled:  string;
+  };
+  state: {
+    success: string;
+    warning: string;
+    danger:  string;
+    info:    string;
+  };
+  effects: {
+    shadowColor:  string;
+    glowPrimary:  string;
+    glowSoft:     string;
+    glowLogo:     string;
+    glassOverlay: string;
+  };
+  gradients: {
+    hero:   [string, string, string];
+    accent: [string, string];
+  };
+}
+
+// ============================================
+// Light Tech Theme
+// ============================================
+
+export const lightTheme: Theme = {
+  background: {
+    primary:   '#F7F8FA',
+    secondary: '#FFFFFF',
+    tertiary:  '#EEF1F6',
+  },
+  surface: {
+    glass:    'rgba(255,255,255,0.70)',
+    card:     '#FFFFFF',
+    elevated: 'rgba(255,255,255,0.88)',
+  },
+  text: {
+    primary:   '#0B1220',
+    secondary: '#4B5565',
+    tertiary:  '#7A8598',
+    inverse:   '#FFFFFF',
+  },
+  border: {
+    subtle: 'rgba(15,23,42,0.10)',
+    strong: 'rgba(15,23,42,0.18)',
+  },
+  divider: 'rgba(15,23,42,0.08)',
+  accent: {
+    primary:   '#2F7BFF',
+    secondary: '#7C3AED',
+    pressed:   '#2463D6',
+    disabled:  '#A9C7FF',
+  },
+  state: {
+    success: '#22C55E',
+    warning: '#F59E0B',
+    danger:  '#EF4444',
+    info:    '#2F7BFF',
+  },
+  effects: {
+    shadowColor:  '#000000',
+    glowPrimary:  'rgba(47,123,255,0.24)',
+    glowSoft:     'rgba(124,58,237,0.18)',
+    glowLogo:     'rgba(167,139,250,0.28)',
+    glassOverlay: 'rgba(255,255,255,0.55)',
+  },
+  gradients: {
+    hero:   ['#FFFFFF', '#EEF1FF', '#F3EEFF'],
+    accent: ['#2F7BFF', '#7C3AED'],
+  },
+};
+
+// ============================================
+// Dark Premium Theme
+// ============================================
+
+export const darkTheme: Theme = {
+  background: {
+    primary:   '#070B14',
+    secondary: '#0B1220',
+    tertiary:  '#0F1A2D',
+  },
+  surface: {
+    glass:    'rgba(15,26,45,0.62)',
+    card:     '#0C1628',
+    elevated: 'rgba(16,31,56,0.78)',
+  },
+  text: {
+    primary:   '#EAF0FF',
+    secondary: '#B7C2DA',
+    tertiary:  '#7F8AA6',
+    inverse:   '#0B1220',
+  },
+  border: {
+    subtle: 'rgba(234,240,255,0.10)',
+    strong: 'rgba(234,240,255,0.16)',
+  },
+  divider: 'rgba(234,240,255,0.08)',
+  accent: {
+    primary:   '#4D95FF',
+    secondary: '#8B5CF6',
+    pressed:   '#2F7BFF',
+    disabled:  'rgba(77,149,255,0.35)',
+  },
+  state: {
+    success: '#34D399',
+    warning: '#FBBF24',
+    danger:  '#FB7185',
+    info:    '#4D95FF',
+  },
+  effects: {
+    shadowColor:  '#000000',
+    glowPrimary:  'rgba(77,149,255,0.30)',
+    glowSoft:     'rgba(139,92,246,0.22)',
+    glowLogo:     'rgba(167,139,250,0.34)',
+    glassOverlay: 'rgba(15,26,45,0.55)',
+  },
+  gradients: {
+    hero:   ['#070B14', '#0B1220', '#1B1140'],
+    accent: ['#4D95FF', '#8B5CF6'],
+  },
+};
+
+// ============================================
+// Legacy color palette (kept for backward compat)
+// Screens still importing `colors` continue to work.
+// ThemeContext will eventually replace these.
 // ============================================
 
 export const colors = {
-  // Primary colors - Magenta/Purple aurora
   primary: {
-    main: '#A855F7',       // Vibrant purple
-    light: '#C084FC',      // Light purple
-    dark: '#7C3AED',       // Deep purple
-    contrast: '#FFFFFF',   // Text on primary
-    glow: 'rgba(168, 85, 247, 0.4)', // Glow effect
+    main:     '#A855F7',
+    light:    '#C084FC',
+    dark:     '#7C3AED',
+    contrast: '#FFFFFF',
+    glow:     'rgba(168, 85, 247, 0.4)',
   },
-  
-  // Secondary colors - Pink/Magenta accent
   secondary: {
-    main: '#EC4899',       // Hot pink/magenta
-    light: '#F472B6',      // Light pink
-    dark: '#DB2777',       // Deep pink
-    contrast: '#FFFFFF',   // Text on secondary
-    glow: 'rgba(236, 72, 153, 0.4)', // Glow effect
+    main:     '#EC4899',
+    light:    '#F472B6',
+    dark:     '#DB2777',
+    contrast: '#FFFFFF',
+    glow:     'rgba(236, 72, 153, 0.4)',
   },
-  
-  // Accent - Cyan/Teal for highlights
   accent: {
-    main: '#06B6D4',       // Cyan
-    light: '#22D3EE',      // Light cyan
-    dark: '#0891B2',       // Deep cyan
-    glow: 'rgba(6, 182, 212, 0.4)',
+    main:  '#06B6D4',
+    light: '#22D3EE',
+    dark:  '#0891B2',
+    glow:  'rgba(6, 182, 212, 0.4)',
   },
-  
-  // Dark backgrounds
   dark: {
-    900: '#0A0A0F',        // Deepest black
-    800: '#12121A',        // Main background
-    700: '#1A1A25',        // Card background
-    600: '#242432',        // Elevated surface
-    500: '#2E2E3D',        // Border/divider
-    400: '#3D3D4F',        // Subtle highlight
+    900: '#0A0A0F',
+    800: '#12121A',
+    700: '#1A1A25',
+    600: '#242432',
+    500: '#2E2E3D',
+    400: '#3D3D4F',
   },
-  
-  // Neutral colors
   neutral: {
-    white: '#FFFFFF',
-    background: '#0A0A0F',     // Deep black
-    surface: '#12121A',        // Card backgrounds
-    surfaceAlt: '#1A1A25',     // Alternative surface
-    border: '#2E2E3D',         // Borders
-    borderLight: '#3D3D4F',    // Light borders
-    text: '#FFFFFF',           // Primary text
-    textSecondary: '#A1A1AA',  // Secondary text (zinc-400)
-    textTertiary: '#71717A',   // Tertiary text (zinc-500)
-    disabled: '#52525B',       // Disabled state
-    placeholder: '#71717A',    // Placeholder text
+    white:          '#FFFFFF',
+    background:     '#0A0A0F',
+    surface:        '#12121A',
+    surfaceAlt:     '#1A1A25',
+    border:         '#2E2E3D',
+    borderLight:    '#3D3D4F',
+    text:           '#FFFFFF',
+    textSecondary:  '#A1A1AA',
+    textTertiary:   '#71717A',
+    disabled:       '#52525B',
+    placeholder:    '#71717A',
   },
-  
-  // Semantic colors
   semantic: {
-    success: '#10B981',        // Emerald
+    success:      '#10B981',
     successLight: 'rgba(16, 185, 129, 0.15)',
-    error: '#EF4444',          // Red
-    errorLight: 'rgba(239, 68, 68, 0.15)',
-    warning: '#F59E0B',        // Amber
+    error:        '#EF4444',
+    errorLight:   'rgba(239, 68, 68, 0.15)',
+    warning:      '#F59E0B',
     warningLight: 'rgba(245, 158, 11, 0.15)',
-    info: '#3B82F6',           // Blue
-    infoLight: 'rgba(59, 130, 246, 0.15)',
+    info:         '#3B82F6',
+    infoLight:    'rgba(59, 130, 246, 0.15)',
   },
-  
-  // Seat zone colors (for interactive map)
   zones: {
-    premium: '#F59E0B',    // Gold/Amber - best seats
-    a: '#A855F7',          // Purple - zone A
-    b: '#06B6D4',          // Cyan - zone B
-    c: '#3B82F6',          // Blue - zone C
-    economy: '#6B7280',    // Gray - economy
-    occupied: '#3D3D4F',   // Dark gray - taken
-    selected: '#10B981',   // Green - selected
+    premium:  '#F59E0B',
+    a:        '#A855F7',
+    b:        '#06B6D4',
+    c:        '#3B82F6',
+    economy:  '#6B7280',
+    occupied: '#3D3D4F',
+    selected: '#10B981',
   },
-  
-  // Badge colors
   badges: {
-    popular: '#F59E0B',        // Amber
-    sellingFast: '#EF4444',    // Red
-    specialPrice: '#10B981',   // Green
-    lastChance: '#F97316',     // Orange
-    new: '#A855F7',            // Purple
+    popular:      '#F59E0B',
+    sellingFast:  '#EF4444',
+    specialPrice: '#10B981',
+    lastChance:   '#F97316',
+    new:          '#A855F7',
   },
-  
-  // User level colors
   levels: {
     bronze: '#CD7F32',
     silver: '#9CA3AF',
-    gold: '#F59E0B',
+    gold:   '#F59E0B',
   },
-  
-  // Gradient definitions (for reference in components)
   gradients: {
-    aurora: ['#A855F7', '#EC4899', '#06B6D4'],
-    purple: ['#7C3AED', '#A855F7'],
-    pink: ['#DB2777', '#EC4899'],
-    dark: ['#0A0A0F', '#12121A', '#1A1A25'],
+    aurora: ['#A855F7', '#EC4899', '#06B6D4'] as [string, string, string],
+    purple: ['#7C3AED', '#A855F7'] as [string, string],
+    pink:   ['#DB2777', '#EC4899'] as [string, string],
+    dark:   ['#0A0A0F', '#12121A', '#1A1A25'] as [string, string, string],
   },
 };
 
 // ============================================
-// Typography
+// Typography (theme-independent)
 // ============================================
 
-const fontFamily = Platform.select({
-  ios: {
-    regular: 'System',
-    medium: 'System',
-    semibold: 'System',
-    bold: 'System',
-  },
-  android: {
-    regular: 'Roboto',
-    medium: 'Roboto-Medium',
-    semibold: 'Roboto-Medium',
-    bold: 'Roboto-Bold',
-  },
-  default: {
-    regular: 'System',
-    medium: 'System',
-    semibold: 'System',
-    bold: 'System',
-  },
+const _fontFamily = Platform.select({
+  ios:     { regular: 'System', medium: 'System', semibold: 'System', bold: 'System' },
+  android: { regular: 'Roboto', medium: 'Roboto-Medium', semibold: 'Roboto-Medium', bold: 'Roboto-Bold' },
+  default: { regular: 'System', medium: 'System', semibold: 'System', bold: 'System' },
 });
 
 export const typography = {
-  // Display - for hero titles
-  displayLarge: {
-    fontSize: 40,
-    fontWeight: '700' as const,
-    lineHeight: 48,
-    letterSpacing: -1,
-  } as TextStyle,
-  
-  displayMedium: {
-    fontSize: 32,
-    fontWeight: '700' as const,
-    lineHeight: 40,
-    letterSpacing: -0.5,
-  } as TextStyle,
-  
-  displaySmall: {
-    fontSize: 28,
-    fontWeight: '600' as const,
-    lineHeight: 36,
-    letterSpacing: -0.5,
-  } as TextStyle,
-  
-  // Headings
-  headingLarge: {
-    fontSize: 24,
-    fontWeight: '600' as const,
-    lineHeight: 32,
-    letterSpacing: -0.3,
-  } as TextStyle,
-  
-  headingMedium: {
-    fontSize: 20,
-    fontWeight: '600' as const,
-    lineHeight: 28,
-    letterSpacing: -0.2,
-  } as TextStyle,
-  
-  headingSmall: {
-    fontSize: 18,
-    fontWeight: '600' as const,
-    lineHeight: 24,
-  } as TextStyle,
-  
-  // Body text
-  bodyLarge: {
-    fontSize: 16,
-    fontWeight: '400' as const,
-    lineHeight: 24,
-  } as TextStyle,
-  
-  bodyMedium: {
-    fontSize: 14,
-    fontWeight: '400' as const,
-    lineHeight: 20,
-  } as TextStyle,
-  
-  bodySmall: {
-    fontSize: 12,
-    fontWeight: '400' as const,
-    lineHeight: 16,
-  } as TextStyle,
-  
-  // Labels
-  labelLarge: {
-    fontSize: 14,
-    fontWeight: '600' as const,
-    lineHeight: 20,
-    letterSpacing: 0.1,
-  } as TextStyle,
-  
-  labelMedium: {
-    fontSize: 12,
-    fontWeight: '600' as const,
-    lineHeight: 16,
-    letterSpacing: 0.1,
-  } as TextStyle,
-  
-  labelSmall: {
-    fontSize: 10,
-    fontWeight: '600' as const,
-    lineHeight: 14,
-    letterSpacing: 0.2,
-  } as TextStyle,
-  
-  // Special
-  price: {
-    fontSize: 22,
-    fontWeight: '700' as const,
-    lineHeight: 28,
-  } as TextStyle,
-  
-  caption: {
-    fontSize: 11,
-    fontWeight: '400' as const,
-    lineHeight: 14,
-    letterSpacing: 0.2,
-  } as TextStyle,
+  displayLarge:  { fontSize: 40, fontWeight: '700' as const, lineHeight: 48, letterSpacing: -1 } as TextStyle,
+  displayMedium: { fontSize: 32, fontWeight: '700' as const, lineHeight: 40, letterSpacing: -0.5 } as TextStyle,
+  displaySmall:  { fontSize: 28, fontWeight: '600' as const, lineHeight: 36, letterSpacing: -0.5 } as TextStyle,
+  headingLarge:  { fontSize: 24, fontWeight: '600' as const, lineHeight: 32, letterSpacing: -0.3 } as TextStyle,
+  headingMedium: { fontSize: 20, fontWeight: '600' as const, lineHeight: 28, letterSpacing: -0.2 } as TextStyle,
+  headingSmall:  { fontSize: 18, fontWeight: '600' as const, lineHeight: 24 } as TextStyle,
+  bodyLarge:     { fontSize: 16, fontWeight: '400' as const, lineHeight: 24 } as TextStyle,
+  bodyMedium:    { fontSize: 14, fontWeight: '400' as const, lineHeight: 20 } as TextStyle,
+  bodySmall:     { fontSize: 12, fontWeight: '400' as const, lineHeight: 16 } as TextStyle,
+  labelLarge:    { fontSize: 14, fontWeight: '600' as const, lineHeight: 20, letterSpacing: 0.1 } as TextStyle,
+  labelMedium:   { fontSize: 12, fontWeight: '600' as const, lineHeight: 16, letterSpacing: 0.1 } as TextStyle,
+  labelSmall:    { fontSize: 10, fontWeight: '600' as const, lineHeight: 14, letterSpacing: 0.2 } as TextStyle,
+  price:         { fontSize: 22, fontWeight: '700' as const, lineHeight: 28 } as TextStyle,
+  caption:       { fontSize: 11, fontWeight: '400' as const, lineHeight: 14, letterSpacing: 0.2 } as TextStyle,
 };
 
 // ============================================
-// Spacing
+// Spacing (theme-independent)
 // ============================================
 
 export const spacing = {
-  xxs: 2,
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 24,
-  xxl: 32,
-  xxxl: 48,
+  xxs: 2, xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48,
 };
 
 // ============================================
-// Border Radius
+// Border Radius (theme-independent)
 // ============================================
 
 export const borderRadius = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  xxl: 24,
-  full: 9999,
+  xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, full: 9999,
 };
 
 // ============================================
-// Shadows - Glow Effects
+// Shadows (theme-independent structure)
 // ============================================
 
 export const shadows = {
-  // Subtle glow
   glow: {
     shadowColor: colors.primary.main,
     shadowOffset: { width: 0, height: 0 },
@@ -277,8 +310,6 @@ export const shadows = {
     shadowRadius: 12,
     elevation: 8,
   },
-  
-  // Strong glow
   glowStrong: {
     shadowColor: colors.primary.main,
     shadowOffset: { width: 0, height: 0 },
@@ -286,8 +317,6 @@ export const shadows = {
     shadowRadius: 20,
     elevation: 12,
   },
-  
-  // Pink glow
   glowPink: {
     shadowColor: colors.secondary.main,
     shadowOffset: { width: 0, height: 0 },
@@ -295,8 +324,6 @@ export const shadows = {
     shadowRadius: 16,
     elevation: 10,
   },
-  
-  // Card shadow (subtle)
   card: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -304,8 +331,6 @@ export const shadows = {
     shadowRadius: 8,
     elevation: 4,
   },
-  
-  // Elevated shadow
   elevated: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
@@ -313,8 +338,6 @@ export const shadows = {
     shadowRadius: 16,
     elevation: 8,
   },
-  
-  // Bottom navigation shadow
   bottomNav: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
@@ -325,63 +348,31 @@ export const shadows = {
 };
 
 // ============================================
-// Animation Durations
+// Animations (theme-independent)
 // ============================================
 
 export const animations = {
-  fast: 150,
-  normal: 300,
-  slow: 500,
-  verySlow: 800,
+  fast: 150, normal: 300, slow: 500, verySlow: 800,
 };
 
 // ============================================
-// Component-specific tokens
+// Component tokens (theme-independent)
 // ============================================
 
 export const components = {
   button: {
-    height: {
-      small: 36,
-      medium: 44,
-      large: 52,
-    },
+    height: { small: 36, medium: 44, large: 52 },
     borderRadius: borderRadius.md,
   },
-  
-  input: {
-    height: 48,
-    borderRadius: borderRadius.md,
-    borderWidth: 1,
-  },
-  
-  card: {
-    borderRadius: borderRadius.lg,
-    padding: spacing.lg,
-  },
-  
-  bottomTab: {
-    height: 80,
-    iconSize: 24,
-  },
-  
-  header: {
-    height: 56,
-  },
+  input: { height: 48, borderRadius: borderRadius.md, borderWidth: 1 },
+  card: { borderRadius: borderRadius.lg, padding: spacing.lg },
+  bottomTab: { height: 80, iconSize: 24 },
+  header: { height: 56 },
 };
 
 // ============================================
-// Theme Export
+// Default export (legacy)
 // ============================================
 
-const theme = {
-  colors,
-  typography,
-  spacing,
-  borderRadius,
-  shadows,
-  animations,
-  components,
-};
-
+const theme = { colors, typography, spacing, borderRadius, shadows, animations, components };
 export default theme;

@@ -19,8 +19,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
+import { useTheme, ThemeMode } from '../theme/ThemeContext';
 
-type ThemeMode = 'dark' | 'light' | 'system';
 type AccentColor = 'purple' | 'blue' | 'green' | 'orange' | 'pink';
 
 const ACCENT_COLORS: { id: AccentColor; name: string; color: string; gradient: [string, string] }[] = [
@@ -36,7 +36,7 @@ export default function AppearanceScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
-  const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
+  const { mode: themeMode, setMode } = useTheme();
   const [accentColor, setAccentColor] = useState<AccentColor>('purple');
   const [reduceMotion, setReduceMotion] = useState(false);
   const [hapticFeedback, setHapticFeedback] = useState(true);
@@ -45,7 +45,7 @@ export default function AppearanceScreen() {
   const renderThemeOption = (mode: ThemeMode, icon: keyof typeof Ionicons.glyphMap, label: string) => (
     <TouchableOpacity
       style={[styles.themeOption, themeMode === mode && styles.themeOptionActive]}
-      onPress={() => setThemeMode(mode)}
+      onPress={() => setMode(mode)}
     >
       <View style={[styles.themePreview, mode === 'light' && styles.themePreviewLight]}>
         <View style={[styles.themePreviewHeader, mode === 'light' && styles.themePreviewHeaderLight]} />
@@ -230,7 +230,7 @@ export default function AppearanceScreen() {
         </View>
 
         {/* Reset */}
-        <TouchableOpacity style={styles.resetButton}>
+        <TouchableOpacity style={styles.resetButton} onPress={() => { setMode('dark'); setAccentColor('purple'); }}>
           <Ionicons name="refresh" size={20} color={colors.neutral.textSecondary} />
           <Text style={styles.resetButtonText}>Reset to Defaults</Text>
         </TouchableOpacity>

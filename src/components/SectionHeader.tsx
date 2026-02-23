@@ -15,8 +15,8 @@ interface SectionHeaderProps {
   showSeeAll?: boolean;
 }
 
-export default function SectionHeader({ 
-  title, 
+export default function SectionHeader({
+  title,
   onSeeAll,
   showSeeAll = true,
 }: SectionHeaderProps) {
@@ -28,10 +28,10 @@ export default function SectionHeader({
       {showSeeAll && onSeeAll && (
         <TouchableOpacity onPress={onSeeAll} style={styles.seeAllButton}>
           <Text style={styles.seeAllText}>{t('common.seeAll')}</Text>
-          <Ionicons 
-            name="chevron-forward" 
-            size={16} 
-            color={colors.primary.main} 
+          <Ionicons
+            name="chevron-forward"
+            size={16}
+            color={colors.primary.main}
           />
         </TouchableOpacity>
       )}

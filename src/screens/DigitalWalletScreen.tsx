@@ -112,7 +112,7 @@ export default function DigitalWalletScreen() {
                 <Ionicons name="ticket" size={24} color={colors.primary.main} />
               </View>
               <View style={styles.passHeaderText}>
-                <Text style={styles.passAppName}>ShowME</Text>
+                <Text style={styles.passAppName}>ShowMI</Text>
                 <Text style={styles.passType}>Event Ticket</Text>
               </View>
               {isIOS ? (

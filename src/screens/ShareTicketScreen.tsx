@@ -62,8 +62,8 @@ export default function ShareTicketScreen() {
     try {
       await Share.share({
         title: `Ticket for ${MOCK_TICKET.showTitle}`,
-        message: `I'm sharing my ticket for ${MOCK_TICKET.showTitle} on ${MOCK_TICKET.date} at ${MOCK_TICKET.time}. Seat: ${MOCK_TICKET.seat}. Download ShowME app to view: https://showme.app/ticket/${MOCK_TICKET.id}`,
-        url: `https://showme.app/ticket/${MOCK_TICKET.id}`,
+        message: `I'm sharing my ticket for ${MOCK_TICKET.showTitle} on ${MOCK_TICKET.date} at ${MOCK_TICKET.time}. Seat: ${MOCK_TICKET.seat}. Download ShowMI app to view: https://showmi.app/ticket/${MOCK_TICKET.id}`,
+        url: `https://showmi.app/ticket/${MOCK_TICKET.id}`,
       });
     } catch (error) {
       console.log('Share error:', error);
@@ -131,7 +131,7 @@ export default function ShareTicketScreen() {
     <View style={styles.shareContent}>
       <View style={styles.linkContainer}>
         <Text style={styles.linkText} numberOfLines={1}>
-          https://showme.app/ticket/{MOCK_TICKET.id}
+          https://showmi.app/ticket/{MOCK_TICKET.id}
         </Text>
         <TouchableOpacity style={styles.copyButton}>
           <Ionicons name="copy-outline" size={20} color={colors.primary.main} />

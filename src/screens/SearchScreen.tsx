@@ -49,20 +49,20 @@ const CATEGORIES: { id: ShowCategory; emoji: string; gradient: [string, string] 
 // Fuzzy search function
 function fuzzySearch(query: string, showsList: Show[]): Show[] {
   if (!query.trim()) return [];
-  
+
   const lowerQuery = query.toLowerCase().trim();
-  
+
   const scored = showsList.map(show => {
     let score = 0;
-    
+
     if (show.title.toLowerCase().includes(lowerQuery)) score += 100;
     if (show.titleHe.includes(query)) score += 100;
     if (show.titleRu.toLowerCase().includes(lowerQuery)) score += 100;
-    
+
     const queryChars = lowerQuery.split('');
     let titleIndex = 0;
     const titleLower = show.title.toLowerCase();
-    
+
     for (const char of queryChars) {
       const foundIndex = titleLower.indexOf(char, titleIndex);
       if (foundIndex !== -1) {
@@ -70,13 +70,13 @@ function fuzzySearch(query: string, showsList: Show[]): Show[] {
         titleIndex = foundIndex + 1;
       }
     }
-    
+
     if (show.description.toLowerCase().includes(lowerQuery)) score += 20;
     if (show.descriptionHe.includes(query)) score += 20;
-    
+
     return { show, score };
   });
-  
+
   return scored
     .filter(item => item.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -130,8 +130,8 @@ export default function SearchScreen() {
 
   const renderShowItem = ({ item }: { item: Show }) => (
     <View style={styles.searchResultItem}>
-      <ShowCard 
-        show={item} 
+      <ShowCard
+        show={item}
         onPress={() => navigateToShow(item.id)}
         size="small"
       />
@@ -142,18 +142,18 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
-      
+      <StatusBar barStyle="light-content" backgroundColor={colors.dark[900]} />
+
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
         <Text style={styles.title}>{t('search.title')}</Text>
-        
+
         {/* Search Bar */}
         <View style={[styles.searchContainer, isSearchFocused && styles.searchContainerFocused]}>
-          <Ionicons 
-            name="search" 
-            size={20} 
-            color={isSearchFocused ? colors.primary.main : colors.neutral.textTertiary} 
+          <Ionicons
+            name="search"
+            size={20}
+            color={isSearchFocused ? colors.primary.main : colors.neutral.textTertiary}
           />
           <TextInput
             style={styles.searchInput}
@@ -223,13 +223,13 @@ export default function SearchScreen() {
         />
       ) : (
         // Browse Categories View
-        <ScrollView 
+        <ScrollView
           style={styles.content}
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
         >
           <Text style={styles.sectionTitle}>{t('search.browseCategories')}</Text>
-          
+
           <View style={styles.categoriesGrid}>
             {CATEGORIES.map((category) => (
               <TouchableOpacity
@@ -271,7 +271,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: colors.dark[900],
   },
   header: {
     paddingHorizontal: spacing.lg,

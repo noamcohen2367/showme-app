@@ -5,7 +5,7 @@
 export default {
   // Common
   common: {
-    appName: 'ShowME',
+    appName: 'ShowMI',
     loading: 'טוען...',
     error: 'משהו השתבש',
     retry: 'נסה שוב',

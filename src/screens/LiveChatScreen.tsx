@@ -64,7 +64,7 @@ export default function LiveChatScreen() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! 👋 I'm ShowME's support assistant. How can I help you today?",
+      text: "Hi! 👋 I'm ShowMI's support assistant. How can I help you today?",
       sender: 'bot',
       timestamp: new Date(),
     },

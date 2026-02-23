@@ -326,7 +326,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* App Version */}
-        <Text style={styles.versionText}>ShowME v1.0.0</Text>
+        <Text style={styles.versionText}>ShowMI v1.0.0</Text>
 
         <View style={{ height: 100 }} />
       </ScrollView>

@@ -5,7 +5,7 @@
 export default {
   // Common
   common: {
-    appName: 'ShowME',
+    appName: 'ShowMI',
     loading: 'Загрузка...',
     error: 'Что-то пошло не так',
     retry: 'Попробовать снова',
@@ -220,7 +220,7 @@ export default {
     writeReview: 'Написать отзыв (опционально)',
     submitRating: 'Отправить',
     noThanks: 'Нет, спасибо',
-    shareCaption: 'Иду на {{show}} через {{days}} дней! 🎭\nСоздано в ShowME',
+    shareCaption: 'Иду на {{show}} через {{days}} дней! 🎭\nСоздано в ShowMI',
   },
   
   // My Subscriptions

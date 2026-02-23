@@ -51,6 +51,7 @@ import LiveChatScreen from '../screens/LiveChatScreen';
 // Stage 19 screens - Hall Library
 import HallLibraryScreen from '../screens/HallLibraryScreen';
 import HallDetailsScreen from '../screens/HallDetailsScreen';
+import ShowListScreen from '../screens/ShowListScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -238,6 +239,11 @@ export default function RootNavigator() {
       <Stack.Screen
         name="HallDetails"
         component={HallDetailsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ShowList"
+        component={ShowListScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

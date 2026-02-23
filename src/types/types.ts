@@ -316,7 +316,18 @@ export type RootStackParamList = {
   // Stage 19 screens - Hall Library
   HallLibrary: undefined;
   HallDetails: { hallId: string };
+  // Show List
+  ShowList: { title: string; section: ShowListSection };
 };
+
+export type ShowListSection =
+  | 'top'
+  | 'weekend'
+  | 'deals'
+  | 'new'
+  | 'recommended'
+  | 'coming_soon'
+  | 'trending';
 
 export type MainTabParamList = {
   Home: undefined;

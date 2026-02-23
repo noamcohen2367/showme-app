@@ -169,7 +169,7 @@ export default function TicketDetailScreen() {
                 {/* Show Info */}
                 <View style={styles.ticketHeader}>
                   <View style={styles.showMeLogo}>
-                    <Text style={styles.logoText}>ShowME</Text>
+                    <Text style={styles.logoText}>ShowMI</Text>
                   </View>
                   <View style={styles.ticketType}>
                     <Text style={styles.ticketTypeText}>

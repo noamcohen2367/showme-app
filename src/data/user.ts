@@ -16,7 +16,7 @@ export const currentUser: User = {
   email: 'noamcohen2367@gmail.com',
   phone: '+972-54-345-9191',
   fullName: 'Noam Cohen',
-  profileImageUrl: 'https://picsum.photos/seed/user1/200/200',
+  profileImageUrl: '',
   level: 'silver',
   totalPurchases: 12,
   preferredLocation: 'tel_aviv',
@@ -318,7 +318,7 @@ export const getUpcomingPerformances = (): Order[] => {
   const today = new Date().toISOString().split('T')[0];
   return userOrders.filter(
     (order) =>
-      order.status === 'confirmed' && order.tickets[0]?.showDate >= today
+      order.status === 'confirmed' && order.tickets[0]?.showDate >= today,
   );
 };
 
@@ -326,7 +326,7 @@ export const getPastPerformances = (): Order[] => {
   const today = new Date().toISOString().split('T')[0];
   return userOrders.filter(
     (order) =>
-      order.status === 'confirmed' && order.tickets[0]?.showDate < today
+      order.status === 'confirmed' && order.tickets[0]?.showDate < today,
   );
 };
 
@@ -335,10 +335,10 @@ export const isShowInWatchlist = (showId: string): boolean => {
 };
 
 export const getSubscriptionByTheaterId = (
-  theaterId: string
+  theaterId: string,
 ): UserSubscription | undefined => {
   return userSubscriptions.find(
-    (sub) => sub.theaterId === theaterId && sub.status === 'active'
+    (sub) => sub.theaterId === theaterId && sub.status === 'active',
   );
 };
 
@@ -350,7 +350,7 @@ export const USER_LEVEL_THRESHOLDS = {
 };
 
 export const getNextLevel = (
-  currentLevel: string
+  currentLevel: string,
 ): { level: string; showsNeeded: number } | null => {
   const levels = ['bronze', 'silver', 'gold'];
   const currentIndex = levels.indexOf(currentLevel);

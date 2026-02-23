@@ -1,18 +1,17 @@
 // ============================================
-// ShowME App - Animated Splash Screen
+// ShowMI App - Animated Splash Screen
 // ============================================
 
 import React, { useEffect, useRef } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Animated,
   Dimensions,
   StatusBar,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
 
 import { colors, typography } from '../theme/theme';
 
@@ -25,12 +24,11 @@ interface SplashScreenProps {
 export default function SplashScreen({ onFinish }: SplashScreenProps) {
   const logoScale = useRef(new Animated.Value(0.3)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
-  const textOpacity = useRef(new Animated.Value(0)).current;
+  const wordmarkOpacity = useRef(new Animated.Value(0)).current;
   const taglineOpacity = useRef(new Animated.Value(0)).current;
   const glowOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Animation sequence
     Animated.sequence([
       // Fade in glow
       Animated.timing(glowOpacity, {
@@ -52,8 +50,8 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
           useNativeDriver: true,
         }),
       ]),
-      // Fade in text
-      Animated.timing(textOpacity, {
+      // Fade in wordmark
+      Animated.timing(wordmarkOpacity, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
@@ -73,37 +71,30 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={colors.neutral.background}
-      />
+      <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
 
-      {/* Aurora Background */}
+      {/* Background gradient */}
       <LinearGradient
-        colors={[
-          colors.neutral.background,
-          colors.dark[800],
-          colors.neutral.background,
-        ]}
+        colors={['#1A0A3D', '#0A0A0F', '#1A0A3D']}
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Animated Glow */}
+      {/* Purple glow */}
       <Animated.View style={[styles.glowContainer, { opacity: glowOpacity }]}>
         <LinearGradient
           colors={[
             'transparent',
-            'rgba(168, 85, 247, 0.09)',
-            'rgba(236, 72, 153, 0.01)',
+            'rgba(168, 85, 247, 0.15)',
+            'rgba(168, 85, 247, 0.05)',
             'transparent',
           ]}
           style={styles.glow}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 0, y: 0 }}
+          start={{ x: 0.5, y: 1 }}
+          end={{ x: 0.5, y: 0 }}
         />
       </Animated.View>
 
-      {/* Logo */}
+      {/* Logomark */}
       <Animated.View
         style={[
           styles.logoContainer,
@@ -113,27 +104,20 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
           },
         ]}
       >
-        <LinearGradient
-          colors={[colors.primary.main, colors.secondary.main]}
-          style={styles.logoGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="ticket" size={50} color={colors.neutral.white} />
-        </LinearGradient>
+        <Image
+          source={require('../../assets/icon.png')}
+          style={styles.logo}
+          contentFit="contain"
+        />
       </Animated.View>
 
-      {/* App Name */}
-      <Animated.View style={[styles.textContainer, { opacity: textOpacity }]}>
-        <Text style={styles.appName}>Show</Text>
-        <LinearGradient
-          colors={[colors.primary.main, colors.secondary.main]}
-          style={styles.meGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-        >
-          <Text style={styles.appNameHighlight}>ME</Text>
-        </LinearGradient>
+      {/* Wordmark */}
+      <Animated.View style={{ opacity: wordmarkOpacity }}>
+        <Image
+          source={require('../../assets/wordmark.png')}
+          style={styles.wordmark}
+          contentFit="contain"
+        />
       </Animated.View>
 
       {/* Tagline */}
@@ -149,50 +133,22 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
   );
 }
 
-// Loading dots animation
 function LoadingDots() {
   const dot1 = useRef(new Animated.Value(0.3)).current;
   const dot2 = useRef(new Animated.Value(0.3)).current;
   const dot3 = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
-    const animateDots = () => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(dot1, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot1, {
-            toValue: 0.3,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot2, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot2, {
-            toValue: 0.3,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot3, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot3, {
-            toValue: 0.3,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-    };
-    animateDots();
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(dot1, { toValue: 1, duration: 300, useNativeDriver: true }),
+        Animated.timing(dot1, { toValue: 0.3, duration: 300, useNativeDriver: true }),
+        Animated.timing(dot2, { toValue: 1, duration: 300, useNativeDriver: true }),
+        Animated.timing(dot2, { toValue: 0.3, duration: 300, useNativeDriver: true }),
+        Animated.timing(dot3, { toValue: 1, duration: 300, useNativeDriver: true }),
+        Animated.timing(dot3, { toValue: 0.3, duration: 300, useNativeDriver: true }),
+      ])
+    ).start();
   }, []);
 
   return (
@@ -214,48 +170,27 @@ const styles = StyleSheet.create({
   glowContainer: {
     position: 'absolute',
     width: SCREEN_WIDTH * 1.5,
-    height: SCREEN_HEIGHT * 0.6,
+    height: SCREEN_HEIGHT * 0.7,
   },
   glow: {
     flex: 1,
-    borderRadius: SCREEN_WIDTH,
   },
   logoContainer: {
-    marginBottom: 24,
-  },
-  logoGradient: {
-    width: 100,
-    height: 100,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 28,
     shadowColor: colors.primary.main,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 12,
   },
-  textContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  logo: {
+    width: 110,
+    height: 110,
+    borderRadius: 28,
   },
-  appName: {
-    fontSize: 42,
-    fontWeight: '700',
-    color: colors.neutral.white,
-    letterSpacing: -1,
-  },
-  meGradient: {
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 8,
-    marginLeft: 2,
-  },
-  appNameHighlight: {
-    fontSize: 42,
-    fontWeight: '800',
-    color: colors.neutral.white,
-    letterSpacing: -1,
+  wordmark: {
+    width: 160,
+    height: 42,
   },
   tagline: {
     ...typography.bodyMedium,

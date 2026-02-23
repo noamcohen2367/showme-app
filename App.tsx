@@ -17,6 +17,7 @@ import { RootNavigator } from './src/navigation/navigation';
 
 // Import theme
 import { colors } from './src/theme/theme';
+import { ThemeProvider } from './src/theme/ThemeContext';
 
 // Import splash screen
 import SplashScreen from './src/components/SplashScreen';
@@ -49,17 +50,19 @@ export default function App() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <StatusBar
-            barStyle="light-content"
-            backgroundColor={colors.neutral.background}
-          />
-          <RootNavigator />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <ThemeProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <StatusBar
+              barStyle="light-content"
+              backgroundColor={colors.neutral.background}
+            />
+            <RootNavigator />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </ThemeProvider>
   );
 }
 
