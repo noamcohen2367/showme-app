@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     color: colors.neutral.text,
     textAlign: 'right',
     flex: 1,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   orderValueMono: {
     ...typography.labelMedium,

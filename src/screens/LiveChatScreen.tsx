@@ -64,7 +64,7 @@ export default function LiveChatScreen() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! 👋 I'm ShowMI's support assistant. How can I help you today?",
+      text: "Hi! 👋 I'm Showmi's support assistant. How can I help you today?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   headerCenter: { flex: 1, alignItems: 'center' },
   headerTitle: { ...typography.labelLarge, color: colors.neutral.text },
   statusContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 2 },
-  statusDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.neutral.textTertiary, marginRight: spacing.xs },
+  statusDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.neutral.textTertiary, marginEnd: spacing.xs },
   statusDotOnline: { backgroundColor: colors.semantic.success },
   statusText: { ...typography.caption, color: colors.neutral.textTertiary },
   moreButton: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   messageContainer: { flexDirection: 'row', marginBottom: spacing.md },
   userMessageContainer: { justifyContent: 'flex-end' },
   otherMessageContainer: { justifyContent: 'flex-start' },
-  avatarContainer: { marginRight: spacing.sm },
+  avatarContainer: { marginEnd: spacing.sm },
   avatar: { width: 32, height: 32, borderRadius: 16 },
   botAvatar: { width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(168, 85, 247, 0.2)', alignItems: 'center', justifyContent: 'center' },
   messageBubble: { maxWidth: '75%', borderRadius: 16, padding: spacing.md },

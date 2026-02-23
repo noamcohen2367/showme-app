@@ -5,7 +5,7 @@
 export default {
   // Common
   common: {
-    appName: 'ShowMI',
+    appName: 'Showmi',
     loading: 'Загрузка...',
     error: 'Что-то пошло не так',
     retry: 'Попробовать снова',
@@ -32,7 +32,7 @@ export default {
     startingAt: 'От',
     minutes: 'мин',
   },
-  
+
   // Navigation
   navigation: {
     home: 'Главная',
@@ -41,7 +41,7 @@ export default {
     mySubscriptions: 'Подписки',
     profile: 'Профиль',
   },
-  
+
   // Home Screen
   home: {
     title: 'Откройте для себя',
@@ -55,9 +55,10 @@ export default {
     lastMinuteDeals: 'Горящие предложения',
     newShows: 'Новые спектакли',
     enableLocation: 'Включите геолокацию для персональных рекомендаций',
-    permissionDenied: 'Доступ к местоположению запрещен. Показаны общие результаты.',
+    permissionDenied:
+      'Доступ к местоположению запрещен. Показаны общие результаты.',
   },
-  
+
   // Locations
   locations: {
     tel_aviv: 'Тель-Авив',
@@ -68,7 +69,7 @@ export default {
     haifa: 'Хайфа',
     allLocations: 'Все регионы',
   },
-  
+
   // Categories
   categories: {
     musical: 'Мюзиклы',
@@ -82,7 +83,7 @@ export default {
     new: 'Новое',
     long_running: 'Долгоиграющие',
   },
-  
+
   // Show Badges
   badges: {
     popular_in_area: 'Популярно рядом',
@@ -91,7 +92,7 @@ export default {
     last_chance: 'Последний шанс',
     new: 'Новое',
   },
-  
+
   // Search Screen
   search: {
     title: 'Поиск',
@@ -102,7 +103,7 @@ export default {
     noSearchResults: 'Ничего не найдено по запросу "{{query}}"',
     tryDifferent: 'Попробуйте другой поисковый запрос',
   },
-  
+
   // Show Details
   show: {
     bookNow: 'Забронировать',
@@ -124,7 +125,7 @@ export default {
     limitedAvailability: 'Ограничено',
     soldOut: 'Распродано',
   },
-  
+
   // Actor Profile
   actor: {
     about: 'Об актёре',
@@ -132,7 +133,7 @@ export default {
     pastShows: 'Прошлые роли',
     photos: 'Фото',
   },
-  
+
   // Seat Selection
   seats: {
     title: 'Выбор мест',
@@ -156,7 +157,7 @@ export default {
       economy: 'Эконом',
     },
   },
-  
+
   // Checkout
   checkout: {
     title: 'Оплата',
@@ -187,7 +188,7 @@ export default {
     cvv: 'CVV',
     saveCard: 'Сохранить карту',
   },
-  
+
   // Order Confirmation
   confirmation: {
     title: 'Бронирование подтверждено!',
@@ -198,7 +199,7 @@ export default {
     backToHome: 'На главную',
     shareTickets: 'Поделиться',
   },
-  
+
   // My Performances
   performances: {
     title: 'Мои шоу',
@@ -222,7 +223,7 @@ export default {
     noThanks: 'Нет, спасибо',
     shareCaption: 'Иду на {{show}} через {{days}} дней! 🎭\nСоздано в ShowMI',
   },
-  
+
   // My Subscriptions
   subscriptions: {
     title: 'Мои подписки',
@@ -236,7 +237,7 @@ export default {
     useTickets: 'Использовать билеты',
     subscriptionCode: 'Код подписки',
   },
-  
+
   // Profile
   profile: {
     title: 'Профиль',
@@ -260,7 +261,7 @@ export default {
     },
     levelProgress: '{{current}}/{{needed}} шоу до {{nextLevel}}',
   },
-  
+
   // Settings
   settings: {
     title: 'Настройки',
@@ -278,7 +279,7 @@ export default {
     reminderAlerts: 'Напоминания о шоу',
     saved: 'Настройки сохранены',
   },
-  
+
   // FAQ
   faq: {
     title: 'Частые вопросы',
@@ -293,7 +294,7 @@ export default {
     q5: 'Можно ли передать билеты?',
     a5: 'Да! Используйте опцию "Отправить другу" в разделе "Мои шоу".',
   },
-  
+
   // Errors
   errors: {
     network: 'Ошибка сети. Проверьте подключение.',
@@ -305,7 +306,7 @@ export default {
     tapToRetry: 'Нажмите для повтора',
     noShows: 'Нет доступных спектаклей',
   },
-  
+
   // Date/Time
   datetime: {
     today: 'Сегодня',

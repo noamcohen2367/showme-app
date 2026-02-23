@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   headerTitle: {
     ...typography.headingMedium,
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   unreadBadgeText: {
     ...typography.labelSmall,
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.main,
   },
   notificationLeft: {
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   notificationImage: {
     width: 50,
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     ...typography.labelMedium,
     color: colors.neutral.text,
     flex: 1,
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   unreadTitle: {
     fontWeight: '700',
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     padding: spacing.xs,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   emptyState: {
     alignItems: 'center',

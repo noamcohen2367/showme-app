@@ -5,7 +5,7 @@
 export default {
   // Common
   common: {
-    appName: 'ShowMI',
+    appName: 'Showmi',
     loading: 'Loading...',
     error: 'Something went wrong',
     retry: 'Try Again',

@@ -326,7 +326,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* App Version */}
-        <Text style={styles.versionText}>ShowMI v1.0.0</Text>
+        <Text style={styles.versionText}>2026 showmi v1.0.0</Text>
 
         <View style={{ height: 100 }} />
       </ScrollView>
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
     ...typography.labelMedium,
     color: colors.neutral.textTertiary,
     marginBottom: spacing.sm,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
   menuItemLabel: {
     ...typography.bodyMedium,
     color: colors.neutral.text,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   menuItemDestructive: {
     color: colors.semantic.error,
@@ -540,12 +540,12 @@ const styles = StyleSheet.create({
   menuItemValue: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
-    marginRight: spacing.xs,
+    marginEnd: spacing.xs,
   },
   menuDivider: {
     height: 1,
     backgroundColor: colors.dark[500],
-    marginLeft: 68,
+    marginStart: 68,
   },
   versionText: {
     ...typography.caption,

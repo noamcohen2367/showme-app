@@ -506,7 +506,7 @@ export default function HomeScreen() {
   const [dateFilter, setDateFilter] = useState<DateFilterValue | null>(null);
 
   // ─── Collapsible header animation ─────────────────────────────────
-  const STICKY_BAR_CONTENT_HEIGHT = 72;
+  const STICKY_BAR_CONTENT_HEIGHT = 10;
   const COLLAPSE_START = 30;
   const COLLAPSE_END = 120;
   const STORIES_FADE_START = 120;
@@ -1535,7 +1535,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.xs,
     gap: spacing.sm,
   },
   compactWordmark: {
@@ -1586,7 +1586,7 @@ const styles = StyleSheet.create({
     ...typography.bodyMedium,
     color: colors.neutral.textSecondary,
     // marginTop: spacing.xl,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   notificationButton: {
     width: 44,
@@ -1690,7 +1690,7 @@ const styles = StyleSheet.create({
   storyViewerName: {
     ...typography.labelMedium,
     color: 'white',
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   storyCloseButton: {
     width: 40,
@@ -1757,7 +1757,7 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 20,
     overflow: 'hidden',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   promoImage: { width: '100%', height: '100%' },
   promoGradient: {
@@ -1842,7 +1842,7 @@ const styles = StyleSheet.create({
   infoBannerText: {
     ...typography.bodySmall,
     color: colors.neutral.text,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
     flex: 1,
   },
   comingSoonCard: {
@@ -1850,7 +1850,7 @@ const styles = StyleSheet.create({
     height: 220,
     borderRadius: 16,
     overflow: 'hidden',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
     backgroundColor: colors.dark[700],
   },
   comingSoonImage: { width: '100%', height: '100%' },

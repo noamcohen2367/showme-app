@@ -169,7 +169,7 @@ export default function TicketDetailScreen() {
                 {/* Show Info */}
                 <View style={styles.ticketHeader}>
                   <View style={styles.showMeLogo}>
-                    <Text style={styles.logoText}>ShowMI</Text>
+                    <Text style={styles.logoText}>Showmi</Text>
                   </View>
                   <View style={styles.ticketType}>
                     <Text style={styles.ticketTypeText}>
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
   flipText: {
     ...typography.bodySmall,
     color: colors.neutral.textSecondary,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   ticketContainer: {
     height: 480,
@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
   infoText: {
     ...typography.bodyMedium,
     color: colors.neutral.text,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
     flex: 1,
   },
   qrPlaceholder: {
@@ -670,7 +670,7 @@ const styles = StyleSheet.create({
   venueText: {
     ...typography.bodyMedium,
     color: colors.neutral.text,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
     flex: 1,
   },
 });

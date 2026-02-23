@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     ...typography.labelLarge,
     color: colors.neutral.text,
     flex: 1,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   changeText: {
     ...typography.labelMedium,
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   availabilityText: {
     ...typography.bodySmall,
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   dealText: {
     ...typography.labelSmall,
     color: colors.semantic.warning,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
   },
   priceContainer: {
     flexDirection: 'row',
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     ...typography.bodyMedium,
     color: colors.neutral.textTertiary,
     textDecorationLine: 'line-through',
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   price: {
     ...typography.headingSmall,

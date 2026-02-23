@@ -1,5 +1,5 @@
 // ============================================
-// ShowMI App - Animated Splash Screen
+// Showmi App - Animated Splash Screen
 // ============================================
 
 import React, { useEffect, useRef } from 'react';

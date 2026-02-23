@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   scrollView: { flex: 1 },
   content: { padding: spacing.lg },
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.dark[700], borderRadius: 12, paddingHorizontal: spacing.md, marginBottom: spacing.md, borderWidth: 1, borderColor: colors.dark[500] },
-  searchInput: { flex: 1, ...typography.bodyMedium, color: colors.neutral.text, paddingVertical: spacing.md, marginLeft: spacing.sm },
+  searchInput: { flex: 1, ...typography.bodyMedium, color: colors.neutral.text, paddingVertical: spacing.md, marginStart: spacing.sm },
   filtersRow: { marginBottom: spacing.sm },
   filtersContent: { gap: spacing.sm },
   filterChip: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: 20, backgroundColor: colors.dark[700], borderWidth: 1, borderColor: colors.dark[500] },

@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 8,
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
     borderWidth: 2,
     borderColor: 'transparent',
     overflow: 'hidden',
@@ -500,12 +500,12 @@ const styles = StyleSheet.create({
   rating: {
     ...typography.labelLarge,
     color: colors.neutral.text,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   reviewCount: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   quickInfo: {
     flexDirection: 'row',
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
   quickInfoText: {
     ...typography.bodyMedium,
     color: colors.neutral.textSecondary,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   categoriesContainer: {
     flexDirection: 'row',
@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 8,
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   venueInfo: {
     flex: 1,
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
   venueAddressText: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
     flex: 1,
   },
   bottomCTA: {
@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
   },
   priceContainer: {
-    marginRight: spacing.lg,
+    marginEnd: spacing.lg,
   },
   priceLabel: {
     ...typography.bodySmall,

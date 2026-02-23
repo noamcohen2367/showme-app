@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   legendText: {
     ...typography.bodySmall,
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
   selectedInfoText: {
     ...typography.labelLarge,
     color: colors.primary.main,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   bottomContainer: {
     paddingHorizontal: spacing.lg,

@@ -22,7 +22,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { currentUser } from '../data/user';
-import { SUPPORTED_LANGUAGES, changeLanguage, LanguageCode } from '../i18n/i18n';
+import { SUPPORTED_LANGUAGES, changeLanguage, LanguageCode, getCurrentLanguageInfo } from '../i18n/i18n';
 import { RootStackParamList } from '../types/types';
 
 type SettingsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -38,8 +38,22 @@ export default function SettingsScreen() {
   const [newShowAlerts, setNewShowAlerts] = useState(true);
   const [showReminders, setShowReminders] = useState(true);
 
-  const handleLanguageChange = (langCode: LanguageCode) => {
-    changeLanguage(langCode);
+  const handleLanguageChange = async (langCode: LanguageCode) => {
+    const currentInfo = getCurrentLanguageInfo();
+    const nextInfo = SUPPORTED_LANGUAGES[langCode];
+    const rtlChanges = currentInfo.rtl !== nextInfo.rtl;
+
+    await changeLanguage(langCode);
+
+    if (rtlChanges) {
+      Alert.alert(
+        t('settings.languageChanged', { defaultValue: 'Language Changed' }),
+        t('settings.restartRequired', {
+          defaultValue: 'Please restart the app for the layout direction to take full effect.',
+        }),
+        [{ text: t('common.ok') }],
+      );
+    }
   };
 
   const handleSave = () => {
@@ -368,7 +382,7 @@ const styles = StyleSheet.create({
     ...typography.labelMedium,
     color: colors.neutral.textTertiary,
     marginBottom: spacing.sm,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -392,7 +406,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(168, 85, 247, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   fieldContent: {
     flex: 1,
@@ -414,7 +428,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: colors.dark[500],
-    marginLeft: 68,
+    marginStart: 68,
   },
   languageRow: {
     flexDirection: 'row',
@@ -457,13 +471,13 @@ const styles = StyleSheet.create({
   switchLabel: {
     ...typography.bodyMedium,
     color: colors.neutral.text,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   helpText: {
     ...typography.caption,
     color: colors.neutral.textTertiary,
     marginTop: spacing.sm,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   dangerRow: {
     flexDirection: 'row',

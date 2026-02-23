@@ -10,7 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Import i18n configuration (must be imported before using translations)
 import './src/i18n/i18n';
-import { initializeRTL } from './src/i18n/i18n';
+import { initLanguage } from './src/i18n/i18n';
 
 // Import navigation
 import { RootNavigator } from './src/navigation/navigation';
@@ -27,10 +27,10 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    // Initialize RTL support based on device language
-    initializeRTL();
-    // Simulate loading time for resources
-    setTimeout(() => setIsReady(true), 800);
+    // Load persisted language (and configure RTL) before showing the app
+    initLanguage().finally(() => {
+      setTimeout(() => setIsReady(true), 800);
+    });
   }, []);
 
   const handleSplashFinish = () => {

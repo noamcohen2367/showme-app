@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 8,
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   orderInfo: {
     flex: 1,
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   },
   ticketProtectInfo: {
     flex: 1,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   ticketProtectTitle: {
     ...typography.labelLarge,
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
   },
   paymentOptionInfo: {
     flex: 1,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   paymentOptionTitle: {
     ...typography.labelLarge,
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   securePaymentText: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   payButton: {
     borderRadius: 12,

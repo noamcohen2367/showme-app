@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.dark[700],
     borderWidth: 1,
     borderColor: colors.dark[500],
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   categoryChipActive: {
     backgroundColor: colors.primary.main,
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   rewardContent: {
     flex: 1,
@@ -622,7 +622,7 @@ const styles = StyleSheet.create({
     color: colors.primary.main,
   },
   redeemButton: {
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   redeemButtonActive: {
     borderRadius: 8,
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: 6,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   comingSoonText: {
     ...typography.caption,
@@ -669,7 +669,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   historyIconEarned: {
     backgroundColor: 'rgba(16, 185, 129, 0.2)',
@@ -691,7 +691,7 @@ const styles = StyleSheet.create({
   },
   historyPoints: {
     ...typography.labelLarge,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
   },
   pointsEarned: {
     color: colors.semantic.success,

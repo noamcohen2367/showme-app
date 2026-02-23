@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 3,
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   legendText: {
     ...typography.bodySmall,

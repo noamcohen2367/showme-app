@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
   },
   panelContent: { flexDirection: 'row', marginBottom: spacing.lg },
   panelImage: { width: 80, height: 80, borderRadius: 12 },
-  panelInfo: { flex: 1, marginLeft: spacing.md },
+  panelInfo: { flex: 1, marginStart: spacing.md },
   panelName: {
     ...typography.headingSmall,
     color: colors.neutral.text,

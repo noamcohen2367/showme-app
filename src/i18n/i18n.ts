@@ -6,10 +6,13 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { getLocales } from 'expo-localization';
 import { I18nManager } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import en from './locales/en';
 import he from './locales/he';
 import ru from './locales/ru';
+
+const LANGUAGE_KEY = '@showmi_language';
 
 // Define supported languages
 export const SUPPORTED_LANGUAGES = {
@@ -39,17 +42,30 @@ export type LanguageCode = keyof typeof SUPPORTED_LANGUAGES;
 const getDeviceLanguage = (): LanguageCode => {
   const locales = getLocales();
   const deviceLang = locales[0]?.languageCode;
-  
+
   // Check if device language is supported
   if (deviceLang && deviceLang in SUPPORTED_LANGUAGES) {
     return deviceLang as LanguageCode;
   }
-  
+
   // Default to English
   return 'en';
 };
 
-// Initialize i18n
+// Load persisted language (synchronous fallback to device language on first load)
+export const loadPersistedLanguage = async (): Promise<LanguageCode> => {
+  try {
+    const saved = await AsyncStorage.getItem(LANGUAGE_KEY);
+    if (saved && saved in SUPPORTED_LANGUAGES) {
+      return saved as LanguageCode;
+    }
+  } catch {
+    // ignore storage errors
+  }
+  return getDeviceLanguage();
+};
+
+// Initialize i18n (synchronously with device language; call initLanguage() after)
 i18n
   .use(initReactI18next)
   .init({
@@ -68,6 +84,13 @@ i18n
     },
   });
 
+// Call this once at app startup (after AsyncStorage is ready) to apply saved language
+export const initLanguage = async (): Promise<void> => {
+  const lang = await loadPersistedLanguage();
+  await i18n.changeLanguage(lang);
+  configureRTL(lang);
+};
+
 // RTL Configuration Helper
 export const configureRTL = (languageCode: LanguageCode): void => {
   const isRTL = SUPPORTED_LANGUAGES[languageCode].rtl;
@@ -83,6 +106,11 @@ export const configureRTL = (languageCode: LanguageCode): void => {
 export const changeLanguage = async (languageCode: LanguageCode): Promise<void> => {
   await i18n.changeLanguage(languageCode);
   configureRTL(languageCode);
+  try {
+    await AsyncStorage.setItem(LANGUAGE_KEY, languageCode);
+  } catch {
+    // ignore storage errors
+  }
 };
 
 // Get current language info

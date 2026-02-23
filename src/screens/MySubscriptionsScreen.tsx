@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 12,
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   headerInfo: {
     flex: 1,
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   warningText: {
     ...typography.bodySmall,
     color: colors.semantic.warning,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   validitySection: {
     flexDirection: 'row',
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   validityText: {
     ...typography.bodySmall,
     color: colors.neutral.textSecondary,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   expiringBadge: {
     flexDirection: 'row',
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
   expiringText: {
     ...typography.labelSmall,
     color: colors.semantic.warning,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
   },
   codeSection: {
     flexDirection: 'row',
@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(168, 85, 247, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   benefitText: {
     ...typography.bodyMedium,

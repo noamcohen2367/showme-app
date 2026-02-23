@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
   ticketVenueText: {
     ...typography.bodySmall,
     color: colors.neutral.textSecondary,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
   },
   ticketDivider: {
     flexDirection: 'row',
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     backgroundColor: colors.neutral.background,
-    marginLeft: -10,
+    marginStart: -10,
   },
   dividerLine: {
     flex: 1,
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     backgroundColor: colors.neutral.background,
-    marginRight: -10,
+    marginEnd: -10,
   },
   ticketBottom: {
     padding: spacing.md,
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   ticketInfoText: {
     ...typography.labelSmall,
     color: colors.neutral.text,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
   },
   ticketAction: {
     flexDirection: 'row',

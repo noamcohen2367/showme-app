@@ -242,7 +242,7 @@ export default function PaymentMethodsScreen() {
               </View>
 
               <View style={styles.inputRow}>
-                <View style={[styles.inputGroup, { flex: 1, marginRight: spacing.md }]}>
+                <View style={[styles.inputGroup, { flex: 1, marginEnd: spacing.md }]}>
                   <Text style={styles.inputLabel}>Expiry</Text>
                   <TextInput
                     style={styles.textInput}
@@ -338,14 +338,14 @@ const styles = StyleSheet.create({
   sectionSubtitle: { ...typography.bodySmall, color: colors.neutral.textTertiary, marginBottom: spacing.md },
   setupWalletCard: { borderRadius: 16, overflow: 'hidden' },
   setupWalletGradient: { flexDirection: 'row', alignItems: 'center', padding: spacing.lg },
-  setupWalletText: { flex: 1, marginLeft: spacing.md },
+  setupWalletText: { flex: 1, marginStart: spacing.md },
   setupWalletTitle: { ...typography.labelLarge, color: '#fff' },
   setupWalletDesc: { ...typography.bodySmall, color: 'rgba(255,255,255,0.8)' },
   methodCard: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.dark[700], borderRadius: 12, padding: spacing.md, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.dark[500] },
   methodCardDefault: { borderColor: colors.primary.main },
   methodLeft: { flexDirection: 'row', alignItems: 'center' },
   methodIcon: { width: 48, height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  methodInfo: { marginLeft: spacing.md },
+  methodInfo: { marginStart: spacing.md },
   methodLabel: { ...typography.labelMedium, color: colors.neutral.text },
   methodExpiry: { ...typography.caption, color: colors.neutral.textTertiary, marginTop: 2 },
   methodRight: { flexDirection: 'row', alignItems: 'center' },

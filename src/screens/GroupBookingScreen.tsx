@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
   savingsNote: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: spacing.md, backgroundColor: 'rgba(16, 185, 129, 0.1)', padding: spacing.md, borderRadius: 8 },
   savingsNoteText: { ...typography.bodySmall, color: colors.semantic.success },
   bottomCTA: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.md, backgroundColor: colors.dark[800], borderTopWidth: 1, borderTopColor: colors.dark[500] },
-  bottomInfo: { marginRight: spacing.lg },
+  bottomInfo: { marginEnd: spacing.lg },
   bottomTotal: { ...typography.headingMedium, color: colors.neutral.text },
   bottomCount: { ...typography.caption, color: colors.neutral.textTertiary },
   continueButton: { flex: 1, borderRadius: 12, overflow: 'hidden' },

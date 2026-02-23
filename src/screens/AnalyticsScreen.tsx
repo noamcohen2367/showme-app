@@ -554,7 +554,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: colors.primary.main,
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   activityContent: {
     flex: 1,

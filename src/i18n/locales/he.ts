@@ -5,7 +5,7 @@
 export default {
   // Common
   common: {
-    appName: 'ShowMI',
+    appName: 'Showmi',
     loading: 'טוען...',
     error: 'משהו השתבש',
     retry: 'נסה שוב',
@@ -40,6 +40,7 @@ export default {
     hebrew: 'עברית',
     continue: 'המשך',
     bookNow: 'הזמן עכשיו',
+    notifyMe: 'הודע לי',
   },
 
   // Navigation
@@ -68,6 +69,15 @@ export default {
     enableLocation: 'אפשרו מיקום להמלצות מותאמות אישית',
     permissionDenied: 'הרשאת מיקום נדחתה. מציג תוצאות כלליות.',
     selectLocation: 'בחר מיקום',
+    newShowsInfo: 'טרי מהבמה! בדקו את ההוספות החדשות שלנו',
+    comingSoon: 'בקרוב',
+    thisWeekend: 'הסוף שבוע הזה',
+    weekendInfo: 'קנו כרטיסים לסוף שבוע הזה!',
+    recommendedForYou: 'מומלץ עבורך',
+    recommendedInfo: 'על פי ההעדפות שלך',
+    browseByCategory: 'עיין לפי קטגוריה',
+    specialFeatures: 'תכונות מיוחדות',
+    notifyMe: 'הודע לי',
   },
 
   // Locations

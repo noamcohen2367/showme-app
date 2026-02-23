@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     paddingRight: spacing.lg,
   },
   photoItem: {
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
     paddingRight: spacing.lg,
   },
   showCardWrapper: {
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   followSection: {
     alignItems: 'center',

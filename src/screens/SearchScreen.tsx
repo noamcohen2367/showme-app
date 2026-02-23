@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     flex: 1,
     ...typography.bodyLarge,
     color: colors.neutral.text,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
     paddingVertical: spacing.xs,
   },
   activeFilterContainer: {
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   activeFilterText: {
     ...typography.labelMedium,
     color: colors.primary.main,
-    marginRight: spacing.xs,
+    marginEnd: spacing.xs,
   },
   resultCount: {
     ...typography.bodySmall,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
   recentEmptyText: {
     ...typography.bodyMedium,
     color: colors.neutral.textTertiary,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   resultsContainer: {
     padding: spacing.lg,
