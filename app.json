@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#3D2B8F"
+      "backgroundColor": "#0C0B1E"
     },
     "ios": {
       "supportsTablet": true,
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#3D2B8F"
+        "backgroundColor": "#0C0B1E"
       },
       "package": "com.showmi.app"
     },

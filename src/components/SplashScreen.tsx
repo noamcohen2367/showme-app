@@ -76,9 +76,9 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
         backgroundColor={colors.neutral.background}
       />
 
-      {/* Background gradient */}
+      {/* Background */}
       <LinearGradient
-        colors={['#1A0A3D', '#0A0A0F', '#1A0A3D']}
+        colors={['#0C0B1E', '#121028', '#0C0B1E']}
         style={StyleSheet.absoluteFill}
       />
 

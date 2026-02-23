@@ -505,6 +505,42 @@ export default function HomeScreen() {
   const [showDateModal, setShowDateModal] = useState(false);
   const [dateFilter, setDateFilter] = useState<DateFilterValue | null>(null);
 
+  // ─── Collapsible header animation ─────────────────────────────────
+  const STICKY_BAR_CONTENT_HEIGHT = 72;
+  const COLLAPSE_START = 30;
+  const COLLAPSE_END = 120;
+  const STORIES_FADE_START = 120;
+  const STORIES_FADE_END = 200;
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const heroOpacity = scrollY.interpolate({
+    inputRange: [COLLAPSE_START, COLLAPSE_END],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+  const stickyBgOpacity = scrollY.interpolate({
+    inputRange: [COLLAPSE_START, COLLAPSE_END],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+  const stickyContentOpacity = scrollY.interpolate({
+    inputRange: [COLLAPSE_START, COLLAPSE_END],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+  const storiesOpacity = scrollY.interpolate({
+    inputRange: [STORIES_FADE_START, STORIES_FADE_END],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+  const storiesTranslateY = scrollY.interpolate({
+    inputRange: [STORIES_FADE_START, STORIES_FADE_END],
+    outputRange: [0, -20],
+    extrapolate: 'clamp',
+  });
+  // ──────────────────────────────────────────────────────────────────
+
   useEffect(() => {
     const interval = setInterval(() => {
       const nextIndex = (activePromoIndex + 1) % PROMO_BANNERS.length;
@@ -833,93 +869,201 @@ export default function HomeScreen() {
         />
       </View>
 
-      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
-        <View>
+      {/* ── Sticky bar ── absolute overlay, always on top ── */}
+      {(loading && shows.length === 0) ||
+      (!loading && shows.length === 0 && error) ? (
+        /* Static header shown during loading / error states */
+        <View style={[styles.staticHeader, { paddingTop: insets.top }]}>
           <Image
             source={require('../../assets/wordmark.png')}
             style={styles.wordmark}
             contentFit="contain"
           />
-          <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
+          <TouchableOpacity
+            style={styles.notificationButton}
+            onPress={() => navigation.navigate('Notifications')}
+          >
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              color={colors.neutral.white}
+            />
+            <View style={styles.notificationDot} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={styles.notificationButton}
-          onPress={() => navigation.navigate('Notifications')}
+      ) : (
+        /* Animated sticky bar for normal scroll state */
+        <Animated.View
+          style={[styles.stickyBar, { paddingTop: insets.top }]}
+          pointerEvents="box-none"
         >
-          <Ionicons
-            name="notifications-outline"
-            size={24}
-            color={colors.neutral.white}
+          {/* Solid background fades in as header collapses */}
+          <Animated.View
+            style={[styles.stickyBarBg, { opacity: stickyBgOpacity }]}
           />
-          <View style={styles.notificationDot} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.filtersContainer}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersContent}
-        >
-          <FilterChip
-            label={getLocationLabel()}
-            icon="location-outline"
-            selected={selectedLocation !== null}
-            onPress={() => setShowLocationModal(true)}
-            showClear={selectedLocation !== null}
-            onClear={() => setSelectedLocation(null)}
-          />
-          <FilterChip
-            label={
-              selectedCategories.length > 0
-                ? `${t('common.category')} (${selectedCategories.length})`
-                : t('common.category')
-            }
-            icon="grid-outline"
-            selected={selectedCategories.length > 0}
-            onPress={() => setShowCategoryModal(true)}
-            showClear={selectedCategories.length > 0}
-            onClear={() => setSelectedCategories([])}
-          />
-          <FilterChip
-            label={getDateFilterLabel()}
-            icon="calendar-outline"
-            selected={dateFilter !== null}
-            onPress={() => setShowDateModal(true)}
-            showClear={dateFilter !== null}
-            onClear={() => setDateFilter(null)}
-          />
-        </ScrollView>
-      </View>
-
-      <NetworkBanner
-        visible={isUsingFallback && !bannerDismissed}
-        onRetry={refetch}
-        onDismiss={() => setBannerDismissed(true)}
-      />
+          {/* Compact content row fades in */}
+          <Animated.View
+            style={[styles.stickyBarContent, { opacity: stickyContentOpacity }]}
+          >
+            <Image
+              source={require('../../assets/wordmark.png')}
+              style={styles.compactWordmark}
+              contentFit="contain"
+            />
+            <View style={styles.stickyFiltersRow}>
+              <FilterChip
+                label={getLocationLabel()}
+                icon="location-outline"
+                selected={selectedLocation !== null}
+                onPress={() => setShowLocationModal(true)}
+                showClear={selectedLocation !== null}
+                onClear={() => setSelectedLocation(null)}
+              />
+              <FilterChip
+                label={
+                  selectedCategories.length > 0
+                    ? `${t('common.category')} (${selectedCategories.length})`
+                    : t('common.category')
+                }
+                icon="grid-outline"
+                selected={selectedCategories.length > 0}
+                onPress={() => setShowCategoryModal(true)}
+                showClear={selectedCategories.length > 0}
+                onClear={() => setSelectedCategories([])}
+              />
+              <FilterChip
+                label={getDateFilterLabel()}
+                icon="calendar-outline"
+                selected={dateFilter !== null}
+                onPress={() => setShowDateModal(true)}
+                showClear={dateFilter !== null}
+                onClear={() => setDateFilter(null)}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.notificationButton}
+              onPress={() => navigation.navigate('Notifications')}
+            >
+              <Ionicons
+                name="notifications-outline"
+                size={20}
+                color={colors.neutral.white}
+              />
+              <View style={styles.notificationDot} />
+            </TouchableOpacity>
+          </Animated.View>
+        </Animated.View>
+      )}
 
       {!loading && shows.length === 0 && error ? (
-        <ErrorState message={t('errors.network')} onRetry={refetch} />
+        <View style={{ paddingTop: insets.top + STICKY_BAR_CONTENT_HEIGHT }}>
+          <ErrorState message={t('errors.network')} onRetry={refetch} />
+        </View>
       ) : loading && shows.length === 0 ? (
-        <HomeScreenSkeleton />
+        <View style={{ paddingTop: insets.top + STICKY_BAR_CONTENT_HEIGHT }}>
+          <HomeScreenSkeleton />
+        </View>
       ) : (
         <PullToRefreshScrollView
           onRefresh={refetch}
           style={styles.content}
-          contentContainerStyle={styles.contentContainer}
+          contentContainerStyle={[
+            styles.contentContainer,
+            { paddingTop: insets.top + STICKY_BAR_CONTENT_HEIGHT },
+          ]}
           showsVerticalScrollIndicator={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false },
+          )}
+          scrollEventThrottle={16}
         >
-          {/* Stories */}
-          <View style={styles.storiesSection}>
-            <FlatList
-              data={STORIES}
-              renderItem={renderStoryItem}
-              keyExtractor={(item) => item.id}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.storiesList}
-            />
-          </View>
+          {/* Network banner — first child, inside scroll */}
+          <NetworkBanner
+            visible={isUsingFallback && !bannerDismissed}
+            onRetry={refetch}
+            onDismiss={() => setBannerDismissed(true)}
+          />
+
+          {/* Hero section — wordmark + subtitle + filters, scrolls away */}
+          <Animated.View style={[styles.heroSection, { opacity: heroOpacity }]}>
+            <View style={styles.heroHeader}>
+              <View>
+                <Image
+                  source={require('../../assets/wordmark.png')}
+                  style={styles.wordmark}
+                  contentFit="contain"
+                />
+                <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.notificationButton}
+                onPress={() => navigation.navigate('Notifications')}
+              >
+                <Ionicons
+                  name="notifications-outline"
+                  size={24}
+                  color={colors.neutral.white}
+                />
+                <View style={styles.notificationDot} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.heroFiltersRow}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.filtersContent}
+              >
+                <FilterChip
+                  label={getLocationLabel()}
+                  icon="location-outline"
+                  selected={selectedLocation !== null}
+                  onPress={() => setShowLocationModal(true)}
+                  showClear={selectedLocation !== null}
+                  onClear={() => setSelectedLocation(null)}
+                />
+                <FilterChip
+                  label={
+                    selectedCategories.length > 0
+                      ? `${t('common.category')} (${selectedCategories.length})`
+                      : t('common.category')
+                  }
+                  icon="grid-outline"
+                  selected={selectedCategories.length > 0}
+                  onPress={() => setShowCategoryModal(true)}
+                  showClear={selectedCategories.length > 0}
+                  onClear={() => setSelectedCategories([])}
+                />
+                <FilterChip
+                  label={getDateFilterLabel()}
+                  icon="calendar-outline"
+                  selected={dateFilter !== null}
+                  onPress={() => setShowDateModal(true)}
+                  showClear={dateFilter !== null}
+                  onClear={() => setDateFilter(null)}
+                />
+              </ScrollView>
+            </View>
+          </Animated.View>
+
+          {/* Stories — fade + slide out as header collapses */}
+          <Animated.View
+            style={{
+              opacity: storiesOpacity,
+              transform: [{ translateY: storiesTranslateY }],
+            }}
+          >
+            <View style={styles.storiesSection}>
+              <FlatList
+                data={STORIES}
+                renderItem={renderStoryItem}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.storiesList}
+              />
+            </View>
+          </Animated.View>
 
           {/* Promo Banners */}
           <View style={styles.promoSection}>
@@ -1373,22 +1517,76 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.4,
   },
   auroraGradient: { flex: 1 },
-  header: {
+  // ─── Sticky bar ───────────────────────────────────────────────────
+  stickyBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+  },
+  stickyBarBg: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.dark[900],
+    borderBottomWidth: 1,
+    borderBottomColor: colors.dark[500],
+  },
+  stickyBarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    gap: spacing.sm,
+  },
+  compactWordmark: {
+    width: 80,
+    height: 36,
+    flexShrink: 0,
+  },
+  stickyFiltersRow: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing.xs,
+    overflow: 'hidden',
+    transform: [{ scale: 0.88 }],
+  },
+  // ─── Static header (loading / error states) ───────────────────────
+  staticHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.md,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+  },
+  // ─── Hero section (inside scroll, scrolls away) ───────────────────
+  heroSection: {
+    paddingBottom: spacing.md,
+  },
+  heroHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     paddingHorizontal: spacing.lg,
     marginBottom: spacing.md,
   },
+  heroFiltersRow: {
+    marginBottom: spacing.md,
+  },
+  // ──────────────────────────────────────────────────────────────────
   wordmark: {
-    width: 150,
-    height: 68,
-    marginBottom: spacing.xxs,
+    width: 158,
+    height: 70,
   },
   subtitle: {
     ...typography.bodyMedium,
     color: colors.neutral.textSecondary,
-    marginTop: spacing.xxs,
+    // marginTop: spacing.xl,
+    marginLeft: spacing.xs,
   },
   notificationButton: {
     width: 44,
@@ -1409,7 +1607,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.semantic.error,
   },
-  filtersContainer: { marginBottom: spacing.md },
   filtersContent: { paddingHorizontal: spacing.lg, gap: spacing.sm },
   content: { flex: 1 },
   contentContainer: { paddingBottom: spacing.xxl },
