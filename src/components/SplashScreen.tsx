@@ -71,7 +71,10 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={colors.neutral.background}
+      />
 
       {/* Background gradient */}
       <LinearGradient
@@ -105,7 +108,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
         ]}
       >
         <Image
-          source={require('../../assets/icon.png')}
+          source={require('../../assets/adaptive-icon.png')}
           style={styles.logo}
           contentFit="contain"
         />
@@ -141,13 +144,37 @@ function LoadingDots() {
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(dot1, { toValue: 1, duration: 300, useNativeDriver: true }),
-        Animated.timing(dot1, { toValue: 0.3, duration: 300, useNativeDriver: true }),
-        Animated.timing(dot2, { toValue: 1, duration: 300, useNativeDriver: true }),
-        Animated.timing(dot2, { toValue: 0.3, duration: 300, useNativeDriver: true }),
-        Animated.timing(dot3, { toValue: 1, duration: 300, useNativeDriver: true }),
-        Animated.timing(dot3, { toValue: 0.3, duration: 300, useNativeDriver: true }),
-      ])
+        Animated.timing(dot1, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dot1, {
+          toValue: 0.3,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dot2, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dot2, {
+          toValue: 0.3,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dot3, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dot3, {
+          toValue: 0.3,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
     ).start();
   }, []);
 
@@ -189,8 +216,8 @@ const styles = StyleSheet.create({
     borderRadius: 28,
   },
   wordmark: {
-    width: 160,
-    height: 42,
+    width: 320,
+    height: 84,
   },
   tagline: {
     ...typography.bodyMedium,

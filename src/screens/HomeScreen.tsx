@@ -1381,8 +1381,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   wordmark: {
-    width: 120,
-    height: 32,
+    width: 150,
+    height: 68,
     marginBottom: spacing.xxs,
   },
   subtitle: {
