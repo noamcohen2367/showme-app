@@ -200,6 +200,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: 'rgba(245, 158, 11, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   lastMinuteText: {
     ...typography.labelSmall,
@@ -216,6 +221,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xxs,
     borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   ratingBadgeText: {
     ...typography.labelSmall,
@@ -241,11 +251,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     marginEnd: spacing.xs,
+    gap: spacing.xxs,
   },
   theaterName: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
-    marginStart: spacing.xxs,
     flexShrink: 1,
   },
   priceRow: {

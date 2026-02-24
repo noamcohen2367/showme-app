@@ -466,7 +466,9 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
                     {isHebrew ? 'לפרטים נוספים' : 'View Show'}
                   </Text>
                   <Ionicons
-                    name={I18nManager.isRTL ? 'chevron-back' : 'chevron-forward'}
+                    name={
+                      I18nManager.isRTL ? 'chevron-back' : 'chevron-forward'
+                    }
                     size={18}
                     color="white"
                   />
@@ -850,37 +852,68 @@ export default function HomeScreen() {
         })
       : '';
     return (
-      <TouchableOpacity
-        style={styles.comingSoonCard}
-        onPress={() => navigateToShow(item.id)}
-      >
-        <Image
-          source={{ uri: item.imageUrl }}
-          style={styles.comingSoonImage}
-          contentFit="cover"
-          transition={300}
-        />
-        <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.9)']}
-          style={styles.comingSoonGradient}
+      <View style={styles.comingSoonCardShadow}>
+        <TouchableOpacity
+          style={styles.comingSoonCard}
+          onPress={() => navigateToShow(item.id)}
         >
-          <View style={styles.comingSoonBadge}>
-            <Ionicons name="calendar" size={12} color={colors.primary.main} />
-            <Text style={styles.comingSoonDate}>{formattedDate}</Text>
-          </View>
-          <Text style={styles.comingSoonTitle} numberOfLines={2}>
-            {isHebrew ? item.titleHe : item.title}
-          </Text>
-          <TouchableOpacity style={styles.notifyButton}>
-            <Ionicons
-              name="notifications-outline"
-              size={14}
-              color={colors.primary.main}
-            />
-            <Text style={styles.notifyButtonText}>{t('home.notifyMe')}</Text>
-          </TouchableOpacity>
-        </LinearGradient>
-      </TouchableOpacity>
+          <Image
+            source={{ uri: item.imageUrl }}
+            style={styles.comingSoonImage}
+            contentFit="cover"
+            transition={300}
+          />
+          <LinearGradient
+            colors={['transparent', 'rgba(0,0,0,0.95)']}
+            style={styles.comingSoonGradient}
+          >
+            <Text
+              style={[
+                styles.comingSoonTitle,
+                { textAlign: isHebrew ? 'right' : 'left' },
+              ]}
+              numberOfLines={2}
+            >
+              {isHebrew ? item.titleHe : item.title}
+            </Text>
+            <View
+              style={[
+                styles.comingSoonBottomRow,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
+            >
+              <View
+                style={[
+                  styles.comingSoonBadge,
+                  { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+                ]}
+              >
+                <Ionicons
+                  name="calendar"
+                  size={12}
+                  color={colors.primary.main}
+                />
+                <Text style={styles.comingSoonDate}>{formattedDate}</Text>
+              </View>
+              <TouchableOpacity
+                style={[
+                  styles.notifyButton,
+                  { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+                ]}
+              >
+                <Ionicons
+                  name="notifications-outline"
+                  size={14}
+                  color={colors.primary.main}
+                />
+                <Text style={styles.notifyButtonText}>
+                  {t('home.notifyMe')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -905,7 +938,15 @@ export default function HomeScreen() {
       {(loading && shows.length === 0) ||
       (!loading && shows.length === 0 && error) ? (
         /* Static header shown during loading / error states */
-        <View style={[styles.staticHeader, { paddingTop: insets.top, flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
+        <View
+          style={[
+            styles.staticHeader,
+            {
+              paddingTop: insets.top,
+              flexDirection: isHebrew ? 'row-reverse' : 'row',
+            },
+          ]}
+        >
           <Image
             source={require('../../assets/wordmark.png')}
             style={styles.wordmark}
@@ -935,14 +976,25 @@ export default function HomeScreen() {
           />
           {/* Compact content row fades in */}
           <Animated.View
-            style={[styles.stickyBarContent, { opacity: stickyContentOpacity, flexDirection: isHebrew ? 'row-reverse' : 'row' }]}
+            style={[
+              styles.stickyBarContent,
+              {
+                opacity: stickyContentOpacity,
+                flexDirection: isHebrew ? 'row-reverse' : 'row',
+              },
+            ]}
           >
             <Image
               source={require('../../assets/wordmark.png')}
               style={styles.compactWordmark}
               contentFit="contain"
             />
-            <View style={[styles.stickyFiltersRow, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
+            <View
+              style={[
+                styles.stickyFiltersRow,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
+            >
               <FilterChip
                 label={getLocationLabel()}
                 icon="location-outline"
@@ -1019,7 +1071,12 @@ export default function HomeScreen() {
 
           {/* Hero section — wordmark + subtitle + filters, scrolls away */}
           <Animated.View style={[styles.heroSection, { opacity: heroOpacity }]}>
-            <View style={[styles.heroHeader, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
+            <View
+              style={[
+                styles.heroHeader,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
+            >
               <View>
                 <Image
                   source={require('../../assets/wordmark.png')}
@@ -1213,7 +1270,12 @@ export default function HomeScreen() {
                   })
                 }
               />
-              <View style={[styles.infoBanner, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
+              <View
+                style={[
+                  styles.infoBanner,
+                  { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+                ]}
+              >
                 <LinearGradient
                   colors={[
                     'rgba(59, 130, 246, 0.2)',
@@ -1224,7 +1286,12 @@ export default function HomeScreen() {
                   style={styles.infoBannerGradient}
                 />
                 <Ionicons name="calendar" size={20} color="#3B82F6" />
-                <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
+                <Text
+                  style={[
+                    styles.infoBannerText,
+                    { textAlign: isHebrew ? 'right' : 'left' },
+                  ]}
+                >
                   {t('home.weekendInfo')}
                 </Text>
               </View>
@@ -1255,7 +1322,10 @@ export default function HomeScreen() {
               <View
                 style={[
                   styles.infoBanner,
-                  { borderColor: 'rgba(245, 158, 11, 0.3)', flexDirection: isHebrew ? 'row-reverse' : 'row' },
+                  {
+                    borderColor: 'rgba(245, 158, 11, 0.3)',
+                    flexDirection: isHebrew ? 'row-reverse' : 'row',
+                  },
                 ]}
               >
                 <LinearGradient
@@ -1272,7 +1342,12 @@ export default function HomeScreen() {
                   size={20}
                   color={colors.semantic.warning}
                 />
-                <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
+                <Text
+                  style={[
+                    styles.infoBannerText,
+                    { textAlign: isHebrew ? 'right' : 'left' },
+                  ]}
+                >
                   {t('home.lastMinuteInfo')}
                 </Text>
               </View>
@@ -1303,7 +1378,10 @@ export default function HomeScreen() {
               <View
                 style={[
                   styles.infoBanner,
-                  { borderColor: 'rgba(16, 185, 129, 0.3)', flexDirection: isHebrew ? 'row-reverse' : 'row' },
+                  {
+                    borderColor: 'rgba(16, 185, 129, 0.3)',
+                    flexDirection: isHebrew ? 'row-reverse' : 'row',
+                  },
                 ]}
               >
                 <LinearGradient
@@ -1316,7 +1394,12 @@ export default function HomeScreen() {
                   style={styles.infoBannerGradient}
                 />
                 <Ionicons name="sparkles" size={20} color="#10B981" />
-                <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
+                <Text
+                  style={[
+                    styles.infoBannerText,
+                    { textAlign: isHebrew ? 'right' : 'left' },
+                  ]}
+                >
                   {t('home.newShowsInfo')}
                 </Text>
               </View>
@@ -1346,7 +1429,10 @@ export default function HomeScreen() {
             <View
               style={[
                 styles.infoBanner,
-                { borderColor: 'rgba(168, 85, 247, 0.3)', flexDirection: isHebrew ? 'row-reverse' : 'row' },
+                {
+                  borderColor: 'rgba(168, 85, 247, 0.3)',
+                  flexDirection: isHebrew ? 'row-reverse' : 'row',
+                },
               ]}
             >
               <LinearGradient
@@ -1356,7 +1442,12 @@ export default function HomeScreen() {
                 style={styles.infoBannerGradient}
               />
               <Ionicons name="heart" size={20} color={colors.primary.main} />
-              <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
+              <Text
+                style={[
+                  styles.infoBannerText,
+                  { textAlign: isHebrew ? 'right' : 'left' },
+                ]}
+              >
                 {t('home.recommendedInfo')}
               </Text>
             </View>
@@ -1451,20 +1542,68 @@ export default function HomeScreen() {
             >
               {(isHebrew
                 ? [
-                    { id: 'opera', emoji: '🎤', gradient: ['#3B82F6', '#2563EB'] },
-                    { id: 'dance', emoji: '💃', gradient: ['#EF4444', '#DC2626'] },
-                    { id: 'family', emoji: '👨‍👩‍👧‍👦', gradient: ['#10B981', '#059669'] },
-                    { id: 'comedy', emoji: '😂', gradient: ['#F59E0B', '#D97706'] },
-                    { id: 'drama', emoji: '🎭', gradient: ['#EC4899', '#DB2777'] },
-                    { id: 'musical', emoji: '🎵', gradient: ['#A855F7', '#7C3AED'] },
+                    {
+                      id: 'opera',
+                      emoji: '🎤',
+                      gradient: ['#3B82F6', '#2563EB'],
+                    },
+                    {
+                      id: 'dance',
+                      emoji: '💃',
+                      gradient: ['#EF4444', '#DC2626'],
+                    },
+                    {
+                      id: 'family',
+                      emoji: '👨‍👩‍👧‍👦',
+                      gradient: ['#10B981', '#059669'],
+                    },
+                    {
+                      id: 'comedy',
+                      emoji: '😂',
+                      gradient: ['#F59E0B', '#D97706'],
+                    },
+                    {
+                      id: 'drama',
+                      emoji: '🎭',
+                      gradient: ['#EC4899', '#DB2777'],
+                    },
+                    {
+                      id: 'musical',
+                      emoji: '🎵',
+                      gradient: ['#A855F7', '#7C3AED'],
+                    },
                   ]
                 : [
-                    { id: 'musical', emoji: '🎵', gradient: ['#A855F7', '#7C3AED'] },
-                    { id: 'drama', emoji: '🎭', gradient: ['#EC4899', '#DB2777'] },
-                    { id: 'comedy', emoji: '😂', gradient: ['#F59E0B', '#D97706'] },
-                    { id: 'family', emoji: '👨‍👩‍👧‍👦', gradient: ['#10B981', '#059669'] },
-                    { id: 'dance', emoji: '💃', gradient: ['#EF4444', '#DC2626'] },
-                    { id: 'opera', emoji: '🎤', gradient: ['#3B82F6', '#2563EB'] },
+                    {
+                      id: 'musical',
+                      emoji: '🎵',
+                      gradient: ['#A855F7', '#7C3AED'],
+                    },
+                    {
+                      id: 'drama',
+                      emoji: '🎭',
+                      gradient: ['#EC4899', '#DB2777'],
+                    },
+                    {
+                      id: 'comedy',
+                      emoji: '😂',
+                      gradient: ['#F59E0B', '#D97706'],
+                    },
+                    {
+                      id: 'family',
+                      emoji: '👨‍👩‍👧‍👦',
+                      gradient: ['#10B981', '#059669'],
+                    },
+                    {
+                      id: 'dance',
+                      emoji: '💃',
+                      gradient: ['#EF4444', '#DC2626'],
+                    },
+                    {
+                      id: 'opera',
+                      emoji: '🎤',
+                      gradient: ['#3B82F6', '#2563EB'],
+                    },
                   ]
               ).map((cat) => (
                 <TouchableOpacity
@@ -1871,15 +2010,30 @@ const styles = StyleSheet.create({
     ...typography.bodySmall,
     color: colors.neutral.text,
     marginStart: spacing.sm,
+    marginEnd: spacing.sm,
+
     flex: 1,
+  },
+  comingSoonCardShadow: {
+    borderRadius: 16,
+    marginEnd: spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
   },
   comingSoonCard: {
     width: 160,
     height: 220,
-    borderRadius: 16,
+    borderRadius: 14,
     overflow: 'hidden',
-    marginEnd: spacing.md,
     backgroundColor: colors.dark[700],
+  },
+  comingSoonBottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   comingSoonImage: { width: '100%', height: '100%' },
   comingSoonGradient: {

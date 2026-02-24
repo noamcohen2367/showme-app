@@ -3,9 +3,10 @@
 // ============================================
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 import { ShowBadge } from '../types/types';
 import { colors, typography, spacing } from '../theme/theme';
@@ -15,35 +16,32 @@ interface BadgeProps {
   size?: 'small' | 'medium';
 }
 
-const BADGE_CONFIG: Record<ShowBadge, { 
-  icon: keyof typeof Ionicons.glyphMap; 
-  color: string;
-  bgColor: string;
-}> = {
+const BADGE_CONFIG: Record<
+  ShowBadge,
+  {
+    icon: keyof typeof Ionicons.glyphMap;
+    color: string;
+  }
+> = {
   popular_in_area: {
     icon: 'flame',
     color: colors.badges.popular,
-    bgColor: 'rgba(245, 158, 11, 0.2)',
   },
   selling_fast: {
     icon: 'trending-up',
     color: colors.badges.sellingFast,
-    bgColor: 'rgba(239, 68, 68, 0.2)',
   },
   last_chance: {
     icon: 'time',
     color: colors.badges.lastChance,
-    bgColor: 'rgba(249, 115, 22, 0.2)',
   },
   new: {
     icon: 'sparkles',
     color: colors.badges.new,
-    bgColor: 'rgba(168, 85, 247, 0.2)',
   },
   special_price: {
     icon: 'pricetag',
     color: colors.badges.specialPrice,
-    bgColor: 'rgba(16, 185, 129, 0.2)',
   },
 };
 
@@ -58,28 +56,29 @@ export default function Badge({ type, size = 'small' }: BadgeProps) {
   const paddingV = size === 'small' ? spacing.xxs : spacing.xs;
 
   return (
-    <View 
+    <BlurView
+      intensity={50}
+      tint="dark"
       style={[
-        styles.container, 
-        { 
-          backgroundColor: config.bgColor,
+        styles.container,
+        {
           paddingHorizontal: paddingH,
           paddingVertical: paddingV,
           borderColor: config.color,
-        }
+        },
       ]}
     >
       <Ionicons name={config.icon} size={iconSize} color={config.color} />
-      <Text 
+      <Text
         style={[
-          styles.text, 
+          styles.text,
           size === 'medium' && styles.textMedium,
-          { color: config.color }
+          { color: config.color },
         ]}
       >
         {t(`badges.${type}`)}
       </Text>
-    </View>
+    </BlurView>
   );
 }
 
@@ -89,6 +88,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 12,
     borderWidth: 1,
+    overflow: 'hidden',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    elevation: 1,
   },
   text: {
     ...typography.labelSmall,
