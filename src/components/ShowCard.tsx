@@ -47,10 +47,18 @@ export default function ShowCard({
 
   const title = isHebrew ? show.titleHe : isRussian ? show.titleRu : show.title;
   const theaterName = theater
-    ? (isHebrew ? theater.nameHe : isRussian ? theater.nameRu : theater.name)
+    ? isHebrew
+      ? theater.nameHe
+      : isRussian
+        ? theater.nameRu
+        : theater.name
     : '';
 
-  const cardWidth = fullWidth ? '100%' : size === 'large' ? CARD_WIDTH : CARD_WIDTH_SMALL;
+  const cardWidth = fullWidth
+    ? '100%'
+    : size === 'large'
+      ? CARD_WIDTH
+      : CARD_WIDTH_SMALL;
   const imageHeight = size === 'large' || fullWidth ? 200 : 130;
 
   return (
@@ -83,7 +91,9 @@ export default function ShowCard({
         )}
 
         {/* Last Minute Deal Indicator */}
-        {show.availableDates?.some(d => d.times?.some(t => t.isLastMinuteDeal)) && (
+        {show.availableDates?.some((d) =>
+          d.times?.some((t) => t.isLastMinuteDeal),
+        ) && (
           <View style={styles.lastMinuteBadge}>
             <Ionicons name="flash" size={12} color={colors.semantic.warning} />
             <Text style={styles.lastMinuteText}>{t('home.lastMinute')}</Text>
@@ -99,29 +109,52 @@ export default function ShowCard({
 
       {/* Content */}
       <View style={styles.content}>
-        <Text style={[styles.title, { textAlign: isHebrew ? 'right' : 'left' }]} numberOfLines={2}>
+        <Text
+          style={[styles.title, { textAlign: isHebrew ? 'right' : 'left' }]}
+          numberOfLines={2}
+        >
           {title}
         </Text>
 
-        {showTheater && theaterName && (
-          <View style={[styles.theaterRow, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
-            <Ionicons
-              name="location-outline"
-              size={12}
-              color={colors.neutral.textTertiary}
-            />
-            <Text style={styles.theaterName} numberOfLines={1}>
-              {theaterName}
-            </Text>
-          </View>
-        )}
-
-        {/* Price */}
-        <View style={[styles.priceRow, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
-          <Text style={styles.priceLabel}>{t('common.from')}</Text>
-          <Text style={styles.price}>₪{show.startingPrice}</Text>
-          {show.originalPrice && (
-            <Text style={styles.originalPrice}>₪{show.originalPrice}</Text>
+        {/* Theater + Price — single row */}
+        <View
+          style={[
+            styles.infoRow,
+            { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+          ]}
+        >
+          {showTheater && theaterName ? (
+            <View
+              style={[
+                styles.theaterPart,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
+            >
+              <Ionicons
+                name="location-outline"
+                size={12}
+                color={colors.neutral.textTertiary}
+              />
+              <Text style={styles.theaterName} numberOfLines={1}>
+                {theaterName}
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.theaterPart} />
+          )}
+          {show.startingPrice > 0 && (
+            <View
+              style={[
+                styles.priceRow,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
+            >
+              <Text style={styles.priceLabel}>{t('common.from')}</Text>
+              <Text style={styles.price}>₪{show.startingPrice}</Text>
+              {show.originalPrice && (
+                <Text style={styles.originalPrice}>₪{show.originalPrice}</Text>
+              )}
+            </View>
           )}
         </View>
       </View>
@@ -197,16 +230,23 @@ const styles = StyleSheet.create({
     color: colors.neutral.text,
     marginBottom: spacing.xs,
   },
-  theaterRow: {
+  infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    justifyContent: 'space-between',
+    marginTop: spacing.sm,
+  },
+  theaterPart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginEnd: spacing.xs,
   },
   theaterName: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
     marginStart: spacing.xxs,
-    flex: 1,
+    flexShrink: 1,
   },
   priceRow: {
     flexDirection: 'row',

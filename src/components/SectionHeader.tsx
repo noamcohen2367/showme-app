@@ -24,13 +24,18 @@ export default function SectionHeader({
   const isHebrew = i18n.language === 'he';
 
   return (
-    <View style={[styles.container, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
+    <View
+      style={[
+        styles.container,
+        { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+      ]}
+    >
       <Text style={styles.title}>{title}</Text>
       {showSeeAll && onSeeAll && (
-        <TouchableOpacity onPress={onSeeAll} style={styles.seeAllButton}>
+        <TouchableOpacity onPress={onSeeAll} style={[styles.seeAllButton, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
           <Text style={styles.seeAllText}>{t('common.seeAll')}</Text>
           <Ionicons
-            name="chevron-forward"
+            name={isHebrew ? 'chevron-back' : 'chevron-forward'}
             size={16}
             color={colors.primary.main}
           />

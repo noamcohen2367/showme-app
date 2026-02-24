@@ -1224,7 +1224,7 @@ export default function HomeScreen() {
                   style={styles.infoBannerGradient}
                 />
                 <Ionicons name="calendar" size={20} color="#3B82F6" />
-                <Text style={styles.infoBannerText}>
+                <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
                   {t('home.weekendInfo')}
                 </Text>
               </View>
@@ -1272,7 +1272,7 @@ export default function HomeScreen() {
                   size={20}
                   color={colors.semantic.warning}
                 />
-                <Text style={styles.infoBannerText}>
+                <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
                   {t('home.lastMinuteInfo')}
                 </Text>
               </View>
@@ -1316,7 +1316,7 @@ export default function HomeScreen() {
                   style={styles.infoBannerGradient}
                 />
                 <Ionicons name="sparkles" size={20} color="#10B981" />
-                <Text style={styles.infoBannerText}>
+                <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
                   {t('home.newShowsInfo')}
                 </Text>
               </View>
@@ -1356,7 +1356,7 @@ export default function HomeScreen() {
                 style={styles.infoBannerGradient}
               />
               <Ionicons name="heart" size={20} color={colors.primary.main} />
-              <Text style={styles.infoBannerText}>
+              <Text style={[styles.infoBannerText, { textAlign: isHebrew ? 'right' : 'left' }]}>
                 {t('home.recommendedInfo')}
               </Text>
             </View>
