@@ -152,6 +152,7 @@ export default {
     selectDate: 'Select Date',
     selectTime: 'Select Time',
     venue: 'Venue',
+    nextShows: 'Next Shows',
     seats: 'seats',
     selectSeats: 'Select Seats',
     noAvailableDates: 'No available dates',

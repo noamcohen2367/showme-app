@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 1,
-    backgroundColor: 'rgba(168, 85, 247, 0.3)',
+    height: 0.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
 
   // Android Fallback
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   glowDot: {
-    width: 4,
-    height: 4,
+    width: 0,
+    height: 0,
     borderRadius: 2,
     backgroundColor: colors.primary.main,
     marginTop: spacing.xxs,

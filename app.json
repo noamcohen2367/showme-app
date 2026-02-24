@@ -28,6 +28,9 @@
     "extra": {
       "supportsRTL": true
     },
-    "plugins": ["expo-localization"]
+    "plugins": [
+      "expo-localization",
+      "expo-font"
+    ]
   }
 }

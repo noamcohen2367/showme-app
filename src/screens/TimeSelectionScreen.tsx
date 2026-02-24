@@ -131,14 +131,16 @@ export default function TimeSelectionScreen() {
         ) : (
           <View style={styles.timesGrid}>
             {availableTimes.map((timeSlot, index) => {
+              const isSoldOut = timeSlot.availableSeats === 0;
               const isSelected = selectedTime?.time === timeSlot.time;
               const availabilityColor = getAvailabilityColor(timeSlot.availableSeats);
 
               return (
                 <TouchableOpacity
                   key={index}
-                  style={[styles.timeCard, isSelected && styles.timeCardSelected]}
-                  onPress={() => setSelectedTime(timeSlot)}
+                  style={[styles.timeCard, isSelected && styles.timeCardSelected, isSoldOut && styles.timeCardSoldOut]}
+                  onPress={() => !isSoldOut && setSelectedTime(timeSlot)}
+                  disabled={isSoldOut}
                 >
                   {isSelected && (
                     <LinearGradient
@@ -146,38 +148,47 @@ export default function TimeSelectionScreen() {
                       style={StyleSheet.absoluteFill}
                     />
                   )}
-                  
+
                   <View style={styles.timeCardHeader}>
-                    <Text style={[styles.timeText, isSelected && styles.timeTextSelected]}>
+                    <Text style={[styles.timeText, isSelected && styles.timeTextSelected, isSoldOut && styles.timeTextSoldOut]}>
                       {timeSlot.time}
                     </Text>
-                    {isSelected && (
+                    {isSoldOut ? (
+                      <View style={styles.soldOutBadge}>
+                        <Ionicons name="close-circle" size={12} color={colors.semantic.error} />
+                        <Text style={styles.soldOutBadgeText}>{t('show.soldOut')}</Text>
+                      </View>
+                    ) : isSelected ? (
                       <Ionicons name="checkmark-circle" size={20} color={colors.primary.main} />
-                    )}
+                    ) : null}
                   </View>
 
-                  <View style={styles.availabilityRow}>
-                    <View style={[styles.availabilityDot, { backgroundColor: availabilityColor }]} />
-                    <Text style={styles.availabilityText}>
-                      {getAvailabilityText(timeSlot.availableSeats)}
-                    </Text>
-                  </View>
+                  {!isSoldOut && (
+                    <View style={styles.availabilityRow}>
+                      <View style={[styles.availabilityDot, { backgroundColor: availabilityColor }]} />
+                      <Text style={styles.availabilityText}>
+                        {getAvailabilityText(timeSlot.availableSeats)}
+                      </Text>
+                    </View>
+                  )}
 
                   <View style={styles.priceRow}>
-                    {timeSlot.isLastMinuteDeal && (
+                    {timeSlot.isLastMinuteDeal && !isSoldOut && (
                       <View style={styles.dealBadge}>
                         <Ionicons name="flash" size={12} color={colors.semantic.warning} />
                         <Text style={styles.dealText}>{t('home.lastMinute')}</Text>
                       </View>
                     )}
-                    <View style={styles.priceContainer}>
-                      {timeSlot.originalPrice && (
-                        <Text style={styles.originalPrice}>₪{timeSlot.originalPrice}</Text>
-                      )}
-                      <Text style={[styles.price, isSelected && styles.priceSelected]}>
-                        ₪{timeSlot.price}
-                      </Text>
-                    </View>
+                    {!isSoldOut && (
+                      <View style={styles.priceContainer}>
+                        {timeSlot.originalPrice && (
+                          <Text style={styles.originalPrice}>₪{timeSlot.originalPrice}</Text>
+                        )}
+                        <Text style={[styles.price, isSelected && styles.priceSelected]}>
+                          ₪{timeSlot.price}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 </TouchableOpacity>
               );
@@ -342,6 +353,28 @@ const styles = StyleSheet.create({
   },
   timeCardSelected: {
     borderColor: colors.primary.main,
+  },
+  timeCardSoldOut: {
+    borderColor: 'rgba(239, 68, 68, 0.2)',
+    opacity: 0.6,
+  },
+  timeTextSoldOut: {
+    color: colors.neutral.textTertiary,
+  },
+  soldOutBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xxs,
+    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+  },
+  soldOutBadgeText: {
+    ...typography.labelSmall,
+    color: colors.semantic.error,
   },
   timeCardHeader: {
     flexDirection: 'row',

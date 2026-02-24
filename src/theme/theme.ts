@@ -2,7 +2,7 @@
 // ShowMI App - Theme Configuration
 // ============================================
 
-import { Platform, TextStyle } from 'react-native';
+import { TextStyle } from 'react-native';
 
 // ============================================
 // Brand Constants (never change)
@@ -277,104 +277,83 @@ export const colors = {
 // Typography (theme-independent)
 // ============================================
 
-const _fontFamily = Platform.select({
-  ios: {
-    regular: 'System',
-    medium: 'System',
-    semibold: 'System',
-    bold: 'System',
-  },
-  android: {
-    regular: 'Roboto',
-    medium: 'Roboto-Medium',
-    semibold: 'Roboto-Medium',
-    bold: 'Roboto-Bold',
-  },
-  default: {
-    regular: 'System',
-    medium: 'System',
-    semibold: 'System',
-    bold: 'System',
-  },
-});
-
 export const typography = {
   displayLarge: {
+    fontFamily: 'Rubik_700Bold',
     fontSize: 40,
-    fontWeight: '700' as const,
     lineHeight: 48,
     letterSpacing: -1,
   } as TextStyle,
   displayMedium: {
+    fontFamily: 'Rubik_700Bold',
     fontSize: 32,
-    fontWeight: '700' as const,
     lineHeight: 40,
     letterSpacing: -0.5,
   } as TextStyle,
   displaySmall: {
+    fontFamily: 'Rubik_600SemiBold',
     fontSize: 28,
-    fontWeight: '600' as const,
     lineHeight: 36,
     letterSpacing: -0.5,
   } as TextStyle,
   headingLarge: {
+    fontFamily: 'Rubik_600SemiBold',
     fontSize: 24,
-    fontWeight: '600' as const,
     lineHeight: 32,
     letterSpacing: -0.3,
   } as TextStyle,
   headingMedium: {
+    fontFamily: 'Rubik_600SemiBold',
     fontSize: 20,
-    fontWeight: '600' as const,
     lineHeight: 28,
     letterSpacing: -0.2,
   } as TextStyle,
   headingSmall: {
+    fontFamily: 'Rubik_600SemiBold',
     fontSize: 18,
-    fontWeight: '600' as const,
     lineHeight: 24,
   } as TextStyle,
   bodyLarge: {
+    fontFamily: 'Rubik_400Regular',
     fontSize: 16,
-    fontWeight: '400' as const,
     lineHeight: 24,
   } as TextStyle,
   bodyMedium: {
+    fontFamily: 'Rubik_400Regular',
     fontSize: 14,
-    fontWeight: '400' as const,
     lineHeight: 20,
   } as TextStyle,
   bodySmall: {
+    fontFamily: 'Rubik_400Regular',
     fontSize: 12,
-    fontWeight: '400' as const,
     lineHeight: 16,
   } as TextStyle,
   labelLarge: {
+    fontFamily: 'Rubik_600SemiBold',
     fontSize: 14,
-    fontWeight: '600' as const,
     lineHeight: 20,
     letterSpacing: 0.1,
   } as TextStyle,
   labelMedium: {
+    fontFamily: 'Rubik_600SemiBold',
     fontSize: 12,
-    fontWeight: '600' as const,
     lineHeight: 16,
     letterSpacing: 0.1,
   } as TextStyle,
   labelSmall: {
+    fontFamily: 'Rubik_600SemiBold',
     fontSize: 10,
-    fontWeight: '600' as const,
     lineHeight: 14,
     letterSpacing: 0.2,
   } as TextStyle,
   price: {
+    fontFamily: 'Rubik_700Bold',
     fontSize: 22,
-    fontWeight: '700' as const,
     lineHeight: 28,
   } as TextStyle,
   caption: {
+    fontFamily: 'Rubik_400Regular',
     fontSize: 11,
-    fontWeight: '400' as const,
     lineHeight: 14,
     letterSpacing: 0.2,
   } as TextStyle,

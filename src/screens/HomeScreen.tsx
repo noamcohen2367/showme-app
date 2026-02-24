@@ -985,7 +985,7 @@ export default function HomeScreen() {
             ]}
           >
             <Image
-              source={require('../../assets/wordmark.png')}
+              source={require('../../assets/adaptive-icon.png')}
               style={styles.compactWordmark}
               contentFit="contain"
             />
@@ -1077,13 +1077,15 @@ export default function HomeScreen() {
                 { flexDirection: isHebrew ? 'row-reverse' : 'row' },
               ]}
             >
-              <View>
+              <View style={{ alignItems: isHebrew ? 'flex-end' : 'flex-start' }}>
                 <Image
                   source={require('../../assets/wordmark.png')}
                   style={styles.wordmark}
                   contentFit="contain"
                 />
-                <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
+                <Text style={[styles.subtitle, { textAlign: isHebrew ? 'right' : 'left' }]}>
+                  {t('home.subtitle')}
+                </Text>
               </View>
               <TouchableOpacity
                 style={styles.notificationButton}
@@ -1701,19 +1703,19 @@ const styles = StyleSheet.create({
   stickyBarContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
-    gap: spacing.sm,
+    paddingBottom: spacing.md,
   },
   compactWordmark: {
-    width: 80,
-    height: 36,
+    width: 50,
+    height: 50,
     flexShrink: 0,
   },
   stickyFiltersRow: {
     flex: 1,
     flexDirection: 'row',
-    gap: spacing.xs,
+    gap: spacing.xxs,
     overflow: 'hidden',
     transform: [{ scale: 0.88 }],
   },
@@ -1746,14 +1748,13 @@ const styles = StyleSheet.create({
   },
   // ──────────────────────────────────────────────────────────────────
   wordmark: {
-    width: 158,
-    height: 70,
+    width: 170,
+    height: 60,
   },
   subtitle: {
-    ...typography.bodyMedium,
+    ...typography.bodyLarge,
     color: colors.neutral.textSecondary,
-    // marginTop: spacing.xl,
-    marginStart: spacing.xs,
+    marginBottom: spacing.sm,
   },
   notificationButton: {
     width: 44,

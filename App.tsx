@@ -4,6 +4,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { StatusBar, View, StyleSheet } from 'react-native';
+import {
+  useFonts,
+  Rubik_400Regular,
+  Rubik_500Medium,
+  Rubik_600SemiBold,
+  Rubik_700Bold,
+} from '@expo-google-fonts/rubik';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -27,6 +34,13 @@ import LoginScreen from './src/screens/LoginScreen';
 import { getAuth } from './src/storage/mvpStorage';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Rubik_400Regular,
+    Rubik_500Medium,
+    Rubik_600SemiBold,
+    Rubik_700Bold,
+  });
+
   const [isReady, setIsReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -46,7 +60,7 @@ export default function App() {
     setShowSplash(false);
   };
 
-  if (!isReady || showSplash) {
+  if (!isReady || !fontsLoaded || showSplash) {
     return (
       <View style={styles.splashContainer}>
         <StatusBar

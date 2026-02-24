@@ -51,6 +51,14 @@ export default function DateSelectionScreen() {
     return new Set(show.availableDates.map(d => d.date));
   }, [show]);
 
+  // Get sold-out dates
+  const soldOutDates = useMemo(() => {
+    if (!show?.availableDates) return new Set<string>();
+    return new Set(
+      show.availableDates.filter(d => d.availability === 'sold_out').map(d => d.date)
+    );
+  }, [show]);
+
   // Generate calendar days
   const calendarDays = useMemo(() => {
     const year = currentMonth.getFullYear();
@@ -97,8 +105,12 @@ export default function DateSelectionScreen() {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
   };
 
+  const isDateSoldOut = (date: Date): boolean => {
+    return soldOutDates.has(formatDateString(date));
+  };
+
   const handleDateSelect = (date: Date) => {
-    if (!isPastDate(date) && isDateAvailable(date)) {
+    if (!isPastDate(date) && isDateAvailable(date) && !isDateSoldOut(date)) {
       setSelectedDate(formatDateString(date));
     }
   };
@@ -181,6 +193,7 @@ export default function DateSelectionScreen() {
             const dateStr = formatDateString(date);
             const isAvailable = isDateAvailable(date);
             const isPast = isPastDate(date);
+            const isSoldOut = isDateSoldOut(date);
             const isSelected = selectedDate === dateStr;
             const isToday = formatDateString(new Date()) === dateStr;
 
@@ -189,12 +202,13 @@ export default function DateSelectionScreen() {
                 key={dateStr}
                 style={styles.dayCell}
                 onPress={() => handleDateSelect(date)}
-                disabled={isPast || !isAvailable}
+                disabled={isPast || !isAvailable || isSoldOut}
               >
                 <View style={[
                   styles.dayInner,
                   isSelected && styles.daySelected,
                   isToday && !isSelected && styles.dayToday,
+                  isSoldOut && styles.dayInnerSoldOut,
                 ]}>
                   {isSelected && (
                     <LinearGradient
@@ -208,12 +222,16 @@ export default function DateSelectionScreen() {
                     styles.dayText,
                     isPast && styles.dayTextPast,
                     !isAvailable && !isPast && styles.dayTextUnavailable,
+                    isSoldOut && styles.dayTextSoldOut,
                     isSelected && styles.dayTextSelected,
                   ]}>
                     {date.getDate()}
                   </Text>
-                  {isAvailable && !isPast && (
+                  {isAvailable && !isPast && !isSoldOut && (
                     <View style={[styles.availableDot, isSelected && styles.availableDotSelected]} />
+                  )}
+                  {isSoldOut && (
+                    <View style={styles.soldOutDot} />
                   )}
                 </View>
               </TouchableOpacity>
@@ -226,6 +244,10 @@ export default function DateSelectionScreen() {
           <View style={styles.legendItem}>
             <View style={[styles.legendDot, { backgroundColor: colors.primary.main }]} />
             <Text style={styles.legendText}>{t('booking.available')}</Text>
+          </View>
+          <View style={styles.legendItem}>
+            <View style={[styles.legendDot, { backgroundColor: colors.semantic.error }]} />
+            <Text style={styles.legendText}>{t('show.soldOut')}</Text>
           </View>
           <View style={styles.legendItem}>
             <View style={[styles.legendDot, { backgroundColor: colors.neutral.textTertiary }]} />
@@ -429,6 +451,21 @@ const styles = StyleSheet.create({
   },
   availableDotSelected: {
     backgroundColor: colors.neutral.white,
+  },
+  dayInnerSoldOut: {
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+  },
+  dayTextSoldOut: {
+    color: colors.semantic.error,
+    opacity: 0.6,
+  },
+  soldOutDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.semantic.error,
+    marginTop: spacing.xxs,
   },
   legend: {
     flexDirection: 'row',

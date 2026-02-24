@@ -121,6 +121,7 @@ export default {
     selectTime: 'Выбрать время',
     selectSeats: 'Выбрать места',
     noAvailableDates: 'Нет доступных дат',
+    nextShows: 'Ближайшие показы',
     highDemand: 'Высокий спрос',
     limitedAvailability: 'Ограничено',
     soldOut: 'Распродано',

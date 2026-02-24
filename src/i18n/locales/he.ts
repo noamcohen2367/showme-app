@@ -146,6 +146,7 @@ export default {
     selectSeats: 'בחר מושבים',
     noAvailableDates: 'אין תאריכים זמינים',
     venue: 'אולם',
+    nextShows: 'מופעים הבאים',
     seats: 'מושבים',
     highDemand: 'ביקוש גבוה',
     limitedAvailability: 'זמינות מוגבלת',

@@ -2,7 +2,7 @@
 // ShowME App - Show Details Screen (Dark Aurora Theme)
 // ============================================
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -56,6 +56,26 @@ export default function ShowDetailsScreen() {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const galleryScrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    if (isHebrew) {
+      setTimeout(
+        () => galleryScrollRef.current?.scrollToEnd({ animated: false }),
+        50,
+      );
+    }
+  }, [isHebrew]);
+
+  const nextDates = useMemo(() => {
+    if (!show) return [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return show.availableDates
+      .filter((d) => new Date(d.date) >= today)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .slice(0, 5);
+  }, [show]);
 
   if (loading) {
     return <ShowDetailsSkeleton />;
@@ -84,13 +104,13 @@ export default function ShowDetailsScreen() {
   const description = isHebrew
     ? show.descriptionHe
     : isRussian
-    ? show.descriptionRu
-    : show.description;
+      ? show.descriptionRu
+      : show.description;
   const theaterName = isHebrew
     ? theater.nameHe
     : isRussian
-    ? theater.nameRu
-    : theater.name;
+      ? theater.nameRu
+      : theater.name;
 
   const galleryImages = show.galleryImages || [show.imageUrl];
   const castActors =
@@ -147,11 +167,7 @@ export default function ShowDetailsScreen() {
         style={[styles.headerButtonsRight, { top: insets.top + spacing.sm }]}
       >
         <TouchableOpacity style={styles.headerButton} onPress={() => {}}>
-          <Ionicons
-            name="share-outline"
-            size={24}
-            color="#FFFFFF"
-          />
+          <Ionicons name="share-outline" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.headerButton}
@@ -169,7 +185,7 @@ export default function ShowDetailsScreen() {
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
+          { useNativeDriver: true },
         )}
         scrollEventThrottle={16}
       >
@@ -182,17 +198,24 @@ export default function ShowDetailsScreen() {
             transition={400}
           />
           <LinearGradient
-            colors={[
-              'transparent',
-              'rgba(10, 10, 15, 0.6)',
-              colors.dark[900],
-            ]}
+            colors={['transparent', 'rgba(10, 10, 15, 0.6)', colors.dark[900]]}
             style={styles.heroGradient}
           />
 
           {/* Badges */}
           {show.badges && show.badges.length > 0 && (
-            <View style={styles.badgesContainer}>
+            <View
+              style={[
+                styles.badgesContainer,
+                isHebrew
+                  ? {
+                      flexDirection: 'row-reverse',
+                      start: undefined,
+                      end: spacing.lg,
+                    }
+                  : { flexDirection: 'row' },
+              ]}
+            >
               {show.badges.slice(0, 2).map((badge, index) => (
                 <Badge key={index} type={badge} size="medium" />
               ))}
@@ -203,7 +226,11 @@ export default function ShowDetailsScreen() {
         {/* Gallery Thumbnails */}
         {galleryImages.length > 1 && (
           <View style={styles.galleryContainer}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <ScrollView
+              ref={galleryScrollRef}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
               {galleryImages.map((image, index) => (
                 <TouchableOpacity
                   key={index}
@@ -229,9 +256,23 @@ export default function ShowDetailsScreen() {
         {/* Content */}
         <View style={styles.content}>
           {/* Title & Rating */}
-          <View style={styles.titleSection}>
-            <Text style={styles.title}>{title}</Text>
-            <View style={styles.ratingContainer}>
+          <View
+            style={[
+              styles.titleSection,
+              { alignItems: isHebrew ? 'flex-end' : 'flex-start' },
+            ]}
+          >
+            <Text
+              style={[styles.title, { textAlign: isHebrew ? 'right' : 'left' }]}
+            >
+              {title}
+            </Text>
+            <View
+              style={[
+                styles.ratingContainer,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
+            >
               <Ionicons name="star" size={18} color={colors.semantic.warning} />
               <Text style={styles.rating}>{show.rating}</Text>
               <Text style={styles.reviewCount}>({show.reviewCount})</Text>
@@ -239,8 +280,21 @@ export default function ShowDetailsScreen() {
           </View>
 
           {/* Quick Info */}
-          <View style={styles.quickInfo}>
-            <View style={styles.quickInfoItem}>
+          <View
+            style={[
+              styles.quickInfo,
+              { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+            ]}
+          >
+            <View
+              style={[
+                styles.quickInfoItem,
+                {
+                  flexDirection: isHebrew ? 'row-reverse' : 'row',
+                  gap: spacing.xs,
+                },
+              ]}
+            >
               <Ionicons
                 name="location-outline"
                 size={18}
@@ -248,7 +302,15 @@ export default function ShowDetailsScreen() {
               />
               <Text style={styles.quickInfoText}>{theaterName}</Text>
             </View>
-            <View style={styles.quickInfoItem}>
+            <View
+              style={[
+                styles.quickInfoItem,
+                {
+                  flexDirection: isHebrew ? 'row-reverse' : 'row',
+                  gap: spacing.xs,
+                },
+              ]}
+            >
               <Ionicons
                 name="time-outline"
                 size={18}
@@ -258,7 +320,15 @@ export default function ShowDetailsScreen() {
                 {show.duration} {t('common.minutes')}
               </Text>
             </View>
-            <View style={styles.quickInfoItem}>
+            <View
+              style={[
+                styles.quickInfoItem,
+                {
+                  flexDirection: isHebrew ? 'row-reverse' : 'row',
+                  gap: spacing.xs,
+                },
+              ]}
+            >
               <Ionicons
                 name="language-outline"
                 size={18}
@@ -269,7 +339,12 @@ export default function ShowDetailsScreen() {
           </View>
 
           {/* Categories */}
-          <View style={styles.categoriesContainer}>
+          <View
+            style={[
+              styles.categoriesContainer,
+              { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+            ]}
+          >
             {show.categories.slice(0, 3).map((category, index) => (
               <View key={index} style={styles.categoryChip}>
                 <Text style={styles.categoryChipText}>
@@ -281,14 +356,35 @@ export default function ShowDetailsScreen() {
 
           {/* Description */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('show.about')}</Text>
-            <Text style={styles.description}>{description}</Text>
+            <Text
+              style={[
+                styles.sectionTitle,
+                { textAlign: isHebrew ? 'right' : 'left' },
+              ]}
+            >
+              {t('show.about')}
+            </Text>
+            <Text
+              style={[
+                styles.description,
+                { textAlign: isHebrew ? 'right' : 'left' },
+              ]}
+            >
+              {description}
+            </Text>
           </View>
 
           {/* Cast */}
           {castActors.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>{t('show.cast')}</Text>
+              <Text
+                style={[
+                  styles.sectionTitle,
+                  { textAlign: isHebrew ? 'right' : 'left' },
+                ]}
+              >
+                {t('show.cast')}
+              </Text>
               <FlatList
                 data={castActors}
                 renderItem={({ item }) => (
@@ -301,15 +397,75 @@ export default function ShowDetailsScreen() {
                 )}
                 keyExtractor={(item) => item!.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
               />
             </View>
           )}
 
+          {/* Next Shows */}
+          {nextDates.length > 0 && (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { textAlign: isHebrew ? 'right' : 'left' }]}>
+                {t('show.nextShows')}
+              </Text>
+              {nextDates.map((dateItem, index) => {
+                const locale = isHebrew ? 'he-IL' : isRussian ? 'ru-RU' : 'en-US';
+                const formattedDate = new Date(dateItem.date).toLocaleDateString(locale, {
+                  weekday: 'short',
+                  month: 'short',
+                  day: 'numeric',
+                });
+                const isSoldOut = dateItem.availability === 'sold_out';
+                return (
+                  <View
+                    key={index}
+                    style={[
+                      styles.nextShowRow,
+                      { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+                      index === nextDates.length - 1 && { borderBottomWidth: 0 },
+                    ]}
+                  >
+                    <Text style={[styles.nextShowDate, isSoldOut && styles.nextShowSoldOutText]}>
+                      {formattedDate}
+                    </Text>
+                    <View style={[styles.nextShowTimes, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
+                      {dateItem.times.map((time, ti) => {
+                        const isTimeSoldOut = isSoldOut || time.availableSeats === 0;
+                        return (
+                          <View key={ti} style={[styles.nextShowTimeChip, isTimeSoldOut && styles.nextShowTimeChipSoldOut]}>
+                            <Text style={[styles.nextShowTimeText, isTimeSoldOut && styles.nextShowSoldOutText]}>
+                              {time.time}
+                            </Text>
+                            {isTimeSoldOut && (
+                              <Text style={styles.nextShowTimeSoldOutLabel}>{t('show.soldOut')}</Text>
+                            )}
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+          )}
+
           {/* Venue Info */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('show.venue')}</Text>
-            <TouchableOpacity style={styles.venueCard}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                { textAlign: isHebrew ? 'right' : 'left' },
+              ]}
+            >
+              {t('show.venue')}
+            </Text>
+            <TouchableOpacity
+              style={[
+                styles.venueCard,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
+            >
               <Image
                 source={{ uri: theater.imageUrl }}
                 style={styles.venueImage}
@@ -317,20 +473,40 @@ export default function ShowDetailsScreen() {
                 transition={200}
               />
               <View style={styles.venueInfo}>
-                <Text style={styles.venueName}>{theaterName}</Text>
-                <View style={styles.venueAddress}>
+                <Text
+                  style={[
+                    styles.venueName,
+                    { textAlign: isHebrew ? 'right' : 'left' },
+                  ]}
+                >
+                  {theaterName}
+                </Text>
+                <View
+                  style={[
+                    styles.venueAddress,
+                    {
+                      flexDirection: isHebrew ? 'row-reverse' : 'row',
+                      gap: spacing.xs,
+                    },
+                  ]}
+                >
                   <Ionicons
                     name="navigate-outline"
                     size={14}
                     color={colors.neutral.textTertiary}
                   />
-                  <Text style={styles.venueAddressText}>
+                  <Text
+                    style={[
+                      styles.venueAddressText,
+                      { flex: 0, flexShrink: 1 },
+                    ]}
+                  >
                     {isHebrew ? theater.addressHe : theater.address}
                   </Text>
                 </View>
               </View>
               <Ionicons
-                name="chevron-forward"
+                name={isHebrew ? 'chevron-back' : 'chevron-forward'}
                 size={20}
                 color={colors.neutral.textTertiary}
               />
@@ -352,21 +528,36 @@ export default function ShowDetailsScreen() {
         <BlurView intensity={80} tint="dark" style={styles.bottomCTABlur}>
           <View style={styles.bottomCTAGradient} />
         </BlurView>
-        <View style={styles.bottomCTAContent}>
-          <View style={styles.priceContainer}>
-            <Text style={styles.priceLabel}>{t('common.from')}</Text>
-            <Text style={styles.price}>₪{show.startingPrice}</Text>
-          </View>
+        <View
+          style={[
+            styles.bottomCTAContent,
+            { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+          ]}
+        >
+          {show.startingPrice > 0 && (
+            <View
+              style={[
+                styles.priceContainer,
+                { alignItems: isHebrew ? 'flex-end' : 'flex-start' },
+              ]}
+            >
+              <Text style={styles.priceLabel}>{t('common.from')}</Text>
+              <Text style={styles.price}>₪{show.startingPrice}</Text>
+            </View>
+          )}
           <TouchableOpacity style={styles.bookButton} onPress={handleBookNow}>
             <LinearGradient
               colors={[colors.primary.main, colors.primary.dark]}
-              style={styles.bookButtonGradient}
+              style={[
+                styles.bookButtonGradient,
+                { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+              ]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
             >
               <Text style={styles.bookButtonText}>{t('common.bookNow')}</Text>
               <Ionicons
-                name="arrow-forward"
+                name={isHebrew ? 'arrow-back' : 'arrow-forward'}
                 size={20}
                 color="#FFFFFF"
               />
@@ -566,10 +757,11 @@ const styles = StyleSheet.create({
     borderColor: colors.dark[500],
   },
   venueImage: {
-    width: 60,
-    height: 60,
+    width: 65,
+    height: 65,
     borderRadius: 8,
     marginEnd: spacing.md,
+    marginStart: spacing.lg,
   },
   venueInfo: {
     flex: 1,
@@ -587,6 +779,7 @@ const styles = StyleSheet.create({
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
     marginStart: spacing.xxs,
+    marginEnd: spacing.xxs,
     flex: 1,
   },
   bottomCTA: {
@@ -603,7 +796,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(20, 20, 30, 0.5)',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(168, 85, 247, 0.3)',
+    borderTopColor: 'rgba(169, 85, 247, 0.2)',
   },
   bottomCTAContent: {
     flexDirection: 'row',
@@ -624,7 +817,7 @@ const styles = StyleSheet.create({
   },
   bookButton: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 14,
     overflow: 'hidden',
   },
   bookButtonGradient: {
@@ -637,5 +830,67 @@ const styles = StyleSheet.create({
   bookButtonText: {
     ...typography.labelLarge,
     color: '#FFFFFF',
+  },
+  nextShowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.dark[600],
+    gap: spacing.md,
+  },
+  nextShowDate: {
+    ...typography.labelMedium,
+    color: colors.neutral.text,
+  },
+  nextShowTimes: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    justifyContent: 'flex-end',
+  },
+  nextShowTimeChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xxs,
+    backgroundColor: 'rgba(168, 85, 247, 0.15)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.primary.main,
+  },
+  nextShowTimeChipSoldOut: {
+    backgroundColor: colors.dark[700],
+    borderColor: colors.dark[500],
+  },
+  nextShowTimeText: {
+    ...typography.labelSmall,
+    color: colors.primary.main,
+  },
+  nextShowSoldOutText: {
+    color: colors.neutral.textTertiary,
+  },
+  soldOutBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xxs,
+    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+  },
+  soldOutBadgeText: {
+    ...typography.labelSmall,
+    color: colors.semantic.error,
+  },
+  nextShowTimeSoldOutLabel: {
+    ...typography.labelSmall,
+    color: colors.semantic.error,
+    marginStart: spacing.xxs,
+    opacity: 0.8,
   },
 });
