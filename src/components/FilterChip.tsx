@@ -6,6 +6,7 @@
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { colors, typography, spacing } from '../theme/theme';
 
@@ -18,15 +19,17 @@ interface FilterChipProps {
   onClear?: () => void; // NEW: Optional callback for clear action
 }
 
-export default function FilterChip({ 
-  label, 
-  selected = false, 
+export default function FilterChip({
+  label,
+  selected = false,
   onPress,
   icon,
   showClear = false,
   onClear,
 }: FilterChipProps) {
-  
+  const { i18n } = useTranslation();
+  const isHebrew = i18n.language === 'he';
+
   const handleClearPress = (e: any) => {
     e.stopPropagation?.();
     if (onClear) {
@@ -38,11 +41,12 @@ export default function FilterChip({
   };
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
-        styles.container, 
-        selected && styles.containerSelected
-      ]} 
+        styles.container,
+        selected && styles.containerSelected,
+        { flexDirection: isHebrew ? 'row-reverse' : 'row' },
+      ]}
       onPress={onPress}
       activeOpacity={0.7}
     >

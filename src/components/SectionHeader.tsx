@@ -3,7 +3,7 @@
 // ============================================
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, I18nManager } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -20,16 +20,17 @@ export default function SectionHeader({
   onSeeAll,
   showSeeAll = true,
 }: SectionHeaderProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isHebrew = i18n.language === 'he';
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
       <Text style={styles.title}>{title}</Text>
       {showSeeAll && onSeeAll && (
         <TouchableOpacity onPress={onSeeAll} style={styles.seeAllButton}>
           <Text style={styles.seeAllText}>{t('common.seeAll')}</Text>
           <Ionicons
-            name={I18nManager.isRTL ? 'chevron-back' : 'chevron-forward'}
+            name="chevron-forward"
             size={16}
             color={colors.primary.main}
           />

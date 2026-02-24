@@ -199,7 +199,7 @@ const STORIES: Story[] = [
   },
 ];
 
-// Promotional Banner Data
+/* PromoBanner — disabled for v1
 interface PromoBanner {
   id: string;
   title: string;
@@ -251,6 +251,7 @@ const PROMO_BANNERS: PromoBanner[] = [
     badgeHe: '👨‍👩‍👧‍👦 משפחה',
   },
 ];
+*/
 
 // ============================================
 // Story Viewer Component
@@ -512,8 +513,10 @@ export default function HomeScreen() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [storyViewerVisible, setStoryViewerVisible] = useState(false);
   const [selectedStoryIndex, setSelectedStoryIndex] = useState(0);
-  const [activePromoIndex, setActivePromoIndex] = useState(0);
-  const promoScrollRef = useRef<FlatList>(null);
+  // const [activePromoIndex, setActivePromoIndex] = useState(0); // PromoBanner v1
+  // const promoScrollRef = useRef<FlatList>(null); // PromoBanner v1
+  const heroFilterRef = useRef<ScrollView>(null);
+  const categoryScrollRef = useRef<ScrollView>(null);
   const [showDateModal, setShowDateModal] = useState(false);
   const [dateFilter, setDateFilter] = useState<DateFilterValue | null>(null);
 
@@ -554,6 +557,20 @@ export default function HomeScreen() {
   // ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isHebrew) {
+        heroFilterRef.current?.scrollToEnd({ animated: false });
+        categoryScrollRef.current?.scrollToEnd({ animated: false });
+      } else {
+        heroFilterRef.current?.scrollTo({ x: 0, animated: false });
+        categoryScrollRef.current?.scrollTo({ x: 0, animated: false });
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [isHebrew]);
+
+  /* PromoBanner v1 — auto-scroll disabled
+  useEffect(() => {
     const interval = setInterval(() => {
       const nextIndex = (activePromoIndex + 1) % PROMO_BANNERS.length;
       promoScrollRef.current?.scrollToIndex({
@@ -564,6 +581,7 @@ export default function HomeScreen() {
     }, 5000);
     return () => clearInterval(interval);
   }, [activePromoIndex]);
+  */
 
   const theaterLocationMap = useMemo(() => {
     const map = new Map<string, LocationArea>();
@@ -774,6 +792,7 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
+  /* PromoBanner v1 — renderPromoBanner disabled
   const renderPromoBanner = ({ item }: { item: PromoBanner }) => (
     <TouchableOpacity
       style={styles.promoBanner}
@@ -820,6 +839,7 @@ export default function HomeScreen() {
       </View>
     </TouchableOpacity>
   );
+  */
 
   const renderComingSoonCard = ({ item }: { item: Show }) => {
     const firstDate = item.availableDates?.[0]?.date;
@@ -885,7 +905,7 @@ export default function HomeScreen() {
       {(loading && shows.length === 0) ||
       (!loading && shows.length === 0 && error) ? (
         /* Static header shown during loading / error states */
-        <View style={[styles.staticHeader, { paddingTop: insets.top }]}>
+        <View style={[styles.staticHeader, { paddingTop: insets.top, flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
           <Image
             source={require('../../assets/wordmark.png')}
             style={styles.wordmark}
@@ -915,14 +935,14 @@ export default function HomeScreen() {
           />
           {/* Compact content row fades in */}
           <Animated.View
-            style={[styles.stickyBarContent, { opacity: stickyContentOpacity }]}
+            style={[styles.stickyBarContent, { opacity: stickyContentOpacity, flexDirection: isHebrew ? 'row-reverse' : 'row' }]}
           >
             <Image
               source={require('../../assets/wordmark.png')}
               style={styles.compactWordmark}
               contentFit="contain"
             />
-            <View style={styles.stickyFiltersRow}>
+            <View style={[styles.stickyFiltersRow, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
               <FilterChip
                 label={getLocationLabel()}
                 icon="location-outline"
@@ -999,7 +1019,7 @@ export default function HomeScreen() {
 
           {/* Hero section — wordmark + subtitle + filters, scrolls away */}
           <Animated.View style={[styles.heroSection, { opacity: heroOpacity }]}>
-            <View style={styles.heroHeader}>
+            <View style={[styles.heroHeader, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
               <View>
                 <Image
                   source={require('../../assets/wordmark.png')}
@@ -1022,38 +1042,74 @@ export default function HomeScreen() {
             </View>
             <View style={styles.heroFiltersRow}>
               <ScrollView
+                ref={heroFilterRef}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.filtersContent}
               >
-                <FilterChip
-                  label={getLocationLabel()}
-                  icon="location-outline"
-                  selected={selectedLocation !== null}
-                  onPress={() => setShowLocationModal(true)}
-                  showClear={selectedLocation !== null}
-                  onClear={() => setSelectedLocation(null)}
-                />
-                <FilterChip
-                  label={
-                    selectedCategories.length > 0
-                      ? `${t('common.category')} (${selectedCategories.length})`
-                      : t('common.category')
-                  }
-                  icon="grid-outline"
-                  selected={selectedCategories.length > 0}
-                  onPress={() => setShowCategoryModal(true)}
-                  showClear={selectedCategories.length > 0}
-                  onClear={() => setSelectedCategories([])}
-                />
-                <FilterChip
-                  label={getDateFilterLabel()}
-                  icon="calendar-outline"
-                  selected={dateFilter !== null}
-                  onPress={() => setShowDateModal(true)}
-                  showClear={dateFilter !== null}
-                  onClear={() => setDateFilter(null)}
-                />
+                {isHebrew ? (
+                  <>
+                    <FilterChip
+                      label={getDateFilterLabel()}
+                      icon="calendar-outline"
+                      selected={dateFilter !== null}
+                      onPress={() => setShowDateModal(true)}
+                      showClear={dateFilter !== null}
+                      onClear={() => setDateFilter(null)}
+                    />
+                    <FilterChip
+                      label={
+                        selectedCategories.length > 0
+                          ? `${t('common.category')} (${selectedCategories.length})`
+                          : t('common.category')
+                      }
+                      icon="grid-outline"
+                      selected={selectedCategories.length > 0}
+                      onPress={() => setShowCategoryModal(true)}
+                      showClear={selectedCategories.length > 0}
+                      onClear={() => setSelectedCategories([])}
+                    />
+                    <FilterChip
+                      label={getLocationLabel()}
+                      icon="location-outline"
+                      selected={selectedLocation !== null}
+                      onPress={() => setShowLocationModal(true)}
+                      showClear={selectedLocation !== null}
+                      onClear={() => setSelectedLocation(null)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FilterChip
+                      label={getLocationLabel()}
+                      icon="location-outline"
+                      selected={selectedLocation !== null}
+                      onPress={() => setShowLocationModal(true)}
+                      showClear={selectedLocation !== null}
+                      onClear={() => setSelectedLocation(null)}
+                    />
+                    <FilterChip
+                      label={
+                        selectedCategories.length > 0
+                          ? `${t('common.category')} (${selectedCategories.length})`
+                          : t('common.category')
+                      }
+                      icon="grid-outline"
+                      selected={selectedCategories.length > 0}
+                      onPress={() => setShowCategoryModal(true)}
+                      showClear={selectedCategories.length > 0}
+                      onClear={() => setSelectedCategories([])}
+                    />
+                    <FilterChip
+                      label={getDateFilterLabel()}
+                      icon="calendar-outline"
+                      selected={dateFilter !== null}
+                      onPress={() => setShowDateModal(true)}
+                      showClear={dateFilter !== null}
+                      onClear={() => setDateFilter(null)}
+                    />
+                  </>
+                )}
               </ScrollView>
             </View>
           </Animated.View>
@@ -1071,13 +1127,14 @@ export default function HomeScreen() {
                 renderItem={renderStoryItem}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.storiesList}
               />
             </View>
           </Animated.View>
 
-          {/* Promo Banners */}
+          {/* PromoBanner v1 — disabled
           <View style={styles.promoSection}>
             <FlatList
               ref={promoScrollRef}
@@ -1114,6 +1171,7 @@ export default function HomeScreen() {
               ))}
             </View>
           </View>
+          */}
 
           {/* Top in Your Area */}
           <View style={styles.section}>
@@ -1132,6 +1190,7 @@ export default function HomeScreen() {
                 renderItem={renderShowCard}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
               />
@@ -1154,7 +1213,7 @@ export default function HomeScreen() {
                   })
                 }
               />
-              <View style={styles.infoBanner}>
+              <View style={[styles.infoBanner, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
                 <LinearGradient
                   colors={[
                     'rgba(59, 130, 246, 0.2)',
@@ -1174,6 +1233,7 @@ export default function HomeScreen() {
                 renderItem={renderShowCard}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
               />
@@ -1195,7 +1255,7 @@ export default function HomeScreen() {
               <View
                 style={[
                   styles.infoBanner,
-                  { borderColor: 'rgba(245, 158, 11, 0.3)' },
+                  { borderColor: 'rgba(245, 158, 11, 0.3)', flexDirection: isHebrew ? 'row-reverse' : 'row' },
                 ]}
               >
                 <LinearGradient
@@ -1221,6 +1281,7 @@ export default function HomeScreen() {
                 renderItem={renderShowCard}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
               />
@@ -1242,7 +1303,7 @@ export default function HomeScreen() {
               <View
                 style={[
                   styles.infoBanner,
-                  { borderColor: 'rgba(16, 185, 129, 0.3)' },
+                  { borderColor: 'rgba(16, 185, 129, 0.3)', flexDirection: isHebrew ? 'row-reverse' : 'row' },
                 ]}
               >
                 <LinearGradient
@@ -1264,6 +1325,7 @@ export default function HomeScreen() {
                 renderItem={renderShowCard}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
               />
@@ -1284,7 +1346,7 @@ export default function HomeScreen() {
             <View
               style={[
                 styles.infoBanner,
-                { borderColor: 'rgba(168, 85, 247, 0.3)' },
+                { borderColor: 'rgba(168, 85, 247, 0.3)', flexDirection: isHebrew ? 'row-reverse' : 'row' },
               ]}
             >
               <LinearGradient
@@ -1304,6 +1366,7 @@ export default function HomeScreen() {
                 renderItem={renderShowCard}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
               />
@@ -1331,6 +1394,7 @@ export default function HomeScreen() {
                 renderItem={renderComingSoonCard}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
               />
@@ -1360,6 +1424,7 @@ export default function HomeScreen() {
                 )}
                 keyExtractor={(item) => item.id}
                 horizontal
+                inverted={isHebrew}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
               />
@@ -1379,22 +1444,29 @@ export default function HomeScreen() {
               }
             />
             <ScrollView
+              ref={categoryScrollRef}
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.categoryQuickAccess}
             >
-              {[
-                {
-                  id: 'musical',
-                  emoji: '🎵',
-                  gradient: ['#A855F7', '#7C3AED'],
-                },
-                { id: 'drama', emoji: '🎭', gradient: ['#EC4899', '#DB2777'] },
-                { id: 'comedy', emoji: '😂', gradient: ['#F59E0B', '#D97706'] },
-                { id: 'family', emoji: '👨‍👩‍👧‍👦', gradient: ['#10B981', '#059669'] },
-                { id: 'dance', emoji: '💃', gradient: ['#EF4444', '#DC2626'] },
-                { id: 'opera', emoji: '🎤', gradient: ['#3B82F6', '#2563EB'] },
-              ].map((cat) => (
+              {(isHebrew
+                ? [
+                    { id: 'opera', emoji: '🎤', gradient: ['#3B82F6', '#2563EB'] },
+                    { id: 'dance', emoji: '💃', gradient: ['#EF4444', '#DC2626'] },
+                    { id: 'family', emoji: '👨‍👩‍👧‍👦', gradient: ['#10B981', '#059669'] },
+                    { id: 'comedy', emoji: '😂', gradient: ['#F59E0B', '#D97706'] },
+                    { id: 'drama', emoji: '🎭', gradient: ['#EC4899', '#DB2777'] },
+                    { id: 'musical', emoji: '🎵', gradient: ['#A855F7', '#7C3AED'] },
+                  ]
+                : [
+                    { id: 'musical', emoji: '🎵', gradient: ['#A855F7', '#7C3AED'] },
+                    { id: 'drama', emoji: '🎭', gradient: ['#EC4899', '#DB2777'] },
+                    { id: 'comedy', emoji: '😂', gradient: ['#F59E0B', '#D97706'] },
+                    { id: 'family', emoji: '👨‍👩‍👧‍👦', gradient: ['#10B981', '#059669'] },
+                    { id: 'dance', emoji: '💃', gradient: ['#EF4444', '#DC2626'] },
+                    { id: 'opera', emoji: '🎤', gradient: ['#3B82F6', '#2563EB'] },
+                  ]
+              ).map((cat) => (
                 <TouchableOpacity
                   key={cat.id}
                   style={styles.categoryQuickCard}

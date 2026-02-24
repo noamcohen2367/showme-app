@@ -99,12 +99,12 @@ export default function ShowCard({
 
       {/* Content */}
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={2}>
+        <Text style={[styles.title, { textAlign: isHebrew ? 'right' : 'left' }]} numberOfLines={2}>
           {title}
         </Text>
 
         {showTheater && theaterName && (
-          <View style={styles.theaterRow}>
+          <View style={[styles.theaterRow, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
             <Ionicons
               name="location-outline"
               size={12}
@@ -117,7 +117,7 @@ export default function ShowCard({
         )}
 
         {/* Price */}
-        <View style={styles.priceRow}>
+        <View style={[styles.priceRow, { flexDirection: isHebrew ? 'row-reverse' : 'row' }]}>
           <Text style={styles.priceLabel}>{t('common.from')}</Text>
           <Text style={styles.price}>₪{show.startingPrice}</Text>
           {show.originalPrice && (
