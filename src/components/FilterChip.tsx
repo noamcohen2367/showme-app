@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
     borderWidth: 1,
     borderColor: colors.dark[500],
     maxWidth: 200,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary.main,
   },
   icon: {
-    marginRight: spacing.xs,
+    marginEnd: spacing.xs,
   },
   label: {
     ...typography.labelMedium,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     color: colors.primary.main,
   },
   clearButton: {
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
     padding: 2,
   },
 });

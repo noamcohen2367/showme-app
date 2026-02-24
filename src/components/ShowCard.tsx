@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.dark[700],
     borderRadius: 16,
     overflow: 'hidden',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
     borderWidth: 1,
     borderColor: colors.dark[500],
   },
@@ -153,12 +153,12 @@ const styles = StyleSheet.create({
   badgeContainer: {
     position: 'absolute',
     top: spacing.sm,
-    left: spacing.sm,
+    start: spacing.sm,
   },
   lastMinuteBadge: {
     position: 'absolute',
     bottom: spacing.sm,
-    left: spacing.sm,
+    start: spacing.sm,
     backgroundColor: 'rgba(245, 158, 11, 0.2)',
     flexDirection: 'row',
     alignItems: 'center',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   lastMinuteText: {
     ...typography.labelSmall,
     color: colors.semantic.warning,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
   },
   ratingBadge: {
     position: 'absolute',
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   ratingBadgeText: {
     ...typography.labelSmall,
     color: colors.neutral.white,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
   },
   content: {
     padding: spacing.md,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   theaterName: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
     flex: 1,
   },
   priceRow: {
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   priceLabel: {
     ...typography.bodySmall,
     color: colors.neutral.textSecondary,
-    marginRight: spacing.xxs,
+    marginEnd: spacing.xxs,
   },
   price: {
     ...typography.labelLarge,
@@ -226,6 +226,6 @@ const styles = StyleSheet.create({
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
     textDecorationLine: 'line-through',
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
 });

@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   countdownBadge: {
     position: 'absolute',
     top: spacing.md,
-    right: spacing.md,
+    end: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   pastBadge: {
     position: 'absolute',
     top: spacing.md,
-    right: spacing.md,
+    end: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(16, 185, 129, 0.2)',

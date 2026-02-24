@@ -47,7 +47,7 @@ export default {
   navigation: {
     home: 'בית',
     search: 'חיפוש',
-    myPerformances: 'ההופעות שלי',
+    myPerformances: 'רשימת צפייה',
     mySubscriptions: 'מנויים',
     profile: 'פרופיל',
   },
@@ -351,7 +351,7 @@ export default {
 
   // Performances (My Tickets)
   performances: {
-    title: 'הכרטיסים שלי',
+    title: 'רשימת צפייה',
     upcoming: 'עתידיות',
     past: 'קודמות',
     noUpcoming: 'אין הופעות קרובות',

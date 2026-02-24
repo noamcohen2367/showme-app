@@ -37,7 +37,7 @@ export default {
   navigation: {
     home: 'Главная',
     search: 'Поиск',
-    myPerformances: 'Мои шоу',
+    myPerformances: 'Список просмотра',
     mySubscriptions: 'Подписки',
     profile: 'Профиль',
   },
@@ -202,7 +202,7 @@ export default {
 
   // My Performances
   performances: {
-    title: 'Мои шоу',
+    title: 'Список просмотра',
     upcoming: 'Предстоящие',
     past: 'Прошедшие',
     noUpcoming: 'Нет предстоящих шоу',

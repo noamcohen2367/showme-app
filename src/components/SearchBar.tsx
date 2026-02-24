@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     height: 48,
   },
   searchIcon: {
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   input: {
     flex: 1,
@@ -98,6 +98,6 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     padding: spacing.xs,
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
 });

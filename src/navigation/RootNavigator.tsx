@@ -4,7 +4,6 @@
 
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useTranslation } from 'react-i18next';
 
 import { RootStackParamList } from '../types/types';
 import { colors, typography } from '../theme/theme';
@@ -53,10 +52,12 @@ import HallLibraryScreen from '../screens/HallLibraryScreen';
 import HallDetailsScreen from '../screens/HallDetailsScreen';
 import ShowListScreen from '../screens/ShowListScreen';
 
+// MVP screens
+import FAQScreen from '../screens/FAQScreen';
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
-  const { t } = useTranslation();
   const rtl = isRTL();
 
   return (
@@ -244,6 +245,13 @@ export default function RootNavigator() {
       <Stack.Screen
         name="ShowList"
         component={ShowListScreen}
+        options={{ headerShown: false }}
+      />
+
+      {/* MVP screens */}
+      <Stack.Screen
+        name="FAQ"
+        component={FAQScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

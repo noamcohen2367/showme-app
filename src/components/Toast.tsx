@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   message: {
     ...typography.bodyMedium,
     color: colors.neutral.text,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
     flex: 1,
   },
 });

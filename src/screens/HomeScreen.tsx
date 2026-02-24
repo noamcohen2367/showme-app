@@ -15,6 +15,7 @@ import {
   Animated,
   Modal,
   TouchableWithoutFeedback,
+  I18nManager,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { PullToRefreshScrollView } from '../components/PullToRefresh';
@@ -354,8 +355,15 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
 
   const handlePress = (event: any) => {
     const { locationX } = event.nativeEvent;
-    if (locationX < SCREEN_WIDTH / 3) goToPrevSlide();
-    else if (locationX > (SCREEN_WIDTH * 2) / 3) goToNextSlide();
+    const isLeft = locationX < SCREEN_WIDTH / 3;
+    const isRight = locationX > (SCREEN_WIDTH * 2) / 3;
+    if (I18nManager.isRTL) {
+      if (isLeft) goToNextSlide();
+      else if (isRight) goToPrevSlide();
+    } else {
+      if (isLeft) goToPrevSlide();
+      else if (isRight) goToNextSlide();
+    }
   };
 
   const handleShowPress = () => {
@@ -456,7 +464,11 @@ const StoryViewer: React.FC<StoryViewerProps> = ({
                   <Text style={styles.storyViewerButtonText}>
                     {isHebrew ? 'לפרטים נוספים' : 'View Show'}
                   </Text>
-                  <Ionicons name="chevron-forward" size={18} color="white" />
+                  <Ionicons
+                    name={I18nManager.isRTL ? 'chevron-back' : 'chevron-forward'}
+                    size={18}
+                    color="white"
+                  />
                 </TouchableOpacity>
               )}
             </View>
@@ -798,7 +810,7 @@ export default function HomeScreen() {
             <View style={styles.promoButton}>
               <Text style={styles.promoButtonText}>{t('common.bookNow')}</Text>
               <Ionicons
-                name="arrow-forward"
+                name={I18nManager.isRTL ? 'arrow-back' : 'arrow-forward'}
                 size={16}
                 color={colors.neutral.white}
               />
@@ -1407,64 +1419,8 @@ export default function HomeScreen() {
             </ScrollView>
           </View>
 
-          {/* Special Features */}
-          <View style={styles.section}>
-            <SectionHeader title={t('home.specialFeatures')} />
-            <View style={styles.featuresGrid}>
-              <TouchableOpacity
-                style={styles.featureCard}
-                onPress={() => console.log('Group Booking')}
-              >
-                <LinearGradient
-                  colors={[
-                    'rgba(168, 85, 247, 0.2)',
-                    'rgba(168, 85, 247, 0.05)',
-                  ]}
-                  style={styles.featureGradient}
-                >
-                  <View style={styles.featureIcon}>
-                    <Ionicons
-                      name="people"
-                      size={24}
-                      color={colors.primary.main}
-                    />
-                  </View>
-                  <Text style={styles.featureTitle}>
-                    {t('home.groupBooking')}
-                  </Text>
-                  <Text style={styles.featureDesc}>
-                    {t('home.groupBookingDesc')}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.featureCard}
-                onPress={() => console.log('Special Occasions')}
-              >
-                <LinearGradient
-                  colors={[
-                    'rgba(236, 72, 153, 0.2)',
-                    'rgba(236, 72, 153, 0.05)',
-                  ]}
-                  style={styles.featureGradient}
-                >
-                  <View style={styles.featureIcon}>
-                    <Ionicons
-                      name="gift"
-                      size={24}
-                      color={colors.secondary.main}
-                    />
-                  </View>
-                  <Text style={styles.featureTitle}>
-                    {t('home.specialOccasions')}
-                  </Text>
-                  <Text style={styles.featureDesc}>
-                    {t('home.specialOccasionsDesc')}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </View>
+          {/* MVP hidden temporarily – planned for future release */}
+          {/* Special Features (Group Booking, Special Occasions) hidden for MVP */}
 
           <View style={{ height: 120 }} />
         </PullToRefreshScrollView>

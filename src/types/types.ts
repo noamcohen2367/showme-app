@@ -290,8 +290,8 @@ export type RootStackParamList = {
   TicketDetail: { performanceId: string };
   Settings: undefined;
   EditProfile: undefined;
-  // PaymentMethods: undefined;
   FAQ: undefined;
+  Login: undefined;
   // New screens (Stage 8-14)
   Notifications: undefined;
   Rewards: undefined;

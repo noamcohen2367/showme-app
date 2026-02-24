@@ -92,25 +92,29 @@ export const initLanguage = async (): Promise<void> => {
 };
 
 // RTL Configuration Helper
-export const configureRTL = (languageCode: LanguageCode): void => {
-  const isRTL = SUPPORTED_LANGUAGES[languageCode].rtl;
-  
-  if (I18nManager.isRTL !== isRTL) {
-    I18nManager.allowRTL(isRTL);
-    I18nManager.forceRTL(isRTL);
-    // Note: App needs to reload for RTL changes to take effect
+// Returns true if RTL direction changed (app needs restart to apply layout)
+export const configureRTL = (languageCode: LanguageCode): boolean => {
+  const shouldBeRTL = SUPPORTED_LANGUAGES[languageCode].rtl;
+
+  if (I18nManager.isRTL !== shouldBeRTL) {
+    I18nManager.allowRTL(shouldBeRTL);
+    I18nManager.forceRTL(shouldBeRTL);
+    return true; // layout direction changed – restart required
   }
+  return false;
 };
 
 // Change language function
-export const changeLanguage = async (languageCode: LanguageCode): Promise<void> => {
+// Returns true if RTL direction changed (app restart needed)
+export const changeLanguage = async (languageCode: LanguageCode): Promise<boolean> => {
   await i18n.changeLanguage(languageCode);
-  configureRTL(languageCode);
+  const needsRestart = configureRTL(languageCode);
   try {
     await AsyncStorage.setItem(LANGUAGE_KEY, languageCode);
   } catch {
     // ignore storage errors
   }
+  return needsRestart;
 };
 
 // Get current language info

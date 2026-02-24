@@ -2,7 +2,7 @@
 // ShowME App - Profile Screen (Dark Aurora Theme)
 // ============================================
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,10 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
+  Modal,
+  Linking,
+  I18nManager,
+  Alert,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +26,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography, spacing } from '../theme/theme';
 import { currentUser, getNextLevel, userSubscriptions } from '../data/user';
 import { RootStackParamList } from '../types/types';
+import { SUPPORTED_LANGUAGES, changeLanguage, LanguageCode } from '../i18n/i18n';
 
 type ProfileNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -52,7 +57,11 @@ function MenuItem({ icon, label, value, onPress, showChevron = true, destructive
       <View style={styles.menuItemRight}>
         {value && <Text style={styles.menuItemValue}>{value}</Text>}
         {showChevron && (
-          <Ionicons name="chevron-forward" size={18} color={colors.neutral.textTertiary} />
+          <Ionicons
+            name={I18nManager.isRTL ? 'chevron-back' : 'chevron-forward'}
+            size={18}
+            color={colors.neutral.textTertiary}
+          />
         )}
       </View>
     </TouchableOpacity>
@@ -63,7 +72,8 @@ export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<ProfileNavigationProp>();
   const insets = useSafeAreaInsets();
-  
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+
   const nextLevel = getNextLevel(currentUser.level);
   const levelColors = {
     bronze: colors.levels.bronze,
@@ -203,46 +213,22 @@ export default function ProfileScreen() {
             </LinearGradient>
             <Text style={styles.quickActionLabel}>{t('profile.reviews')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.quickAction} onPress={() => navigation.navigate('Rewards')}>
-            <LinearGradient
-              colors={['rgba(6, 182, 212, 0.2)', 'rgba(6, 182, 212, 0.1)']}
-              style={styles.quickActionGradient}
-            >
-              <Ionicons name="gift" size={24} color={colors.accent.main} />
-            </LinearGradient>
-            <Text style={styles.quickActionLabel}>{t('profile.rewards')}</Text>
-          </TouchableOpacity>
+          {/* MVP hidden temporarily – Rewards planned for future release */}
         </View>
 
-        {/* New Features Section */}
-        <View style={styles.section}>
+        {/* Explore Section – MVP hidden temporarily: My Stats planned for future release */}
+        {/* <View style={styles.section}>
           <Text style={styles.sectionTitle}>Explore</Text>
           <View style={styles.menuCard}>
-            <MenuItem 
-              icon="stats-chart" 
-              label="My Stats"
-              onPress={() => navigation.navigate('Analytics')}
-            />
+            <MenuItem icon="stats-chart" label="My Stats" onPress={() => navigation.navigate('Analytics')} />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="people" 
-              label="Community"
-              onPress={() => navigation.navigate('Social')}
-            />
+            <MenuItem icon="people" label="Community" onPress={() => navigation.navigate('Social')} />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="map" 
-              label="Theater Map"
-              onPress={() => navigation.navigate('Map')}
-            />
+            <MenuItem icon="map" label="Theater Map" onPress={() => navigation.navigate('Map')} />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="business" 
-              label="Hall Library"
-              onPress={() => navigation.navigate('HallLibrary')}
-            />
+            <MenuItem icon="business" label="Hall Library" onPress={() => navigation.navigate('HallLibrary')} />
           </View>
-        </View>
+        </View> */}
 
         {/* Account Section */}
         <View style={styles.section}>
@@ -254,29 +240,26 @@ export default function ProfileScreen() {
               onPress={() => navigation.navigate('Settings')}
             />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="card-outline" 
-              label={t('profile.paymentMethods')}
-              value="•••• 4242"
-              onPress={() => navigation.navigate('PaymentMethods')}
-            />
-            <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="notifications-outline" 
+            {/* MVP hidden temporarily – Payment Methods planned for future release */}
+            {/* <MenuItem icon="card-outline" label={t('profile.paymentMethods')} value="•••• 4242" onPress={() => navigation.navigate('PaymentMethods')} />
+            <View style={styles.menuDivider} /> */}
+            <MenuItem
+              icon="notifications-outline"
               label={t('profile.notifications')}
               onPress={() => navigation.navigate('NotificationPreferences')}
             />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="color-palette-outline" 
+            <MenuItem
+              icon="color-palette-outline"
               label="Appearance"
               onPress={() => navigation.navigate('Appearance')}
             />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="language-outline" 
+            <MenuItem
+              icon="language-outline"
               label={t('profile.language')}
-              value={i18n.language === 'he' ? 'עברית' : 'English'}
+              value={i18n.language === 'he' ? 'עברית' : i18n.language === 'ru' ? 'Русский' : 'English'}
+              onPress={() => setShowLanguageModal(true)}
             />
           </View>
         </View>
@@ -291,14 +274,18 @@ export default function ProfileScreen() {
               onPress={() => navigation.navigate('LiveChat')}
             />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="help-circle-outline" 
+            <MenuItem
+              icon="help-circle-outline"
               label={t('profile.faq')}
+              onPress={() => navigation.navigate('FAQ')}
             />
             <View style={styles.menuDivider} />
-            <MenuItem 
-              icon="chatbubble-outline" 
+            <MenuItem
+              icon="logo-instagram"
               label={t('profile.contactUs')}
+              onPress={() => Linking.openURL('https://www.instagram.com/showmiapp').catch(() =>
+                Linking.openURL('instagram://user?username=showmiapp')
+              )}
             />
             <View style={styles.menuDivider} />
             <MenuItem 
@@ -330,6 +317,61 @@ export default function ProfileScreen() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
+
+      {/* Language Selection Modal */}
+      <Modal
+        visible={showLanguageModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowLanguageModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowLanguageModal(false)}
+        >
+          <View style={styles.languageSheet}>
+            <View style={styles.languageSheetHandle} />
+            <Text style={styles.languageSheetTitle}>{t('profile.language')}</Text>
+            {Object.values(SUPPORTED_LANGUAGES).map((lang, index) => {
+              const isSelected = i18n.language === lang.code;
+              return (
+                <TouchableOpacity
+                  key={lang.code}
+                  style={[styles.languageOption, index > 0 && styles.languageOptionBorder]}
+                  onPress={async () => {
+                    const needsRestart = await changeLanguage(lang.code as LanguageCode);
+                    setShowLanguageModal(false);
+                    if (needsRestart) {
+                      Alert.alert(
+                        lang.code === 'he' ? 'נדרשת הפעלה מחדש' : 'Restart Required',
+                        lang.code === 'he'
+                          ? 'כיוון הטקסט ישתנה לאחר הפעלה מחדש של האפליקציה.'
+                          : 'Text direction will update after you restart the app.',
+                        [{ text: lang.code === 'he' ? 'אוקיי' : 'OK' }],
+                      );
+                    }
+                  }}
+                >
+                  <View>
+                    <Text style={styles.languageNative}>{lang.nativeName}</Text>
+                    <Text style={styles.languageSubtext}>{lang.name}</Text>
+                  </View>
+                  {isSelected && (
+                    <LinearGradient
+                      colors={[colors.primary.main, colors.secondary.main]}
+                      style={styles.languageCheck}
+                    >
+                      <Ionicons name="checkmark" size={14} color={colors.neutral.white} />
+                    </LinearGradient>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+            <View style={{ height: 20 }} />
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
@@ -552,5 +594,59 @@ const styles = StyleSheet.create({
     color: colors.neutral.textTertiary,
     textAlign: 'center',
     marginTop: spacing.md,
+  },
+  // Language modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+  },
+  languageSheet: {
+    backgroundColor: colors.dark[800],
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    borderTopWidth: 1,
+    borderColor: colors.dark[500],
+  },
+  languageSheetHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.dark[500],
+    alignSelf: 'center',
+    marginBottom: spacing.lg,
+  },
+  languageSheetTitle: {
+    ...typography.headingMedium,
+    color: colors.neutral.text,
+    marginBottom: spacing.lg,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.md,
+  },
+  languageOptionBorder: {
+    borderTopWidth: 1,
+    borderTopColor: colors.dark[500],
+  },
+  languageNative: {
+    ...typography.bodyMedium,
+    color: colors.neutral.text,
+  },
+  languageSubtext: {
+    ...typography.bodySmall,
+    color: colors.neutral.textTertiary,
+    marginTop: spacing.xxs,
+  },
+  languageCheck: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

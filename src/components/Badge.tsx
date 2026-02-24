@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   text: {
     ...typography.labelSmall,
-    marginLeft: spacing.xxs,
+    marginStart: spacing.xxs,
     textTransform: 'uppercase',
   },
   textMedium: {

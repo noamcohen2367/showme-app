@@ -50,7 +50,7 @@ export default function ActorCard({ actor, onPress, size = 'small' }: ActorCardP
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   imageContainer: {
     borderRadius: 32,

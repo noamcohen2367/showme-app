@@ -22,13 +22,22 @@ import { ThemeProvider } from './src/theme/ThemeContext';
 // Import splash screen
 import SplashScreen from './src/components/SplashScreen';
 
+// MVP auth
+import LoginScreen from './src/screens/LoginScreen';
+import { getAuth } from './src/storage/mvpStorage';
+
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Load persisted language (and configure RTL) before showing the app
-    initLanguage().finally(() => {
+    Promise.all([
+      initLanguage(),
+      getAuth().then(auth => {
+        if (auth.isLoggedIn) setIsLoggedIn(true);
+      }),
+    ]).finally(() => {
       setTimeout(() => setIsReady(true), 800);
     });
   }, []);
@@ -46,6 +55,16 @@ export default function App() {
         />
         <SplashScreen onFinish={handleSplashFinish} />
       </View>
+    );
+  }
+
+  // Show login gate if not authenticated
+  if (!isLoggedIn) {
+    return (
+      <SafeAreaProvider>
+        <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
+        <LoginScreen onLogin={() => setIsLoggedIn(true)} />
+      </SafeAreaProvider>
     );
   }
 

@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   showCardSkeleton: {
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   showCardContent: {
     paddingTop: spacing.sm,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   },
   actorCardSkeleton: {
     alignItems: 'center',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   searchResultsSkeleton: {
     paddingHorizontal: spacing.lg,
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   },
   searchResultContent: {
     flex: 1,
-    marginLeft: spacing.md,
+    marginStart: spacing.md,
     justifyContent: 'center',
   },
   showDetailsSkeleton: {

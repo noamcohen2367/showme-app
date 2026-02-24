@@ -47,7 +47,7 @@ export default {
   navigation: {
     home: 'Home',
     search: 'Search',
-    myPerformances: 'My Shows',
+    myPerformances: 'Watchlist',
     mySubscriptions: 'Subscriptions',
     profile: 'Profile',
   },
@@ -359,7 +359,7 @@ export default {
 
   // Performances (My Tickets)
   performances: {
-    title: 'My Tickets',
+    title: 'Watchlist',
     upcoming: 'Upcoming',
     past: 'Past',
     noUpcoming: 'No Upcoming Shows',

@@ -433,12 +433,12 @@ const styles = StyleSheet.create({
   },
   headerButtonLeft: {
     position: 'absolute',
-    left: spacing.lg,
+    start: spacing.lg,
     zIndex: 101,
   },
   headerButtonsRight: {
     position: 'absolute',
-    right: spacing.lg,
+    end: spacing.lg,
     flexDirection: 'row',
     gap: spacing.sm,
     zIndex: 101,
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   badgesContainer: {
     position: 'absolute',
     bottom: spacing.xxxl,
-    left: spacing.lg,
+    start: spacing.lg,
     flexDirection: 'row',
     gap: spacing.sm,
   },

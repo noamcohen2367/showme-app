@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(168, 85, 247, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   iconContainerSelected: {
     backgroundColor: colors.primary.main,

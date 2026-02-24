@@ -17,18 +17,16 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 import { currentUser } from '../data/user';
-import { SUPPORTED_LANGUAGES, changeLanguage, LanguageCode, getCurrentLanguageInfo } from '../i18n/i18n';
 import { RootStackParamList } from '../types/types';
 
 type SettingsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function SettingsScreen() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigation = useNavigation<SettingsScreenNavigationProp>();
   const insets = useSafeAreaInsets();
 
@@ -37,24 +35,6 @@ export default function SettingsScreen() {
   const [discountAlerts, setDiscountAlerts] = useState(true);
   const [newShowAlerts, setNewShowAlerts] = useState(true);
   const [showReminders, setShowReminders] = useState(true);
-
-  const handleLanguageChange = async (langCode: LanguageCode) => {
-    const currentInfo = getCurrentLanguageInfo();
-    const nextInfo = SUPPORTED_LANGUAGES[langCode];
-    const rtlChanges = currentInfo.rtl !== nextInfo.rtl;
-
-    await changeLanguage(langCode);
-
-    if (rtlChanges) {
-      Alert.alert(
-        t('settings.languageChanged', { defaultValue: 'Language Changed' }),
-        t('settings.restartRequired', {
-          defaultValue: 'Please restart the app for the layout direction to take full effect.',
-        }),
-        [{ text: t('common.ok') }],
-      );
-    }
-  };
 
   const handleSave = () => {
     Alert.alert(t('settings.saved'), '', [{ text: 'OK' }]);
@@ -123,40 +103,7 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Language Selection */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('profile.language')}</Text>
-          <View style={styles.card}>
-            {Object.values(SUPPORTED_LANGUAGES).map((lang, index) => {
-              const isSelected = i18n.language === lang.code;
-              return (
-                <React.Fragment key={lang.code}>
-                  {index > 0 && <View style={styles.divider} />}
-                  <TouchableOpacity 
-                    style={styles.languageRow}
-                    onPress={() => handleLanguageChange(lang.code as LanguageCode)}
-                  >
-                    <View style={styles.languageInfo}>
-                      <Text style={styles.languageNative}>{lang.nativeName}</Text>
-                      <Text style={styles.languageName}>{lang.name}</Text>
-                    </View>
-                    {isSelected && (
-                      <LinearGradient
-                        colors={[colors.primary.main, colors.secondary.main]}
-                        style={styles.checkmark}
-                      >
-                        <Ionicons name="checkmark" size={14} color={colors.neutral.white} />
-                      </LinearGradient>
-                    )}
-                  </TouchableOpacity>
-                </React.Fragment>
-              );
-            })}
-          </View>
-          <Text style={styles.helpText}>
-            {t('settings.languageNote', { defaultValue: 'Hebrew uses RTL layout' })}
-          </Text>
-        </View>
+        {/* Language moved to Profile settings – accessible via Profile > Language */}
 
         {/* Location */}
         <View style={styles.section}>

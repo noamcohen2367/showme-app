@@ -410,10 +410,10 @@ const styles = StyleSheet.create({
     color: colors.neutral.textTertiary,
   },
   iconLeft: {
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   iconRight: {
-    marginLeft: spacing.sm,
+    marginStart: spacing.sm,
   },
   iconButton: {
     alignItems: 'center',

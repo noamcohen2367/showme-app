@@ -475,9 +475,10 @@ export default function EnhancedSearchScreen() {
                 <Ionicons name="close-circle" size={20} color={colors.neutral.textTertiary} />
               </TouchableOpacity>
             )}
-            <TouchableOpacity style={styles.voiceButton} onPress={handleVoiceSearch}>
+            {/* MVP hidden temporarily – Voice Search planned for future release */}
+            {/* <TouchableOpacity style={styles.voiceButton} onPress={handleVoiceSearch}>
               <Ionicons name="mic" size={20} color={colors.primary.main} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {!isSearchFocused && (
@@ -647,7 +648,8 @@ export default function EnhancedSearchScreen() {
       )}
 
       {renderFiltersModal()}
-      {renderVoiceModal()}
+      {/* MVP hidden temporarily – Voice modal planned for future release */}
+      {/* {renderVoiceModal()} */}
     </View>
   );
 }
@@ -661,7 +663,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, ...typography.bodyMedium, color: colors.neutral.text, marginHorizontal: spacing.sm },
   voiceButton: { padding: spacing.xs },
   filterButton: { width: 48, height: 48, backgroundColor: colors.dark[700], borderRadius: 12, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.dark[500] },
-  filterBadge: { position: 'absolute', top: 6, right: 6, backgroundColor: colors.primary.main, borderRadius: 10, width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
+  filterBadge: { position: 'absolute', top: 6, end: 6, backgroundColor: colors.primary.main, borderRadius: 10, width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
   filterBadgeText: { ...typography.caption, color: colors.neutral.white, fontSize: 10 },
   cancelButton: { paddingHorizontal: spacing.sm },
   cancelText: { ...typography.labelMedium, color: colors.primary.main },
