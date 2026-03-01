@@ -25,7 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
-import { shows } from '../data/shows';
+import { useShows } from '../hooks/useShows';
 import { RootStackParamList, Show } from '../types/types';
 
 type LiveChatNavProp = NativeStackNavigationProp<RootStackParamList>;
@@ -41,96 +41,230 @@ interface ChatMessage {
   text: string;
   createdAt: string;
   recommendedShowIds?: string[];
+  isError?: boolean; // "didn't understand" response
 }
 
 // ============================================
-// Keyword → category mapping for recommendations
+// Keyword → category mapping (Hebrew + English)
 // ============================================
 const KEYWORD_MAP: { keywords: string[]; categories: string[] }[] = [
-  { keywords: ['comedy', 'funny', 'laugh', 'humor', 'comic', 'humorous'], categories: ['comedy'] },
-  { keywords: ['drama', 'dramatic', 'emotional', 'serious', 'intense'], categories: ['drama'] },
-  { keywords: ['musical', 'music', 'sing', 'song', 'songs', 'singing', 'dance', 'dancing'], categories: ['musical', 'dance'] },
-  { keywords: ['romance', 'romantic', 'love', 'date', 'anniversary', 'couple'], categories: ['romance'] },
-  { keywords: ['family', 'kids', 'children', 'child', 'fun for all', 'all ages'], categories: ['family', 'children'] },
-  { keywords: ['suspense', 'thriller', 'mystery', 'scary', 'tense', 'dark', 'crime'], categories: ['suspense'] },
-  { keywords: ['opera', 'classical', 'symphony'], categories: ['opera'] },
-  { keywords: ['new', 'latest', 'fresh', 'premiere', 'recently'], categories: ['new'] },
-  { keywords: ['popular', 'trending', 'hit', 'best', 'top', 'famous', 'classic'], categories: ['popular', 'long_running'] },
-  { keywords: ['short', 'quick', 'brief', 'under', 'hour'], categories: ['short'] },
-  { keywords: ['long', 'epic', 'full night', 'evening'], categories: ['long_running'] },
+  {
+    keywords: ['comedy', 'funny', 'laugh', 'humor', 'comic', 'humorous',
+               'קומדיה', 'מצחיק', 'מצחיקה', 'צחוק', 'הומור', 'קומי', 'כיף', 'שמחה'],
+    categories: ['comedy'],
+  },
+  {
+    keywords: ['drama', 'dramatic', 'emotional', 'serious', 'intense',
+               'דרמה', 'דרמטי', 'רגשי', 'רגשית', 'רציני', 'עמוק', 'עמוקה', 'מרגש', 'מרגשת'],
+    categories: ['drama'],
+  },
+  {
+    keywords: ['musical', 'music', 'sing', 'song', 'songs', 'singing', 'dance', 'dancing',
+               'מחזמר', 'מוזיקה', 'שיר', 'שירה', 'ריקוד', 'מחול', 'לשיר', 'לרקוד'],
+    categories: ['musical', 'dance'],
+  },
+  {
+    keywords: ['romance', 'romantic', 'love', 'date', 'anniversary', 'couple',
+               'רומנטי', 'רומנטית', 'רומנס', 'אהבה', 'זוגי', 'זוגית', 'פגישה', 'יחד', 'ערב זוגי', 'דייט'],
+    categories: ['romance'],
+  },
+  {
+    keywords: ['family', 'kids', 'children', 'child', 'fun for all', 'all ages',
+               'משפחה', 'ילדים', 'ילד', 'ילדה', 'כל הגילאים', 'לכל המשפחה', 'פעוטות', 'נוער'],
+    categories: ['family', 'children'],
+  },
+  {
+    keywords: ['suspense', 'thriller', 'mystery', 'scary', 'tense', 'dark', 'crime',
+               'מתח', 'מסתורין', 'פשע', 'אימה', 'מפחיד', 'מתוח', 'עלילה', 'חקירה'],
+    categories: ['suspense'],
+  },
+  {
+    keywords: ['opera', 'classical', 'symphony',
+               'אופרה', 'קלאסי', 'קלאסית', 'סימפוניה', 'פילהרמוני'],
+    categories: ['opera'],
+  },
+  {
+    keywords: ['new', 'latest', 'fresh', 'premiere', 'recently',
+               'חדש', 'חדשה', 'עדכני', 'פרמיירה', 'עכשיו', 'בימים אלה', 'חדשות'],
+    categories: ['new'],
+  },
+  {
+    keywords: ['popular', 'trending', 'hit', 'best', 'top', 'famous', 'classic',
+               'פופולרי', 'פופולרית', 'הכי טוב', 'מפורסם', 'מפורסמת', 'קלאסיקה', 'מוכר', 'מומלץ', 'מומלצת'],
+    categories: ['popular', 'long_running'],
+  },
+  {
+    keywords: ['short', 'quick', 'brief', 'under', 'hour',
+               'קצר', 'קצרה', 'מהיר', 'שעה', 'ישיבה קצרה'],
+    categories: ['short'],
+  },
+  {
+    keywords: ['long', 'epic', 'full night', 'evening',
+               'ארוך', 'ארוכה', 'ערב שלם', 'ממושך', 'ממושכת'],
+    categories: ['long_running'],
+  },
 ];
 
-function getRecommendations(query: string): Show[] {
-  const lower = query.toLowerCase();
+// Greetings and thanks to detect special intents
+const GREETING_WORDS = ['hi', 'hello', 'hey', 'yo', 'sup', 'שלום', 'היי', 'הי', 'בוקר', 'ערב', 'מה נשמע', 'מה קורה'];
+const THANKS_WORDS = ['thanks', 'thank you', 'ty', 'תודה', 'תנקיו', 'תודה רבה'];
 
-  // Collect matching categories
+// Check if text contains Hebrew characters
+function containsHebrew(text: string): boolean {
+  return /[\u0590-\u05FF]/.test(text);
+}
+
+// Check if text is a greeting
+function isGreeting(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return GREETING_WORDS.some(g => lower === g || lower.startsWith(g + ' ') || lower.startsWith(g + ','));
+}
+
+// Check if text is a thanks
+function isThanks(text: string): boolean {
+  const lower = text.toLowerCase();
+  return THANKS_WORDS.some(t => lower.includes(t));
+}
+
+// ============================================
+// Recommendation engine
+// ============================================
+interface RecResult {
+  shows: Show[];
+  confidence: number; // 0 = no keywords matched
+  type: 'recs' | 'greeting' | 'thanks' | 'unknown';
+}
+
+function analyzeQuery(query: string, allShows: Show[]): RecResult {
+  if (isGreeting(query)) return { shows: [], confidence: 0, type: 'greeting' };
+  if (isThanks(query)) return { shows: [], confidence: 0, type: 'thanks' };
+
+  const lower = query.toLowerCase();
+  const activeShows = allShows.filter(s => s.isActive);
+
+  // Keyword matching
   const matchedCategories = new Set<string>();
+  let keywordScore = 0;
   for (const mapping of KEYWORD_MAP) {
     if (mapping.keywords.some(k => lower.includes(k))) {
       mapping.categories.forEach(c => matchedCategories.add(c));
+      keywordScore++;
     }
   }
 
-  let results: { show: Show; score: number }[] = [];
-
-  if (matchedCategories.size > 0) {
-    results = shows
-      .filter(s => s.isActive)
-      .map(s => {
-        const catMatches = s.categories.filter(c => matchedCategories.has(c)).length;
-        const titleMatch = s.title.toLowerCase().includes(lower) ? 3 : 0;
-        const score = catMatches * 2 + titleMatch + s.rating;
-        return { show: s, score };
-      })
-      .filter(r => r.score > 0);
+  // Direct title matching (e.g. user types the show name)
+  if (matchedCategories.size === 0) {
+    const titleMatches = activeShows.filter(s =>
+      s.title.toLowerCase().includes(lower) && lower.length >= 3
+    );
+    if (titleMatches.length > 0) {
+      return { shows: titleMatches.slice(0, 3), confidence: 2, type: 'recs' };
+    }
+    // Nothing matched
+    return { shows: [], confidence: 0, type: 'unknown' };
   }
 
-  if (results.length === 0) {
-    // Fallback: return top-rated active shows
-    results = shows
-      .filter(s => s.isActive)
-      .map(s => ({ show: s, score: s.rating }));
-  }
-
-  return results
+  // Score all shows by category overlap + rating
+  const scored = activeShows
+    .map(s => {
+      const catMatches = s.categories.filter(c => matchedCategories.has(c)).length;
+      const titleBonus = s.title.toLowerCase().includes(lower) ? 3 : 0;
+      const score = catMatches * 2 + titleBonus + (s.rating ?? 0);
+      return { show: s, score };
+    })
+    .filter(r => r.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 3)
-    .map(r => r.show);
-}
+    .slice(0, 3);
 
-function buildAssistantText(recs: Show[]): string {
-  if (recs.length === 0) {
-    return "I couldn't find a perfect match right now, but check back soon — we add new shows regularly! 🎭";
+  if (scored.length === 0) {
+    return { shows: [], confidence: 0, type: 'unknown' };
   }
-  const intro =
-    recs.length === 1
-      ? "Here's something I think you'll love:"
-      : `Here are ${recs.length} shows that match what you're looking for:`;
-  return `${intro}\n\n${recs.map((s, i) => `${i + 1}. ${s.title} — ${s.categories.slice(0, 2).join(', ')} • ₪${s.startingPrice}+`).join('\n')}`;
+
+  return { shows: scored.map(r => r.show), confidence: keywordScore, type: 'recs' };
 }
 
-const QUICK_PROMPTS = [
+// ============================================
+// Response text builder
+// ============================================
+function buildResponseText(
+  result: RecResult,
+  inHebrew: boolean,
+  clarificationCount: number,
+): string {
+  if (result.type === 'greeting') {
+    return inHebrew
+      ? 'שלום! 👋 אני כאן לעזור לך למצוא הצגות.\nתאר לי מה בא לך — ז׳אנר, מצב רוח, עם מי אתה הולך — ואמליץ לך.'
+      : "Hi! 👋 I'm here to help you find the perfect show.\nTell me what you're in the mood for — genre, occasion, who you're going with!";
+  }
+
+  if (result.type === 'thanks') {
+    return inHebrew
+      ? 'בשמחה! 🎭 אם תרצה עוד המלצות, פשוט תשאל.'
+      : "You're welcome! 🎭 Feel free to ask anytime for more recommendations.";
+  }
+
+  if (result.type === 'unknown' || result.shows.length === 0) {
+    const heMessages = [
+      'לא הבנתי 🤔 תוכל לתאר יותר מה אתה מחפש?\nלמשל: "משהו מצחיק", "ערב רומנטי" או "הצגת ילדים".',
+      'עדיין לא הצלחתי להבין. נסה לציין ז׳אנר — קומדיה, דרמה, מחזמר — או למי ההצגה מיועדת.',
+      'לא מצאתי התאמה. נסה שוב עם מילים כמו "מצחיק", "רומנטי", "ילדים" או שם הצגה.',
+    ];
+    const enMessages = [
+      "I didn't quite get that 🤔 Try describing a genre or mood —\n\"funny comedy\", \"romantic evening\", or \"family show\".",
+      "Still not sure what you're looking for. Try mentioning: comedy, drama, musical, family, thriller...",
+      "I couldn't find a match. Try rephrasing with a genre, mood, or show name.",
+    ];
+    const msgs = inHebrew ? heMessages : enMessages;
+    return msgs[Math.min(clarificationCount, msgs.length - 1)];
+  }
+
+  // Successful recommendation
+  const heIntros = ['הנה מה שמצאתי בשבילך:', 'יש לי כמה המלצות:', 'אלה ההצגות שמתאימות לך:'];
+  const enIntros = ['Here are my picks:', "Here's what I found for you:", 'Check these out:'];
+  const intros = inHebrew ? heIntros : enIntros;
+  return intros[Math.floor(Math.random() * intros.length)];
+}
+
+// ============================================
+// Quick prompts (bilingual)
+// ============================================
+const QUICK_PROMPTS_HE = [
+  { label: '😂 קומדיה', query: 'קומדיה מצחיקה' },
+  { label: '❤️ ערב זוגי', query: 'ערב רומנטי זוגי' },
+  { label: '👨‍👩‍👧 משפחה', query: 'הצגה לכל המשפחה עם ילדים' },
+  { label: '🎵 מחזמר', query: 'מחזמר שירה' },
+];
+
+const QUICK_PROMPTS_EN = [
   { label: '😂 Comedy', query: 'funny comedy' },
   { label: '❤️ Date Night', query: 'romantic love date' },
   { label: '👨‍👩‍👧 Family', query: 'family kids' },
   { label: '🎵 Musical', query: 'musical singing' },
 ];
 
-const WELCOME_MESSAGE: ChatMessage = {
-  id: 'welcome',
-  role: 'assistant',
-  text: "Hi! 👋 I'm your Showmi assistant. Tell me what you're in the mood for and I'll suggest the perfect show.\n\nTry: \"funny comedy\", \"romantic date night\", or \"family show with kids\".",
-  createdAt: new Date().toISOString(),
-};
-
 export default function LiveChatScreen() {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
   const navigation = useNavigation<LiveChatNavProp>();
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView>(null);
   const typingAnim = useRef(new Animated.Value(0)).current;
+  const clarificationCountRef = useRef(0);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
+  const isHe = i18n.language === 'he';
+  const { shows: allShows } = useShows();
+
+  const QUICK_PROMPTS = isHe ? QUICK_PROMPTS_HE : QUICK_PROMPTS_EN;
+
+  const getWelcomeMessage = (): ChatMessage => ({
+    id: 'welcome',
+    role: 'assistant',
+    text: isHe
+      ? 'שלום! 👋 אני העוזר שלך למציאת הצגות.\nתאר לי מה בא לך לראות — ז׳אנר, מצב רוח, עם מי — ואמליץ לך על ההצגה המתאימה.'
+      : "Hi! 👋 I'm your show assistant.\nTell me what you're in the mood for and I'll suggest the perfect show.\n\nTry: \"funny comedy\", \"romantic date night\", or \"family show\".",
+    createdAt: new Date().toISOString(),
+  });
+
+  const [messages, setMessages] = useState<ChatMessage[]>([getWelcomeMessage()]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
@@ -142,7 +276,7 @@ export default function LiveChatScreen() {
         if (raw) {
           const saved: ChatMessage[] = JSON.parse(raw);
           if (Array.isArray(saved) && saved.length > 0) {
-            setMessages([WELCOME_MESSAGE, ...saved.filter(m => m.id !== 'welcome')]);
+            setMessages([getWelcomeMessage(), ...saved.filter(m => m.id !== 'welcome')]);
           }
         }
       } catch {
@@ -181,6 +315,8 @@ export default function LiveChatScreen() {
     const trimmed = text.trim();
     if (!trimmed) return;
 
+    const inHebrew = isHe || containsHebrew(trimmed);
+
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -193,19 +329,34 @@ export default function LiveChatScreen() {
     scrollToBottom();
 
     setIsTyping(true);
+    // Slight delay to feel natural (faster for greeting/thanks)
+    const delay = 900 + Math.random() * 400;
     setTimeout(() => {
       setIsTyping(false);
-      const recs = getRecommendations(trimmed);
+
+      const result = analyzeQuery(trimmed, allShows);
+
+      // Update clarification counter
+      if (result.type === 'unknown') {
+        clarificationCountRef.current += 1;
+      } else if (result.type === 'recs') {
+        clarificationCountRef.current = 0;
+      }
+
+      const responseText = buildResponseText(result, inHebrew, clarificationCountRef.current - 1);
+      const isError = result.type === 'unknown';
+
       const assistantMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        text: buildAssistantText(recs),
+        text: responseText,
         createdAt: new Date().toISOString(),
-        recommendedShowIds: recs.map(s => s.id),
+        recommendedShowIds: result.shows.map(s => s.id),
+        isError,
       };
       setMessages(prev => [...prev, assistantMsg]);
       scrollToBottom();
-    }, 1200);
+    }, delay);
   };
 
   const handleSend = () => sendMessage(inputText);
@@ -213,7 +364,7 @@ export default function LiveChatScreen() {
 
   const formatTime = (iso: string) => {
     try {
-      return new Date(iso).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      return new Date(iso).toLocaleTimeString(isHe ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit' });
     } catch {
       return '';
     }
@@ -221,8 +372,8 @@ export default function LiveChatScreen() {
 
   const renderMessage = (message: ChatMessage) => {
     const isUser = message.role === 'user';
-    const recShows = message.recommendedShowIds
-      ? shows.filter(s => message.recommendedShowIds!.includes(s.id))
+    const recShows = message.recommendedShowIds && message.recommendedShowIds.length > 0
+      ? allShows.filter(s => message.recommendedShowIds!.includes(s.id))
       : [];
 
     return (
@@ -231,8 +382,12 @@ export default function LiveChatScreen() {
         style={[styles.messageContainer, isUser ? styles.userMessageContainer : styles.otherMessageContainer]}
       >
         {!isUser && (
-          <View style={styles.botAvatar}>
-            <Ionicons name="sparkles" size={16} color={colors.primary.main} />
+          <View style={[styles.botAvatar, message.isError && styles.botAvatarError]}>
+            <Ionicons
+              name={message.isError ? 'help-circle' : 'sparkles'}
+              size={16}
+              color={message.isError ? colors.semantic.warning : colors.primary.main}
+            />
           </View>
         )}
         <View style={{ maxWidth: '78%' }}>
@@ -286,16 +441,17 @@ export default function LiveChatScreen() {
           <Ionicons name="arrow-back" size={24} color={colors.neutral.text} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Show Assistant</Text>
+          <Text style={styles.headerTitle}>{isHe ? 'עוזר ההצגות' : 'Show Assistant'}</Text>
           <View style={styles.statusContainer}>
             <View style={styles.statusDot} />
-            <Text style={styles.statusText}>Powered by local shows</Text>
+            <Text style={styles.statusText}>{isHe ? 'מחפש הצגות בשבילך' : 'Finding shows for you'}</Text>
           </View>
         </View>
         <TouchableOpacity
           style={styles.clearButton}
           onPress={() => {
-            setMessages([WELCOME_MESSAGE]);
+            setMessages([getWelcomeMessage()]);
+            clarificationCountRef.current = 0;
             AsyncStorage.removeItem(STORAGE_KEY).catch(() => {});
           }}
         >
@@ -317,7 +473,9 @@ export default function LiveChatScreen() {
           {/* Quick prompts – shown only at start */}
           {messages.length === 1 && (
             <View style={styles.quickPromptsContainer}>
-              <Text style={styles.quickPromptsTitle}>Quick suggestions:</Text>
+              <Text style={styles.quickPromptsTitle}>
+                {isHe ? 'הצעות מהירות:' : 'Quick suggestions:'}
+              </Text>
               <View style={styles.quickPrompts}>
                 {QUICK_PROMPTS.map(p => (
                   <TouchableOpacity
@@ -356,7 +514,7 @@ export default function LiveChatScreen() {
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
-              placeholder="Describe what you're in the mood for..."
+              placeholder={isHe ? 'תאר מה בא לך לראות...' : "Describe what you're in the mood for..."}
               placeholderTextColor={colors.neutral.textTertiary}
               value={inputText}
               onChangeText={setInputText}
@@ -436,6 +594,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
+  },
+  botAvatarError: {
+    backgroundColor: 'rgba(245, 158, 11, 0.15)',
   },
   messageBubble: { borderRadius: 16, padding: spacing.md },
   userBubble: { backgroundColor: colors.primary.main, borderBottomRightRadius: 4 },

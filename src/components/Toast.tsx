@@ -10,12 +10,13 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 

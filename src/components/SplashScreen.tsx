@@ -10,12 +10,14 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { colors, typography } from '../theme/theme';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 interface SplashScreenProps {
   onFinish: () => void;

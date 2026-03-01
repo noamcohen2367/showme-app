@@ -15,7 +15,8 @@ import { colors, typography, spacing } from '../theme/theme';
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
 import EnhancedSearchScreen from '../screens/EnhancedSearchScreen';
-import MyPerformancesScreen from '../screens/MyPerformancesScreen';
+// import MyPerformancesScreen from '../screens/MyPerformancesScreen'; // not in v1
+import WatchlistScreen from '../screens/WatchlistScreen';
 import MySubscriptionsScreen from '../screens/MySubscriptionsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
@@ -29,7 +30,7 @@ const TAB_ICONS: Record<
 > = {
   Home: { active: 'home', inactive: 'home-outline' },
   Search: { active: 'search', inactive: 'search-outline' },
-  MyPerformances: { active: 'ticket', inactive: 'ticket-outline' },
+  Watchlist: { active: 'heart', inactive: 'heart-outline' },
   MySubscriptions: { active: 'card', inactive: 'card-outline' },
   Profile: { active: 'person', inactive: 'person-outline' },
 };
@@ -94,8 +95,8 @@ export default function BottomTabNavigator() {
         options={{ tabBarLabel: t('navigation.search') }}
       />
       <Tab.Screen
-        name="MyPerformances"
-        component={MyPerformancesScreen}
+        name="Watchlist"
+        component={WatchlistScreen}
         options={{ tabBarLabel: t('navigation.myPerformances') }}
       />
       <Tab.Screen
@@ -118,9 +119,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderTopWidth: 0,
     elevation: 0,
-    height: Platform.OS === 'ios' ? 88 : 70,
+    height: Platform.OS === 'ios' ? 88 : Platform.OS === 'web' ? 60 : 70,
     paddingTop: spacing.sm,
-    paddingBottom: Platform.OS === 'ios' ? 28 : spacing.sm,
+    paddingBottom: Platform.OS === 'ios' ? 28 : Platform.OS === 'web' ? spacing.xs : spacing.sm,
   },
 
   // BlurView Background (iOS)

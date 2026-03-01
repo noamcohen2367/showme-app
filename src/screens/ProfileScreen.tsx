@@ -27,6 +27,7 @@ import { colors, typography, spacing } from '../theme/theme';
 import { currentUser, getNextLevel, userSubscriptions } from '../data/user';
 import { RootStackParamList } from '../types/types';
 import { SUPPORTED_LANGUAGES, changeLanguage, LanguageCode } from '../i18n/i18n';
+import { useAuth } from '../contexts/AuthContext';
 
 type ProfileNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -72,7 +73,19 @@ export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<ProfileNavigationProp>();
   const insets = useSafeAreaInsets();
+  const { logout } = useAuth();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+
+  const handleLogout = () => {
+    Alert.alert(
+      t('profile.logout'),
+      t('profile.logoutConfirm'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('profile.logout'), style: 'destructive', onPress: logout },
+      ],
+    );
+  };
 
   const nextLevel = getNextLevel(currentUser.level);
   const levelColors = {
@@ -303,11 +316,12 @@ export default function ProfileScreen() {
         {/* Logout */}
         <View style={styles.section}>
           <View style={styles.menuCard}>
-            <MenuItem 
-              icon="log-out-outline" 
+            <MenuItem
+              icon="log-out-outline"
               label={t('profile.logout')}
               showChevron={false}
               destructive
+              onPress={handleLogout}
             />
           </View>
         </View>

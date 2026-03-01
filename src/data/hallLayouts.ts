@@ -687,6 +687,173 @@ export const LAYOUT_THRUST: HallLayoutData = {
 };
 
 // ============================================
+// Layout 7: Cameri Theatre Hall 1 (אולם 1 קאמרי)
+// Based on real Cameri proscenium layout
+// venueId=82, seatplanId=25
+// ============================================
+
+export const LAYOUT_CAMERI_HALL1: HallLayoutData = {
+  id: 'cameri-hall-1',
+  name: 'Cameri Theatre – Hall 1',
+  nameHe: 'תיאטרון קאמרי – אולם 1',
+  width: 800,
+  height: 820,
+  stageType: 'proscenium',
+  stagePosition: { x: 155, y: 12, width: 490, height: 56 },
+  totalSeats: 656,
+  sections: [
+    // ── Front Orchestra (Premium) ────────────────────────────────
+    {
+      id: 'front-orchestra',
+      name: 'Front Orchestra',
+      nameHe: 'אורקסטרה קדמית',
+      zone: 'premium',
+      color: '#FFD700',
+      seats: (() => {
+        const seats: SeatData[] = [];
+        const rows: { label: string; count: number; y: number }[] = [
+          { label: 'A', count: 20, y: 92 },
+          { label: 'B', count: 22, y: 120 },
+          { label: 'C', count: 24, y: 148 },
+          { label: 'D', count: 26, y: 176 },
+          { label: 'E', count: 26, y: 204 },
+          { label: 'F', count: 28, y: 232 },
+        ];
+        rows.forEach((row) => {
+          const startX = 400 - (row.count * 22) / 2;
+          for (let s = 0; s < row.count; s++) {
+            seats.push({
+              id: `fo-${row.label}-${s + 1}`,
+              row: row.label,
+              number: s + 1,
+              x: startX + s * 22,
+              y: row.y,
+              zone: 'premium',
+              price: 280,
+              available: Math.random() > 0.35,
+              type: 'regular',
+            });
+          }
+        });
+        return seats;
+      })(),
+    },
+
+    // ── Main Orchestra (Zone A) ──────────────────────────────────
+    {
+      id: 'main-orchestra',
+      name: 'Main Orchestra',
+      nameHe: 'אולם ראשי',
+      zone: 'zone_a',
+      color: '#A855F7',
+      seats: (() => {
+        const seats: SeatData[] = [];
+        const rows: { label: string; count: number; y: number }[] = [
+          { label: 'G', count: 28, y: 272 },
+          { label: 'H', count: 30, y: 300 },
+          { label: 'I', count: 30, y: 328 },
+          { label: 'J', count: 32, y: 356 },
+          { label: 'K', count: 32, y: 384 },
+          { label: 'L', count: 32, y: 412 },
+          { label: 'M', count: 34, y: 440 },
+        ];
+        rows.forEach((row) => {
+          const startX = 400 - (row.count * 21) / 2;
+          for (let s = 0; s < row.count; s++) {
+            seats.push({
+              id: `mo-${row.label}-${s + 1}`,
+              row: row.label,
+              number: s + 1,
+              x: startX + s * 21,
+              y: row.y,
+              zone: 'zone_a',
+              price: 220,
+              available: Math.random() > 0.3,
+              type: 'regular',
+            });
+          }
+        });
+        return seats;
+      })(),
+    },
+
+    // ── Rear Orchestra (Zone B) ──────────────────────────────────
+    {
+      id: 'rear-orchestra',
+      name: 'Rear Orchestra',
+      nameHe: 'אולם אחורי',
+      zone: 'zone_b',
+      color: '#EC4899',
+      seats: (() => {
+        const seats: SeatData[] = [];
+        const rows: { label: string; count: number; y: number }[] = [
+          { label: 'N', count: 32, y: 484 },
+          { label: 'O', count: 32, y: 512 },
+          { label: 'P', count: 34, y: 540 },
+          { label: 'Q', count: 30, y: 568 },
+          { label: 'R', count: 26, y: 596 },
+        ];
+        rows.forEach((row, ri) => {
+          const startX = 400 - (row.count * 21) / 2;
+          for (let s = 0; s < row.count; s++) {
+            const isWheelchair =
+              ri === 4 && (s === 0 || s === row.count - 1);
+            seats.push({
+              id: `ro-${row.label}-${s + 1}`,
+              row: row.label,
+              number: s + 1,
+              x: startX + s * 21,
+              y: row.y,
+              zone: 'zone_b',
+              price: 180,
+              available: Math.random() > 0.25,
+              type: isWheelchair ? 'wheelchair' : 'regular',
+            });
+          }
+        });
+        return seats;
+      })(),
+    },
+
+    // ── Balcony (Zone C) ─────────────────────────────────────────
+    {
+      id: 'balcony',
+      name: 'Balcony',
+      nameHe: 'יציע',
+      zone: 'zone_c',
+      color: '#06B6D4',
+      seats: (() => {
+        const seats: SeatData[] = [];
+        const rows: { label: string; count: number; y: number }[] = [
+          { label: '1', count: 26, y: 660 },
+          { label: '2', count: 28, y: 688 },
+          { label: '3', count: 30, y: 716 },
+          { label: '4', count: 30, y: 744 },
+          { label: '5', count: 24, y: 772 },
+        ];
+        rows.forEach((row) => {
+          const startX = 400 - (row.count * 22) / 2;
+          for (let s = 0; s < row.count; s++) {
+            seats.push({
+              id: `bal-${row.label}-${s + 1}`,
+              row: row.label,
+              number: s + 1,
+              x: startX + s * 22,
+              y: row.y,
+              zone: 'zone_c',
+              price: 150,
+              available: Math.random() > 0.2,
+              type: 'regular',
+            });
+          }
+        });
+        return seats;
+      })(),
+    },
+  ],
+};
+
+// ============================================
 // All Layouts & Mapping
 // ============================================
 
@@ -697,6 +864,7 @@ export const ALL_LAYOUTS: Record<string, HallLayoutData> = {
   'opera-house': LAYOUT_OPERA_HOUSE,
   studio: LAYOUT_STUDIO,
   thrust: LAYOUT_THRUST,
+  'cameri-hall-1': LAYOUT_CAMERI_HALL1,
 };
 
 // ============================================
@@ -711,8 +879,8 @@ export const SHOW_LAYOUT_MAP: Record<string, string> = {
   // Romeo and Juliet → Grand Opera House (dramatic, prestigious)
   'show-2': 'opera-house',
 
-  // Chabadniks → Arena with wings (big musical, lively atmosphere)
-  'show-3': 'arena-wings',
+  // Chabadniks → Cameri Hall 1 (plays at Cameri Theatre)
+  'show-3': 'cameri-hall-1',
 
   // The Dybbuk → Intimate Studio (dark, atmospheric)
   'show-4': 'studio',
@@ -723,8 +891,8 @@ export const SHOW_LAYOUT_MAP: Record<string, string> = {
   // Midsummer Night's Dream → Thrust stage (immersive Shakespeare)
   'show-6': 'thrust',
 
-  // The Band's Visit → Traditional (intimate story, classic setting)
-  'show-7': 'traditional',
+  // Cabaret → Cameri Hall 1 (plays at Cameri Theatre)
+  'show-7': 'cameri-hall-1',
 
   // Speed Dating → Studio (small comedy)
   'show-8': 'studio',

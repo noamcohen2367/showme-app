@@ -447,4 +447,23 @@ export default {
     selectDate: 'בחר תאריך',
     selectTime: 'בחר שעה',
   },
+
+  // Watchlist
+  watchlist: {
+    title: 'רשימת צפייה',
+    tabWatchlist: 'לצפייה',
+    tabWatched: 'נצפה',
+    emptyWatchlist: 'רשימת הצפייה ריקה',
+    emptyWatchlistDesc: 'לחץ על הלב בדף הצגה כדי להוסיף אותה לרשימה',
+    emptyWatched: 'עדיין לא נצפו הצגות',
+    emptyWatchedDesc: 'הצגות שסימנת כנצפו יופיעו כאן',
+    browseShows: 'עיין בהצגות',
+    markWatched: 'סמן כנצפה',
+    addedToWatchlist: 'נוסף לרשימת צפייה',
+    removedFromWatchlist: 'הוסר מרשימת צפייה',
+    countShows: '{{count}} הצגות',
+    countWatched: '{{count}} נצפו',
+    swipeLeftDelete: 'החלק שמאלה למחיקה',
+    swipeRightWatched: 'החלק ימינה לנצפה',
+  },
 };

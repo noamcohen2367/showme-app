@@ -3,7 +3,7 @@
 // ============================================
 
 import React, { useEffect, useState } from 'react';
-import { StatusBar, View, StyleSheet } from 'react-native';
+import { StatusBar, View, StyleSheet, Platform } from 'react-native';
 import {
   useFonts,
   Rubik_400Regular,
@@ -31,9 +31,15 @@ import SplashScreen from './src/components/SplashScreen';
 
 // MVP auth
 import LoginScreen from './src/screens/LoginScreen';
-import { getAuth } from './src/storage/mvpStorage';
+import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 
-export default function App() {
+// Responsive web dimensions
+import { APP_MAX_WIDTH } from './src/utils/dimensions';
+
+const isWeb = Platform.OS === 'web';
+
+function AppContent() {
+  const { isLoggedIn, login } = useAuth();
   const [fontsLoaded] = useFonts({
     Rubik_400Regular,
     Rubik_500Medium,
@@ -43,22 +49,12 @@ export default function App() {
 
   const [isReady, setIsReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      initLanguage(),
-      getAuth().then(auth => {
-        if (auth.isLoggedIn) setIsLoggedIn(true);
-      }),
-    ]).finally(() => {
+    initLanguage().finally(() => {
       setTimeout(() => setIsReady(true), 800);
     });
   }, []);
-
-  const handleSplashFinish = () => {
-    setShowSplash(false);
-  };
 
   if (!isReady || !fontsLoaded || showSplash) {
     return (
@@ -67,7 +63,7 @@ export default function App() {
           barStyle="light-content"
           backgroundColor={colors.neutral.background}
         />
-        <SplashScreen onFinish={handleSplashFinish} />
+        <SplashScreen onFinish={() => setShowSplash(false)} />
       </View>
     );
   }
@@ -77,25 +73,39 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
-        <LoginScreen onLogin={() => setIsLoggedIn(true)} />
+        <View style={styles.webOuter}>
+          <View style={styles.webInner}>
+            <LoginScreen onLogin={login} />
+          </View>
+        </View>
       </SafeAreaProvider>
     );
   }
 
   return (
     <ThemeProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+      <GestureHandlerRootView style={styles.webOuter}>
         <SafeAreaProvider>
-          <NavigationContainer>
-            <StatusBar
-              barStyle="light-content"
-              backgroundColor={colors.neutral.background}
-            />
-            <RootNavigator />
-          </NavigationContainer>
+          <View style={styles.webInner}>
+            <NavigationContainer>
+              <StatusBar
+                barStyle="light-content"
+                backgroundColor={colors.neutral.background}
+              />
+              <RootNavigator />
+            </NavigationContainer>
+          </View>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </ThemeProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
@@ -103,5 +113,17 @@ const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
     backgroundColor: colors.neutral.background,
+  },
+  // Web: dark side-bars + centered column
+  webOuter: {
+    flex: 1,
+    backgroundColor: isWeb ? '#07070A' : colors.neutral.background,
+    alignItems: isWeb ? 'center' : undefined,
+  },
+  webInner: {
+    flex: 1,
+    width: '100%',
+    maxWidth: isWeb ? APP_MAX_WIDTH : undefined,
+    overflow: isWeb ? 'hidden' : undefined,
   },
 });

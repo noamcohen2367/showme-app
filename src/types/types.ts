@@ -127,6 +127,8 @@ export interface ShowTime {
   lastMinutePrice?: number;
   price: number;
   originalPrice?: number;
+  /** Direct URL to the theater's ticket purchase page for this specific showing */
+  purchaseLink?: string;
 }
 
 export interface Seat {
@@ -332,7 +334,7 @@ export type ShowListSection =
 export type MainTabParamList = {
   Home: undefined;
   Search: undefined;
-  MyPerformances: undefined;
+  Watchlist: undefined;
   MySubscriptions: undefined;
   Profile: undefined;
 };

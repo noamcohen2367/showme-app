@@ -2,6 +2,7 @@
 // ShowME App - API Service Layer
 // ============================================
 
+import { Platform } from 'react-native';
 import { Show, ShowDate, ShowCategory, ShowBadge, LocationArea } from '../types/types';
 import { registerDynamicTheater } from '../data/theaters';
 
@@ -161,6 +162,7 @@ function transformCameriShows(apiResponse: CameriApiResponse): Show[] {
         totalSeats: 200,
         price: 0, // API doesn't provide pricing
         isLastMinuteDeal: false,
+        purchaseLink: event.purchase_link || `https://tickets.cameri.co.il/order/${event.event_id}`,
       });
 
       if (event.sold_out) existing.hasSoldOut = true;
@@ -293,6 +295,7 @@ function transformHabimaShows(apiResponse: HabimaApiResponse): Show[] {
         totalSeats: 200,
         price: 0,
         isLastMinuteDeal: false,
+        purchaseLink: showHe.url || 'https://www.habima.co.il/tickets',
       });
       dateMap.set(datePart, existing);
     }
@@ -489,6 +492,7 @@ async function transformHaifaShows(allEvents: HaifaEvent[]): Promise<Show[]> {
         totalSeats: 200,
         price: 0,
         isLastMinuteDeal: false,
+        purchaseLink: event.ticketLink || `https://www.ht1.co.il/Event/Index/${eventId}`,
       });
       dateMap.set(isoDate, existing);
     }
@@ -620,6 +624,7 @@ function transformTomixShows(apiResponse: EventerApiResponse): Show[] {
         totalSeats: 200,
         price: lowestPrice,
         isLastMinuteDeal: false,
+        purchaseLink: `https://www.eventer.co.il/event/${event.linkName}`,
       });
 
       if (event.soldOut) existing.hasSoldOut = true;
@@ -821,6 +826,7 @@ function transformHulyoShows(apiResponse: HulyoApiResponse): Show[] {
         totalSeats: 200,
         price: item.sellingPrice,
         isLastMinuteDeal: false,
+        purchaseLink: `https://www.hulyo.co.il/show/${item.vendorId || item.id}`,
       });
 
       if (item.soldOut) existing.hasSoldOut = true;
@@ -973,6 +979,12 @@ export async function fetchHulyoShows(): Promise<Show[]> {
 }
 
 export async function fetchAllShows(): Promise<Show[]> {
+  // Browser CORS policy blocks direct requests to theater APIs.
+  // On web, skip external fetches and let the caller fall back to mock data.
+  if (Platform.OS === 'web') {
+    throw new Error('Web: external theater APIs blocked by CORS – using local data');
+  }
+
   const results = await Promise.allSettled([
     fetchCameriShows(),
     fetchHabimaShows(),

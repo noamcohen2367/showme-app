@@ -9,11 +9,12 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { colors, spacing } from '../theme/theme';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 // Base skeleton shimmer effect
 function SkeletonShimmer({ width, height, borderRadius = 8, style }: {
@@ -102,28 +103,36 @@ export function SectionHeaderSkeleton() {
 }
 
 // Home Screen Skeleton
+// Note: the real header (SHOWMI + bell) is rendered above this by HomeScreen,
+// so we start with greeting text + filter chips, then sections.
 export function HomeScreenSkeleton() {
   return (
     <View style={styles.homeScreenSkeleton}>
-      {/* Header */}
-      <View style={styles.headerSkeleton}>
-        <View>
-          <SkeletonShimmer width={120} height={16} style={{ marginBottom: 8 }} />
-          <SkeletonShimmer width={180} height={24} />
+      {/* Subtitle + filter chips */}
+      <View style={styles.greetingSkeleton}>
+        <SkeletonShimmer width={SCREEN_WIDTH * 0.6} height={16} style={{ marginBottom: spacing.lg }} />
+        <View style={styles.filterChipsSkeleton}>
+          <SkeletonShimmer width={110} height={36} borderRadius={20} />
+          <SkeletonShimmer width={110} height={36} borderRadius={20} />
+          <SkeletonShimmer width={90} height={36} borderRadius={20} />
         </View>
-        <SkeletonShimmer width={44} height={44} borderRadius={22} />
       </View>
 
-      {/* Location Filter */}
-      <View style={styles.locationSkeleton}>
-        <SkeletonShimmer width={100} height={36} borderRadius={18} />
+      {/* Theater stories row */}
+      <View style={styles.storiesRowSkeleton}>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <View key={i} style={styles.storyItemSkeleton}>
+            <SkeletonShimmer width={68} height={68} borderRadius={34} style={{ marginBottom: spacing.xs }} />
+            <SkeletonShimmer width={52} height={11} borderRadius={6} />
+          </View>
+        ))}
       </View>
 
       {/* Sections */}
-      {Array.from({ length: 3 }).map((_, index) => (
+      {Array.from({ length: 2 }).map((_, index) => (
         <View key={index} style={styles.sectionSkeleton}>
           <SectionHeaderSkeleton />
-          <ShowListSkeleton />
+          <ShowListSkeleton count={3} size="medium" />
         </View>
       ))}
     </View>
@@ -245,20 +254,25 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   homeScreenSkeleton: {
-    flex: 1,
     backgroundColor: colors.neutral.background,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.md,
   },
-  headerSkeleton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  greetingSkeleton: {
     paddingHorizontal: spacing.lg,
     marginBottom: spacing.lg,
   },
-  locationSkeleton: {
+  filterChipsSkeleton: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  storiesRowSkeleton: {
+    flexDirection: 'row',
     paddingHorizontal: spacing.lg,
+    gap: spacing.md,
     marginBottom: spacing.xl,
+  },
+  storyItemSkeleton: {
+    alignItems: 'center',
   },
   sectionSkeleton: {
     marginBottom: spacing.xl,

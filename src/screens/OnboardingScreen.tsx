@@ -13,6 +13,7 @@ import {
   Animated,
   StatusBar,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -22,7 +23,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 interface OnboardingSlide {
   id: string;

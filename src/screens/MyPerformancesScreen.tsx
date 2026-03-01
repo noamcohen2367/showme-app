@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -26,7 +27,7 @@ import { userPerformances } from '../data/user';
 import { getShowById } from '../data/shows';
 import { getTheaterById } from '../data/theaters';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 type MyPerformancesNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 

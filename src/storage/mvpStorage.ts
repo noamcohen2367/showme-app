@@ -12,6 +12,7 @@ export const STORAGE_KEYS = {
   LANGUAGE: '@showmi_language',          // shared with i18n.ts
   SUBSCRIPTIONS: 'showmi.mvp.subscriptions',
   WATCHLIST: 'showmi.mvp.watchlist',
+  WATCHED: 'showmi.mvp.watched',
   LIVE_CHAT: 'showmi.mvp.liveChat',
 } as const;
 
@@ -111,4 +112,17 @@ export async function getWatchlist(): Promise<string[]> {
 
 export async function saveWatchlist(ids: string[]): Promise<void> {
   await safeSet(STORAGE_KEYS.WATCHLIST, ids);
+}
+
+// ──────────────────────────────────────────
+// Watched (show IDs marked as watched)
+// ──────────────────────────────────────────
+export async function getWatched(): Promise<string[]> {
+  const stored = await safeGet<string[]>(STORAGE_KEYS.WATCHED, []);
+  if (!Array.isArray(stored)) return [];
+  return stored.filter(id => typeof id === 'string');
+}
+
+export async function saveWatched(ids: string[]): Promise<void> {
+  await safeSet(STORAGE_KEYS.WATCHED, ids);
 }

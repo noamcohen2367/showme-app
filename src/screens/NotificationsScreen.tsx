@@ -2,7 +2,7 @@
 // ShowME App - Notifications Screen
 // ============================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,83 +15,14 @@ import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { colors, typography, spacing } from '../theme/theme';
+import { MOCK_NOTIFICATIONS, AppNotification as Notification } from '../data/notifications';
 
-interface Notification {
-  id: string;
-  type: 'reminder' | 'discount' | 'new_show' | 'review' | 'system' | 'social';
-  title: string;
-  message: string;
-  timestamp: Date;
-  read: boolean;
-  image?: string;
-  actionData?: {
-    type: 'show' | 'ticket' | 'profile';
-    id: string;
-  };
-}
-
-// Mock notifications data
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: '1',
-    type: 'reminder',
-    title: 'Show Tomorrow!',
-    message: 'Don\'t forget! "The Phantom of the Opera" is tomorrow at 20:00 at Habima Theatre.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 min ago
-    read: false,
-    image: 'https://picsum.photos/seed/show1/100/100',
-    actionData: { type: 'ticket', id: 'perf-1' },
-  },
-  {
-    id: '2',
-    type: 'discount',
-    title: '30% Off This Weekend!',
-    message: 'Exclusive deal: Get 30% off on "Romeo and Juliet" tickets. Limited time only!',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-    read: false,
-    image: 'https://picsum.photos/seed/show2/100/100',
-    actionData: { type: 'show', id: 'show-2' },
-  },
-  {
-    id: '3',
-    type: 'new_show',
-    title: 'New Show Added',
-    message: '"Les Misérables" is now available for booking! Be the first to get tickets.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 hours ago
-    read: true,
-    image: 'https://picsum.photos/seed/show3/100/100',
-    actionData: { type: 'show', id: 'show-3' },
-  },
-  {
-    id: '4',
-    type: 'review',
-    title: 'Rate Your Experience',
-    message: 'How was "The Band\'s Visit"? Share your thoughts and help others discover great shows.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    read: true,
-    actionData: { type: 'show', id: 'show-7' },
-  },
-  {
-    id: '5',
-    type: 'social',
-    title: 'Sarah liked your review',
-    message: 'Your review of "Fiddler on the Roof" received 5 likes!',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
-    read: true,
-  },
-  {
-    id: '6',
-    type: 'system',
-    title: 'Subscription Expiring Soon',
-    message: 'Your Habima Theatre subscription expires in 7 days. Renew now to keep your benefits!',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
-    read: true,
-  },
-];
+const DISMISSED_KEY = 'showmi.notifications.dismissed';
+const READ_KEY = 'showmi.notifications.read';
 
 const NOTIFICATION_ICONS: Record<Notification['type'], { icon: keyof typeof Ionicons.glyphMap; color: string }> = {
   reminder: { icon: 'alarm', color: colors.semantic.warning },
@@ -108,20 +39,55 @@ export default function NotificationsScreen() {
   const insets = useSafeAreaInsets();
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
 
+  // Load persisted dismissed + read state on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const [rawDismissed, rawRead] = await Promise.all([
+          AsyncStorage.getItem(DISMISSED_KEY),
+          AsyncStorage.getItem(READ_KEY),
+        ]);
+        const dismissed: string[] = rawDismissed ? JSON.parse(rawDismissed) : [];
+        const read: string[] = rawRead ? JSON.parse(rawRead) : [];
+        setNotifications(
+          MOCK_NOTIFICATIONS
+            .filter(n => !dismissed.includes(n.id))
+            .map(n => ({ ...n, read: n.read || read.includes(n.id) }))
+        );
+      } catch {
+        // ignore storage errors, show defaults
+      }
+    })();
+  }, []);
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const markAsRead = (id: string) => {
     setNotifications(prev =>
       prev.map(n => (n.id === id ? { ...n, read: true } : n))
     );
+    AsyncStorage.getItem(READ_KEY).then(raw => {
+      const existing: string[] = raw ? JSON.parse(raw) : [];
+      if (!existing.includes(id)) {
+        AsyncStorage.setItem(READ_KEY, JSON.stringify([...existing, id])).catch(() => {});
+      }
+    }).catch(() => {});
   };
 
   const markAllAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    const allIds = notifications.map(n => n.id);
+    AsyncStorage.setItem(READ_KEY, JSON.stringify(allIds)).catch(() => {});
   };
 
   const deleteNotification = (id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
+    AsyncStorage.getItem(DISMISSED_KEY).then(raw => {
+      const existing: string[] = raw ? JSON.parse(raw) : [];
+      if (!existing.includes(id)) {
+        AsyncStorage.setItem(DISMISSED_KEY, JSON.stringify([...existing, id])).catch(() => {});
+      }
+    }).catch(() => {});
   };
 
   const formatTimestamp = (date: Date): string => {

@@ -51,33 +51,26 @@ export default function FilterChip({
       activeOpacity={0.7}
     >
       {icon && (
-        <Ionicons 
-          name={icon} 
-          size={16} 
-          color={selected ? colors.primary.main : colors.neutral.textSecondary} 
+        <Ionicons
+          name={icon}
+          size={16}
+          color={selected ? colors.primary.main : colors.neutral.textSecondary}
           style={styles.icon}
         />
       )}
-      <Text 
-        style={[
-          styles.label, 
-          selected && styles.labelSelected
-        ]}
+      <Text
+        style={[styles.label, selected && styles.labelSelected]}
         numberOfLines={1}
       >
         {label}
       </Text>
       {showClear && selected && (
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={handleClearPress}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           style={styles.clearButton}
         >
-          <Ionicons 
-            name="close-circle" 
-            size={16} 
-            color={colors.primary.main} 
-          />
+          <Ionicons name="close-circle" size={16} color={colors.primary.main} />
         </TouchableOpacity>
       )}
     </TouchableOpacity>
@@ -93,6 +86,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     marginEnd: spacing.sm,
+    gap: 2,
     borderWidth: 1,
     borderColor: colors.dark[500],
     maxWidth: 200,
@@ -103,6 +97,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginEnd: spacing.xs,
+    marginStart: spacing.xs,
   },
   label: {
     ...typography.labelMedium,

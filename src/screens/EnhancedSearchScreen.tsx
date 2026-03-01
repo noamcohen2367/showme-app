@@ -17,6 +17,7 @@ import {
   Dimensions,
   RefreshControl,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -33,7 +34,8 @@ import { SearchResultsSkeleton } from '../components/Skeleton';
 import { usePullToRefresh } from '../components/PullToRefresh';
 import ErrorState from '../components/ErrorState';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 type SearchNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 

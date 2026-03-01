@@ -14,6 +14,7 @@ import {
   Dimensions,
   Share,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -27,7 +28,7 @@ import { userPerformances } from '../data/user';
 import { getShowById } from '../data/shows';
 import { getTheaterById } from '../data/theaters';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 type TicketDetailNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

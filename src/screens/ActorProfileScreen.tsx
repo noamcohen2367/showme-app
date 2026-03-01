@@ -14,6 +14,7 @@ import {
   StatusBar,
   Animated,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -29,7 +30,8 @@ import { useShows } from '../hooks/useShows';
 import { ShowCard } from '../components/components';
 import { ShowListSkeleton } from '../components/Skeleton';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 const HEADER_HEIGHT = SCREEN_HEIGHT * 0.4;
 
 type ActorProfileRouteProp = RouteProp<RootStackParamList, 'ActorProfile'>;

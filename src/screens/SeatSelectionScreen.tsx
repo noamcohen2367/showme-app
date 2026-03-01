@@ -12,6 +12,7 @@ import {
   StatusBar,
   Dimensions,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -38,7 +39,7 @@ import {
   HallLayoutData,
 } from '../data/hallLayouts';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 type SeatSelectionNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -191,7 +192,7 @@ export default function SeatSelectionScreen() {
           fontWeight="bold"
           letterSpacing={2}
         >
-          STAGE
+          {isHebrew ? 'בָּמָה' : 'STAGE'}
         </SvgText>
       </G>
     );

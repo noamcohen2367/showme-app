@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,7 +21,7 @@ import { colors, typography, spacing } from '../theme/theme';
 import { getTheaterById } from '../data/theaters';
 import Badge from './Badge';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 const CARD_WIDTH = SCREEN_WIDTH * 0.7;
 const CARD_WIDTH_SMALL = SCREEN_WIDTH * 0.42;
 

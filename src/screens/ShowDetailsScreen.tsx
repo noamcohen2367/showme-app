@@ -14,6 +14,7 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -31,8 +32,10 @@ import { getActorById } from '../data/actors';
 import Badge from '../components/Badge';
 import ActorCard from '../components/ActorCard';
 import { ShowDetailsSkeleton } from '../components/Skeleton';
+import { useWatchlist } from '../hooks/useWatchlist';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 const HEADER_HEIGHT = SCREEN_HEIGHT * 0.45;
 
 type ShowDetailsNavigationProp = NativeStackNavigationProp<
@@ -53,7 +56,9 @@ export default function ShowDetailsScreen() {
   const { show, loading } = useShow(showId);
   const theater = show ? getTheaterById(show.theaterId) : null;
 
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { isInWatchlist, toggleWatchlist, isWatched, markAsWatched, removeFromWatched } = useWatchlist();
+  const isWishlisted = isInWatchlist(showId);
+  const isAlreadyWatched = isWatched(showId);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
   const galleryScrollRef = useRef<ScrollView>(null);
@@ -169,14 +174,46 @@ export default function ShowDetailsScreen() {
         <TouchableOpacity style={styles.headerButton} onPress={() => {}}>
           <Ionicons name="share-outline" size={24} color="#FFFFFF" />
         </TouchableOpacity>
+        {/* Watched toggle — mutually exclusive with watchlist */}
         <TouchableOpacity
           style={styles.headerButton}
-          onPress={() => setIsWishlisted(!isWishlisted)}
+          onPress={() => {
+            if (isAlreadyWatched) {
+              removeFromWatched(showId);
+            } else {
+              markAsWatched(showId); // also removes from watchlist internally
+            }
+          }}
+        >
+          <Ionicons
+            name={isAlreadyWatched ? 'checkmark-circle' : 'checkmark-circle-outline'}
+            size={24}
+            color={isAlreadyWatched ? '#22c55e' : '#FFFFFF'}
+          />
+        </TouchableOpacity>
+        {/* Watchlist toggle — disabled (dimmed) when show is already watched */}
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={() => {
+            if (isAlreadyWatched) {
+              // Pressing heart while watched: move back to watchlist
+              removeFromWatched(showId);
+              toggleWatchlist(showId); // not in watchlist → adds it
+            } else {
+              toggleWatchlist(showId);
+            }
+          }}
         >
           <Ionicons
             name={isWishlisted ? 'heart' : 'heart-outline'}
             size={24}
-            color={isWishlisted ? colors.secondary.main : '#FFFFFF'}
+            color={
+              isAlreadyWatched
+                ? 'rgba(255,255,255,0.3)' // dimmed when watched
+                : isWishlisted
+                  ? colors.secondary.main
+                  : '#FFFFFF'
+            }
           />
         </TouchableOpacity>
       </View>

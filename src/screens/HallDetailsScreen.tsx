@@ -14,6 +14,7 @@ import {
   FlatList,
   Animated,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -25,7 +26,7 @@ import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
 import { getHallById, ZONE_COLORS, ZONE_LABELS, getPriceRange, Hall, HallSection } from '../data/halls';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 type HallDetailsRouteProp = RouteProp<RootStackParamList, 'HallDetails'>;
 

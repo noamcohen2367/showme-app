@@ -2,7 +2,7 @@
 // ShowME App - Date Selection Screen (Dark Aurora Theme)
 // ============================================
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   StatusBar,
   Dimensions,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -23,7 +24,7 @@ import { colors, typography, spacing } from '../theme/theme';
 import { RootStackParamList } from '../types/types';
 import { useShow } from '../hooks/useShows';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 const DAY_WIDTH = (SCREEN_WIDTH - spacing.lg * 2 - spacing.xs * 12) / 7;
 
 type DateSelectionNavigationProp = NativeStackNavigationProp<RootStackParamList, 'DateSelection'>;
@@ -42,8 +43,32 @@ export default function DateSelectionScreen() {
   const { showId } = route.params;
   const { show } = useShow(showId);
 
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
+  // Nearest upcoming non-sold-out date
+  const nearestDate = useMemo(() => {
+    if (!show?.availableDates) return null;
+    const upcoming = show.availableDates
+      .filter(d => d.availability !== 'sold_out' && new Date(d.date + 'T00:00:00') >= today)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    return upcoming[0]?.date ?? null;
+  }, [show, today]);
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  // Once show loads, jump to the nearest date's month and pre-select it
+  useEffect(() => {
+    if (nearestDate && !selectedDate) {
+      const d = new Date(nearestDate + 'T00:00:00');
+      setCurrentMonth(new Date(d.getFullYear(), d.getMonth(), 1));
+      setSelectedDate(nearestDate);
+    }
+  }, [nearestDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get available dates from show
   const availableDates = useMemo(() => {
@@ -58,6 +83,13 @@ export default function DateSelectionScreen() {
       show.availableDates.filter(d => d.availability === 'sold_out').map(d => d.date)
     );
   }, [show]);
+
+  // Days until selected date (0 = today, positive = future)
+  const daysUntil = useMemo(() => {
+    if (!selectedDate) return null;
+    const sel = new Date(selectedDate + 'T00:00:00');
+    return Math.round((sel.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  }, [selectedDate, today]);
 
   // Generate calendar days
   const calendarDays = useMemo(() => {
@@ -136,9 +168,9 @@ export default function DateSelectionScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      {/* Progress Indicator */}
+      {/* Progress Indicator — 2 steps: date → time */}
       <View style={styles.progressContainer}>
-        {['date', 'time', 'seats', 'payment'].map((step, index) => (
+        {['date', 'time'].map((step, index) => (
           <React.Fragment key={step}>
             <View style={[styles.progressStep, index === 0 && styles.progressStepActive]}>
               {index === 0 ? (
@@ -152,7 +184,7 @@ export default function DateSelectionScreen() {
                 <Text style={styles.progressStepText}>{index + 1}</Text>
               )}
             </View>
-            {index < 3 && <View style={styles.progressLine} />}
+            {index < 1 && <View style={styles.progressLine} />}
           </React.Fragment>
         ))}
       </View>
@@ -259,13 +291,26 @@ export default function DateSelectionScreen() {
         {selectedDate && (
           <View style={styles.selectedInfo}>
             <Ionicons name="calendar" size={20} color={colors.primary.main} />
-            <Text style={styles.selectedInfoText}>
-              {new Date(selectedDate).toLocaleDateString(isHebrew ? 'he-IL' : 'en-US', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-              })}
-            </Text>
+            <View style={{ flex: 1, marginStart: spacing.sm }}>
+              <Text style={styles.selectedInfoText}>
+                {new Date(selectedDate + 'T00:00:00').toLocaleDateString(isHebrew ? 'he-IL' : 'en-US', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                })}
+              </Text>
+              {daysUntil !== null && (
+                <Text style={styles.selectedInfoDays}>
+                  {daysUntil === 0
+                    ? (isHebrew ? 'היום!' : 'Today!')
+                    : daysUntil === 1
+                      ? (isHebrew ? 'מחר' : 'Tomorrow')
+                      : isHebrew
+                        ? `בעוד ${daysUntil} ימים`
+                        : `In ${daysUntil} days`}
+                </Text>
+              )}
+            </View>
           </View>
         )}
 
@@ -503,7 +548,11 @@ const styles = StyleSheet.create({
   selectedInfoText: {
     ...typography.labelLarge,
     color: colors.primary.main,
-    marginStart: spacing.sm,
+  },
+  selectedInfoDays: {
+    ...typography.bodySmall,
+    color: colors.neutral.textTertiary,
+    marginTop: 2,
   },
   bottomContainer: {
     paddingHorizontal: spacing.lg,

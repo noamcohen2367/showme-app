@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Linking,
+  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -56,9 +58,24 @@ export default function TimeSelectionScreen() {
     return t('booking.fewSeatsLeft');
   };
 
-  const handleContinue = () => {
-    if (selectedTime) {
-      navigation.navigate('SeatSelection', { showId, date, time: selectedTime.time });
+  const handleContinue = async () => {
+    if (!selectedTime) return;
+    const url = selectedTime.purchaseLink;
+    if (!url) {
+      Alert.alert(
+        isHebrew ? 'לינק לא זמין' : 'Link unavailable',
+        isHebrew ? 'לא נמצא לינק לרכישת כרטיסים להצגה זו.' : 'No purchase link found for this show.',
+      );
+      return;
+    }
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      Linking.openURL(url);
+    } else {
+      Alert.alert(
+        isHebrew ? 'שגיאה' : 'Error',
+        isHebrew ? `לא ניתן לפתוח: ${url}` : `Cannot open: ${url}`,
+      );
     }
   };
 
@@ -81,30 +98,28 @@ export default function TimeSelectionScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      {/* Progress Indicator */}
+      {/* Progress Indicator — 2 steps: date → time */}
       <View style={styles.progressContainer}>
-        {['date', 'time', 'seats', 'payment'].map((step, index) => (
+        {['date', 'time'].map((step, index) => (
           <React.Fragment key={step}>
             <View style={[
-              styles.progressStep, 
-              index <= 1 && styles.progressStepActive,
+              styles.progressStep,
+              styles.progressStepActive,
               index < 1 && styles.progressStepCompleted,
             ]}>
               {index < 1 ? (
                 <Ionicons name="checkmark" size={16} color={colors.neutral.white} />
-              ) : index === 1 ? (
+              ) : (
                 <LinearGradient
                   colors={[colors.primary.main, colors.secondary.main]}
                   style={styles.progressStepGradient}
                 >
                   <Text style={styles.progressStepTextActive}>{index + 1}</Text>
                 </LinearGradient>
-              ) : (
-                <Text style={styles.progressStepText}>{index + 1}</Text>
               )}
             </View>
-            {index < 3 && (
-              <View style={[styles.progressLine, index < 1 && styles.progressLineActive]} />
+            {index < 1 && (
+              <View style={[styles.progressLine, styles.progressLineActive]} />
             )}
           </React.Fragment>
         ))}
@@ -212,14 +227,14 @@ export default function TimeSelectionScreen() {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
           >
-            <Text style={[styles.continueButtonText, !selectedTime && styles.continueButtonTextDisabled]}>
-              {t('common.continue')}
-            </Text>
-            <Ionicons 
-              name="arrow-forward" 
-              size={20} 
-              color={selectedTime ? colors.neutral.white : colors.neutral.textTertiary} 
+            <Ionicons
+              name="open-outline"
+              size={20}
+              color={selectedTime ? colors.neutral.white : colors.neutral.textTertiary}
             />
+            <Text style={[styles.continueButtonText, !selectedTime && styles.continueButtonTextDisabled]}>
+              {isHebrew ? 'לרכישת כרטיסים' : 'Buy Tickets'}
+            </Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>

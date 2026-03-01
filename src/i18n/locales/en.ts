@@ -456,4 +456,23 @@ export default {
     selectDate: 'Select Date',
     selectTime: 'Select Time',
   },
+
+  // Watchlist
+  watchlist: {
+    title: 'Watchlist',
+    tabWatchlist: 'To Watch',
+    tabWatched: 'Watched',
+    emptyWatchlist: 'Your Watchlist is Empty',
+    emptyWatchlistDesc: 'Tap the heart icon on any show to save it here',
+    emptyWatched: 'No Watched Shows Yet',
+    emptyWatchedDesc: 'Shows you\'ve marked as watched will appear here',
+    browseShows: 'Browse Shows',
+    markWatched: 'Mark as Watched',
+    addedToWatchlist: 'Added to Watchlist',
+    removedFromWatchlist: 'Removed from Watchlist',
+    countShows: '{{count}} shows',
+    countWatched: '{{count}} watched',
+    swipeLeftDelete: 'swipe left to delete',
+    swipeRightWatched: 'swipe right for watched',
+  },
 };

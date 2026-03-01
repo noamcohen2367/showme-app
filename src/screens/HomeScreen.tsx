@@ -17,6 +17,7 @@ import {
   TouchableWithoutFeedback,
   I18nManager,
 } from 'react-native';
+import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
 import { PullToRefreshScrollView } from '../components/PullToRefresh';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +36,7 @@ import {
 } from '../types/types';
 import { theaters } from '../data/theaters';
 import { useShows } from '../hooks/useShows';
+import { useNotificationBadge } from '../hooks/useNotificationBadge';
 import { HomeScreenSkeleton } from '../components/Skeleton';
 import NetworkBanner from '../components/NetworkBanner';
 import ErrorState from '../components/ErrorState';
@@ -47,7 +49,8 @@ import {
   SectionHeader,
 } from '../components/components';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SCREEN_WIDTH = getAppWidth();
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -503,6 +506,7 @@ export default function HomeScreen() {
   const isHebrew = i18n.language === 'he';
 
   const { shows, loading, error, isUsingFallback, refetch } = useShows();
+  const hasUnreadNotifications = useNotificationBadge();
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
   const [selectedLocation, setSelectedLocation] = useState<LocationArea | null>(
@@ -561,7 +565,6 @@ export default function HomeScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isHebrew) {
-        heroFilterRef.current?.scrollToEnd({ animated: false });
         categoryScrollRef.current?.scrollToEnd({ animated: false });
       } else {
         heroFilterRef.current?.scrollTo({ x: 0, animated: false });
@@ -961,7 +964,7 @@ export default function HomeScreen() {
               size={24}
               color={colors.neutral.white}
             />
-            <View style={styles.notificationDot} />
+            {hasUnreadNotifications && <View style={styles.notificationDot} />}
           </TouchableOpacity>
         </View>
       ) : (
@@ -1033,7 +1036,7 @@ export default function HomeScreen() {
                 size={20}
                 color={colors.neutral.white}
               />
-              <View style={styles.notificationDot} />
+              {hasUnreadNotifications && <View style={styles.notificationDot} />}
             </TouchableOpacity>
           </Animated.View>
         </Animated.View>
@@ -1077,13 +1080,20 @@ export default function HomeScreen() {
                 { flexDirection: isHebrew ? 'row-reverse' : 'row' },
               ]}
             >
-              <View style={{ alignItems: isHebrew ? 'flex-end' : 'flex-start' }}>
+              <View
+                style={{ alignItems: isHebrew ? 'flex-end' : 'flex-start' }}
+              >
                 <Image
                   source={require('../../assets/wordmark.png')}
                   style={styles.wordmark}
                   contentFit="contain"
                 />
-                <Text style={[styles.subtitle, { textAlign: isHebrew ? 'right' : 'left' }]}>
+                <Text
+                  style={[
+                    styles.subtitle,
+                    { textAlign: isHebrew ? 'right' : 'left' },
+                  ]}
+                >
                   {t('home.subtitle')}
                 </Text>
               </View>
@@ -1096,7 +1106,7 @@ export default function HomeScreen() {
                   size={24}
                   color={colors.neutral.white}
                 />
-                <View style={styles.notificationDot} />
+                {hasUnreadNotifications && <View style={styles.notificationDot} />}
               </TouchableOpacity>
             </View>
             <View style={styles.heroFiltersRow}>
@@ -1104,7 +1114,10 @@ export default function HomeScreen() {
                 ref={heroFilterRef}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.filtersContent}
+                contentContainerStyle={[
+                  styles.filtersContent,
+                  isHebrew && { flexDirection: 'row-reverse', flexGrow: 1 },
+                ]}
               >
                 {isHebrew ? (
                   <>
@@ -1775,7 +1788,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.semantic.error,
   },
-  filtersContent: { paddingHorizontal: spacing.lg, gap: spacing.sm },
+  filtersContent: {
+    marginStart: spacing.sm,
+    paddingHorizontal: spacing.xs,
+    gap: spacing.xxs,
+  },
   content: { flex: 1 },
   contentContainer: { paddingBottom: spacing.xxl },
   storiesSection: { marginBottom: spacing.lg },

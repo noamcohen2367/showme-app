@@ -317,4 +317,23 @@ export default {
     selectDate: 'Выбрать дату',
     selectTime: 'Выбрать время',
   },
+
+  // Watchlist
+  watchlist: {
+    title: 'Список просмотра',
+    tabWatchlist: 'Хочу посмотреть',
+    tabWatched: 'Просмотрено',
+    emptyWatchlist: 'Список просмотра пуст',
+    emptyWatchlistDesc: 'Нажмите на сердечко на странице спектакля, чтобы добавить его',
+    emptyWatched: 'Нет просмотренных спектаклей',
+    emptyWatchedDesc: 'Здесь появятся спектакли, которые вы отметили как просмотренные',
+    browseShows: 'Смотреть спектакли',
+    markWatched: 'Отметить как просмотрено',
+    addedToWatchlist: 'Добавлено в список',
+    removedFromWatchlist: 'Удалено из списка',
+    countShows: '{{count}} спектаклей',
+    countWatched: '{{count}} просмотрено',
+    swipeLeftDelete: 'влево для удаления',
+    swipeRightWatched: 'вправо — просмотрено',
+  },
 };
