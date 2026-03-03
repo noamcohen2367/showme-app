@@ -8,7 +8,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
+  Platform,
 } from 'react-native';
 import { getAppWidth } from '../utils/dimensions';
 import { Image } from 'expo-image';
@@ -22,8 +22,8 @@ import { getTheaterById } from '../data/theaters';
 import Badge from './Badge';
 
 const SCREEN_WIDTH = getAppWidth();
-const CARD_WIDTH = SCREEN_WIDTH * 0.7;
-const CARD_WIDTH_SMALL = SCREEN_WIDTH * 0.42;
+const CARD_WIDTH = Platform.OS === 'web' ? 260 : SCREEN_WIDTH * 0.7;
+const CARD_WIDTH_SMALL = Platform.OS === 'web' ? 185 : SCREEN_WIDTH * 0.42;
 
 interface ShowCardProps {
   show: Show;

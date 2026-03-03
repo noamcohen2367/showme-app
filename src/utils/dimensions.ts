@@ -1,21 +1,17 @@
 // ============================================
 // ShowME App - Responsive Dimensions Utility
 // ============================================
-// On web, content is constrained to APP_MAX_WIDTH to look like a mobile app
-// centered on the browser. All width-based calculations should use getAppWidth()
-// instead of Dimensions.get('window').width directly.
+// On web, the layout is full-width (like a real website with a sticky top nav).
+// Use getAppWidth() for full-width containers and scroll views.
+// For fixed-width card components on web, use platform-specific constants instead.
 
 import { Dimensions, Platform } from 'react-native';
-
-/** Maximum content width on web (mobile-phone column, centered on desktop) */
-export const APP_MAX_WIDTH = 430;
 
 /**
  * Returns the usable app width.
  * - Native: full device screen width
- * - Web: min(window width, APP_MAX_WIDTH)
+ * - Web: full browser window width (layout fills the viewport)
  */
 export function getAppWidth(): number {
-  const { width } = Dimensions.get('window');
-  return Platform.OS === 'web' ? Math.min(width, APP_MAX_WIDTH) : width;
+  return Dimensions.get('window').width;
 }

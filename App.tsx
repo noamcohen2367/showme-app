@@ -3,7 +3,7 @@
 // ============================================
 
 import React, { useEffect, useState } from 'react';
-import { StatusBar, View, StyleSheet, Platform } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import {
   useFonts,
   Rubik_400Regular,
@@ -15,28 +15,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-// Import i18n configuration (must be imported before using translations)
 import './src/i18n/i18n';
 import { initLanguage } from './src/i18n/i18n';
 
-// Import navigation
 import { RootNavigator } from './src/navigation/navigation';
-
-// Import theme
 import { colors } from './src/theme/theme';
 import { ThemeProvider } from './src/theme/ThemeContext';
-
-// Import splash screen
 import SplashScreen from './src/components/SplashScreen';
-
-// MVP auth
 import LoginScreen from './src/screens/LoginScreen';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
-
-// Responsive web dimensions
-import { APP_MAX_WIDTH } from './src/utils/dimensions';
-
-const isWeb = Platform.OS === 'web';
 
 function AppContent() {
   const { isLoggedIn, login } = useAuth();
@@ -46,7 +33,6 @@ function AppContent() {
     Rubik_600SemiBold,
     Rubik_700Bold,
   });
-
   const [isReady, setIsReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
 
@@ -56,45 +42,37 @@ function AppContent() {
     });
   }, []);
 
+  // ── Splash ───────────────────────────────────────────────────────────────
   if (!isReady || !fontsLoaded || showSplash) {
     return (
-      <View style={styles.splashContainer}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor={colors.neutral.background}
-        />
+      <View style={{ flex: 1, backgroundColor: colors.neutral.background }}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
         <SplashScreen onFinish={() => setShowSplash(false)} />
       </View>
     );
   }
 
-  // Show login gate if not authenticated
+  // ── Login gate ────────────────────────────────────────────────────────────
   if (!isLoggedIn) {
     return (
       <SafeAreaProvider>
         <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
-        <View style={styles.webOuter}>
-          <View style={styles.webInner}>
-            <LoginScreen onLogin={login} />
-          </View>
-        </View>
+        <LoginScreen onLogin={login} />
       </SafeAreaProvider>
     );
   }
 
+  // ── Main app ──────────────────────────────────────────────────────────────
+  // On web: full browser width, top nav handled by BottomTabNavigator (WebTopNav).
+  // On mobile: normal full-screen layout with bottom glass tab bar.
   return (
     <ThemeProvider>
-      <GestureHandlerRootView style={styles.webOuter}>
-        <SafeAreaProvider>
-          <View style={styles.webInner}>
-            <NavigationContainer>
-              <StatusBar
-                barStyle="light-content"
-                backgroundColor={colors.neutral.background}
-              />
-              <RootNavigator />
-            </NavigationContainer>
-          </View>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.neutral.background }}>
+        <SafeAreaProvider style={{ flex: 1 }}>
+          <NavigationContainer>
+            <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
+            <RootNavigator />
+          </NavigationContainer>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </ThemeProvider>
@@ -108,22 +86,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  splashContainer: {
-    flex: 1,
-    backgroundColor: colors.neutral.background,
-  },
-  // Web: dark side-bars + centered column
-  webOuter: {
-    flex: 1,
-    backgroundColor: isWeb ? '#07070A' : colors.neutral.background,
-    alignItems: isWeb ? 'center' : undefined,
-  },
-  webInner: {
-    flex: 1,
-    width: '100%',
-    maxWidth: isWeb ? APP_MAX_WIDTH : undefined,
-    overflow: isWeb ? 'hidden' : undefined,
-  },
-});

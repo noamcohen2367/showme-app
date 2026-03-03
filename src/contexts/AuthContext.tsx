@@ -2,7 +2,13 @@
 // ShowME App - Auth Context
 // ============================================
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { getAuth, clearAuth } from '../storage/mvpStorage';
 
 interface AuthContextValue {
@@ -15,12 +21,13 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    getAuth().then(auth => {
+    // AsyncStorage check is fast (<50ms) and completes well before the
+    // splash screen dismisses (~800ms), so no flicker is visible.
+    getAuth().then((auth) => {
       if (auth.isLoggedIn) setIsLoggedIn(true);
-    }).finally(() => setReady(true));
+    });
   }, []);
 
   const login = () => setIsLoggedIn(true);
@@ -29,8 +36,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await clearAuth();
     setIsLoggedIn(false);
   };
-
-  if (!ready) return null;
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
