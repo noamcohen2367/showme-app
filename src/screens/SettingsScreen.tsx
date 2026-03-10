@@ -20,8 +20,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, typography, spacing } from '../theme/theme';
-import { currentUser } from '../data/user';
-import { RootStackParamList } from '../types/types';
+import { RootStackParamList, LocationArea } from '../types/types';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import LocationFilter from '../components/LocationFilter';
 
 type SettingsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -30,14 +32,25 @@ export default function SettingsScreen() {
   const navigation = useNavigation<SettingsScreenNavigationProp>();
   const insets = useSafeAreaInsets();
 
+  const { userProfile, refreshProfile } = useAuth();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [discountAlerts, setDiscountAlerts] = useState(true);
   const [newShowAlerts, setNewShowAlerts] = useState(true);
   const [showReminders, setShowReminders] = useState(true);
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   const handleSave = () => {
     Alert.alert(t('settings.saved'), '', [{ text: 'OK' }]);
+  };
+
+  const handleLocationSelect = async (location: LocationArea | null) => {
+    if (!userProfile) return;
+    await supabase
+      .from('USER')
+      .update({ preferredLocation: location })
+      .eq('id', userProfile.id);
+    await refreshProfile();
   };
 
   return (
@@ -70,7 +83,7 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.fieldContent}>
                 <Text style={styles.fieldLabel}>{t('settings.fullName')}</Text>
-                <Text style={styles.fieldValue}>{currentUser.fullName}</Text>
+                <Text style={styles.fieldValue}>{userProfile?.fullName ?? '—'}</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.neutral.textTertiary} />
             </TouchableOpacity>
@@ -83,7 +96,7 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.fieldContent}>
                 <Text style={styles.fieldLabel}>{t('settings.email')}</Text>
-                <Text style={styles.fieldValue}>{currentUser.email}</Text>
+                <Text style={styles.fieldValue}>{userProfile?.email ?? '—'}</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.neutral.textTertiary} />
             </TouchableOpacity>
@@ -96,7 +109,7 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.fieldContent}>
                 <Text style={styles.fieldLabel}>{t('settings.phone')}</Text>
-                <Text style={styles.fieldValue}>{currentUser.phone}</Text>
+                <Text style={styles.fieldValue}>{userProfile?.phone ?? '—'}</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.neutral.textTertiary} />
             </TouchableOpacity>
@@ -108,7 +121,7 @@ export default function SettingsScreen() {
         {/* Location */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('settings.location')}</Text>
-          <TouchableOpacity style={styles.card}>
+          <TouchableOpacity style={styles.card} onPress={() => setShowLocationModal(true)}>
             <View style={styles.fieldRow}>
               <View style={styles.fieldIcon}>
                 <Ionicons name="location-outline" size={20} color={colors.primary.main} />
@@ -116,7 +129,9 @@ export default function SettingsScreen() {
               <View style={styles.fieldContent}>
                 <Text style={styles.fieldLabel}>{t('settings.location')}</Text>
                 <Text style={styles.fieldValue}>
-                  {t(`locations.${currentUser.preferredLocation || 'tel_aviv'}`)}
+                  {userProfile?.preferredLocation
+                    ? t(`locations.${userProfile.preferredLocation}`)
+                    : t('locations.allLocations')}
                 </Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.neutral.textTertiary} />
@@ -124,6 +139,13 @@ export default function SettingsScreen() {
           </TouchableOpacity>
           <Text style={styles.helpText}>{t('settings.locationDesc')}</Text>
         </View>
+
+        <LocationFilter
+          visible={showLocationModal}
+          selectedLocation={(userProfile?.preferredLocation as LocationArea) ?? null}
+          onSelectLocation={handleLocationSelect}
+          onClose={() => setShowLocationModal(false)}
+        />
 
         {/* Notifications */}
         <View style={styles.section}>

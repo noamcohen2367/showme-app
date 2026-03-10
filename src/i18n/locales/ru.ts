@@ -261,6 +261,16 @@ export default {
       gold: 'Золото',
     },
     levelProgress: '{{current}}/{{needed}} шоу до {{nextLevel}}',
+    avatar: {
+      profilePhoto: 'Фото профиля',
+      viewPhoto: 'Смотреть фото',
+      uploadGallery: 'Из галереи',
+      takePhoto: 'Сделать фото',
+      removePhoto: 'Удалить фото',
+      permissionRequired: 'Требуется разрешение',
+      galleryPermission: 'Разрешите доступ к галерее.',
+      cameraPermission: 'Разрешите доступ к камере.',
+    },
   },
 
   // Settings

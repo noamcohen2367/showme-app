@@ -37,6 +37,7 @@ import {
 import { theaters } from '../data/theaters';
 import { useShows } from '../hooks/useShows';
 import { useNotificationBadge } from '../hooks/useNotificationBadge';
+import { useAuth } from '../contexts/AuthContext';
 import { HomeScreenSkeleton } from '../components/Skeleton';
 import NetworkBanner from '../components/NetworkBanner';
 import ErrorState from '../components/ErrorState';
@@ -505,12 +506,13 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const isHebrew = i18n.language === 'he';
 
+  const { userProfile } = useAuth();
   const { shows, loading, error, isUsingFallback, refetch } = useShows();
   const hasUnreadNotifications = useNotificationBadge();
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
   const [selectedLocation, setSelectedLocation] = useState<LocationArea | null>(
-    null,
+    (userProfile?.preferredLocation as LocationArea) ?? null,
   );
   const [selectedCategories, setSelectedCategories] = useState<ShowCategory[]>(
     [],

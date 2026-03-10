@@ -348,6 +348,16 @@ export default {
       gold: 'זהב',
     },
     levelProgress: '{{current}}/{{needed}} הופעות ל{{nextLevel}}',
+    avatar: {
+      profilePhoto: 'תמונת פרופיל',
+      viewPhoto: 'צפה בתמונה',
+      uploadGallery: 'העלה מגלריה',
+      takePhoto: 'צלם תמונה',
+      removePhoto: 'הסר תמונה',
+      permissionRequired: 'נדרשת הרשאה',
+      galleryPermission: 'אפשר גישה לגלריית התמונות.',
+      cameraPermission: 'אפשר גישה למצלמה.',
+    },
   },
 
   // Performances (My Tickets)

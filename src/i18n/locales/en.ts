@@ -356,6 +356,16 @@ export default {
       gold: 'Gold',
     },
     levelProgress: '{{current}}/{{needed}} shows to {{nextLevel}}',
+    avatar: {
+      profilePhoto: 'Profile Photo',
+      viewPhoto: 'View Photo',
+      uploadGallery: 'Upload from Gallery',
+      takePhoto: 'Take Photo',
+      removePhoto: 'Remove Photo',
+      permissionRequired: 'Permission required',
+      galleryPermission: 'Allow access to your photo library.',
+      cameraPermission: 'Allow camera access.',
+    },
   },
 
   // Performances (My Tickets)

@@ -33,6 +33,7 @@ export default function SignUpScreen({ onSignedUp, onGoToLogin }: SignUpScreenPr
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -41,6 +42,7 @@ export default function SignUpScreen({ onSignedUp, onGoToLogin }: SignUpScreenPr
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
+    phone?: string;
     password?: string;
     confirmPassword?: string;
   }>({});
@@ -54,6 +56,11 @@ export default function SignUpScreen({ onSignedUp, onGoToLogin }: SignUpScreenPr
       newErrors.email = 'Email is required';
     } else if (!email.includes('@')) {
       newErrors.email = 'Enter a valid email address';
+    }
+    if (!phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (phone.trim().length < 9) {
+      newErrors.phone = 'Enter a valid phone number';
     }
     if (!password) {
       newErrors.password = 'Password is required';
@@ -74,18 +81,36 @@ export default function SignUpScreen({ onSignedUp, onGoToLogin }: SignUpScreenPr
     setIsLoading(true);
 
     try {
-      // Create auth user — fullName passed as metadata so the DB trigger can insert it
-      const { data, error: authError } = await supabase.auth.signUp({
+      // Check if email or phone already exists in USER table
+      const { data: existing } = await supabase
+        .from('USER')
+        .select('email, phone')
+        .or(`email.eq.${email.trim()},phone.eq.${phone.trim()}`)
+        .limit(1);
+
+      if (existing && existing.length > 0) {
+        const match = existing[0];
+        if (match.email === email.trim()) {
+          setErrors(e => ({ ...e, email: 'Email is already registered' }));
+        } else {
+          setErrors(e => ({ ...e, phone: 'Phone number is already registered' }));
+        }
+        return;
+      }
+
+      // Create auth user — metadata passed to DB trigger
+      const { error: authError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
-        options: { data: { fullName: name.trim() } },
+        options: { data: { fullName: name.trim(), phone: phone.trim() } },
       });
 
-      console.log('[SignUp] data:', JSON.stringify(data));
-      console.log('[SignUp] error:', JSON.stringify(authError));
-
       if (authError) {
-        Alert.alert('Sign Up Failed', `${authError.message}\n\nCode: ${authError.status ?? 'n/a'}`);
+        if (authError.status === 422) {
+          setErrors(e => ({ ...e, email: 'Email is already registered' }));
+        } else {
+          Alert.alert('Sign Up Failed', authError.message);
+        }
         return;
       }
 
@@ -190,6 +215,33 @@ export default function SignUpScreen({ onSignedUp, onGoToLogin }: SignUpScreenPr
                 />
               </View>
               {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+            </View>
+
+            {/* Phone */}
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>Phone Number</Text>
+              <View style={[styles.inputRow, errors.phone && styles.inputRowError]}>
+                <Ionicons
+                  name="call-outline"
+                  size={20}
+                  color={errors.phone ? colors.semantic.error : colors.neutral.textTertiary}
+                  style={styles.inputIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="050-000-0000"
+                  placeholderTextColor={colors.neutral.textTertiary}
+                  value={phone}
+                  onChangeText={v => {
+                    setPhone(v);
+                    if (errors.phone) setErrors(e => ({ ...e, phone: undefined }));
+                  }}
+                  keyboardType="phone-pad"
+                  autoComplete="tel"
+                  returnKeyType="next"
+                />
+              </View>
+              {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
             </View>
 
             {/* Password */}
