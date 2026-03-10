@@ -19,23 +19,15 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { supabase } from '../lib/supabase';
 import { colors, typography, spacing } from '../theme/theme';
-
-const AUTH_STORAGE_KEY = 'showmi.mvp.auth';
-
-interface LocalAuthState {
-  isLoggedIn: boolean;
-  identifier: string;
-  updatedAt: string;
-}
 
 interface LoginScreenProps {
   onLogin: () => void;
+  onGoToSignUp: () => void;
 }
 
-export default function LoginScreen({ onLogin }: LoginScreenProps) {
+export default function LoginScreen({ onLogin, onGoToSignUp }: LoginScreenProps) {
   const insets = useSafeAreaInsets();
 
   const [identifier, setIdentifier] = useState('');
@@ -56,8 +48,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     }
     if (!password.trim()) {
       newErrors.password = 'Password is required';
-    } else if (password.length < 4) {
-      newErrors.password = 'Password must be at least 4 characters';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -67,16 +59,15 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     if (!validate()) return;
     setIsLoading(true);
 
-    // Simulate network delay for mock auth
-    await new Promise(r => setTimeout(r, 800));
-
     try {
-      const authState: LocalAuthState = {
-        isLoggedIn: true,
-        identifier: identifier.trim(),
-        updatedAt: new Date().toISOString(),
-      };
-      await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authState));
+      const { error } = await supabase.auth.signInWithPassword({
+        email: identifier.trim(),
+        password,
+      });
+      if (error) {
+        Alert.alert('Sign In Failed', error.message);
+        return;
+      }
       onLogin();
     } catch {
       Alert.alert('Error', 'Something went wrong. Please try again.');
@@ -123,7 +114,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
 
             {/* Identifier field */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>Email or Phone</Text>
+              <Text style={styles.fieldLabel}>Email</Text>
               <View style={[styles.inputRow, errors.identifier && styles.inputRowError]}>
                 <Ionicons
                   name="person-outline"
@@ -209,10 +200,13 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               </LinearGradient>
             </TouchableOpacity>
 
-            {/* Mock auth note */}
-            <Text style={styles.mockNote}>
-              Any email/phone and password (4+ chars) will sign you in for this MVP.
-            </Text>
+            {/* Sign Up link */}
+            <View style={styles.signUpRow}>
+              <Text style={styles.signUpPrompt}>Don't have an account? </Text>
+              <TouchableOpacity onPress={onGoToSignUp}>
+                <Text style={styles.signUpLink}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View style={{ height: 40 }} />
@@ -333,11 +327,19 @@ const styles = StyleSheet.create({
     color: colors.neutral.white,
     fontWeight: '700',
   },
-  mockNote: {
-    ...typography.caption,
-    color: colors.neutral.textTertiary,
-    textAlign: 'center',
+  signUpRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: spacing.lg,
-    fontStyle: 'italic',
+  },
+  signUpPrompt: {
+    ...typography.bodySmall,
+    color: colors.neutral.textTertiary,
+  },
+  signUpLink: {
+    ...typography.bodySmall,
+    color: colors.primary.main,
+    fontWeight: '600',
   },
 });

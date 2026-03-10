@@ -24,9 +24,11 @@ import { ThemeProvider } from './src/theme/ThemeContext';
 import SplashScreen from './src/components/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
+import SignUpScreen from './src/screens/SignUpScreen';
 
 function AppContent() {
   const { isLoggedIn, login } = useAuth();
+  const [authView, setAuthView] = useState<'login' | 'signUp'>('login');
   const [fontsLoaded] = useFonts({
     Rubik_400Regular,
     Rubik_500Medium,
@@ -52,12 +54,22 @@ function AppContent() {
     );
   }
 
-  // ── Login gate ────────────────────────────────────────────────────────────
+  // ── Login / Sign Up gate ─────────────────────────────────────────────────
   if (!isLoggedIn) {
     return (
       <SafeAreaProvider>
         <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
-        <LoginScreen onLogin={login} />
+        {authView === 'signUp' ? (
+          <SignUpScreen
+            onSignedUp={() => setAuthView('login')}
+            onGoToLogin={() => setAuthView('login')}
+          />
+        ) : (
+          <LoginScreen
+            onLogin={login}
+            onGoToSignUp={() => setAuthView('signUp')}
+          />
+        )}
       </SafeAreaProvider>
     );
   }

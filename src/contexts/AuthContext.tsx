@@ -9,7 +9,7 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-import { getAuth, clearAuth } from '../storage/mvpStorage';
+import { supabase } from '../lib/supabase';
 
 interface AuthContextValue {
   isLoggedIn: boolean;
@@ -23,17 +23,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // AsyncStorage check is fast (<50ms) and completes well before the
-    // splash screen dismisses (~800ms), so no flicker is visible.
-    getAuth().then((auth) => {
-      if (auth.isLoggedIn) setIsLoggedIn(true);
+    // Restore session from Supabase (persisted in AsyncStorage)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setIsLoggedIn(true);
     });
   }, []);
 
   const login = () => setIsLoggedIn(true);
 
   const logout = async () => {
-    await clearAuth();
+    await supabase.auth.signOut();
     setIsLoggedIn(false);
   };
 
