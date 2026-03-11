@@ -282,7 +282,7 @@ export default function HallDetailsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   errorText: { ...typography.bodyLarge, color: colors.neutral.text, textAlign: 'center', marginTop: 100 },
   animatedHeader: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingBottom: spacing.md, backgroundColor: colors.dark[800], zIndex: 100, borderBottomWidth: 1, borderBottomColor: colors.dark[500] },
   headerButton: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },

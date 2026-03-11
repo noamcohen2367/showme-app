@@ -259,7 +259,7 @@ export default function MyPerformancesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   header: {
     paddingHorizontal: spacing.lg,
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
     marginStart: -10,
   },
   dividerLine: {
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
     marginEnd: -10,
   },
   ticketBottom: {

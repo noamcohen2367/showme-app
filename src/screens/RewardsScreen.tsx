@@ -396,7 +396,7 @@ export default function RewardsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   header: {
     flexDirection: 'row',

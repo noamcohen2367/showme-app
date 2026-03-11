@@ -657,7 +657,7 @@ export default function EnhancedSearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   header: { paddingHorizontal: spacing.lg, paddingBottom: spacing.md },
   searchContainer: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   searchBar: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: colors.dark[700], borderRadius: 12, paddingHorizontal: spacing.md, height: 48, borderWidth: 1, borderColor: colors.dark[500] },
@@ -700,7 +700,7 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: 'center', paddingVertical: spacing.xxl * 2 },
   emptyTitle: { ...typography.headingSmall, color: colors.neutral.text, marginTop: spacing.lg },
   emptyText: { ...typography.bodyMedium, color: colors.neutral.textTertiary, marginTop: spacing.sm },
-  modalContainer: { flex: 1, backgroundColor: colors.neutral.background },
+  modalContainer: { flex: 1, backgroundColor: 'transparent' },
   modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.dark[500] },
   modalTitle: { ...typography.headingMedium, color: colors.neutral.text },
   clearAllText: { ...typography.labelMedium, color: colors.primary.main },

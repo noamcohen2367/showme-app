@@ -278,6 +278,8 @@ export default {
     title: 'Настройки',
     personalDetails: 'Личные данные',
     fullName: 'Полное имя',
+    editFullName: 'Редактировать имя',
+    fullNamePlaceholder: 'Введите ваше полное имя',
     email: 'Email',
     phone: 'Телефон',
     location: 'Предпочтительный регион',

@@ -3,6 +3,7 @@
 // ============================================
 
 import React from 'react';
+import { Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { RootStackParamList } from '../types/types';
@@ -72,9 +73,9 @@ export default function RootNavigator() {
           backgroundColor: colors.dark[800],
         },
         contentStyle: {
-          backgroundColor: colors.neutral.background,
+          backgroundColor: '#1A0A2E',
         },
-        animation: rtl ? 'slide_from_left' : 'slide_from_right',
+        animation: Platform.OS === 'web' ? 'none' : (rtl ? 'slide_from_left' : 'slide_from_right'),
       }}
     >
       {/* Main Tab Navigator */}

@@ -394,7 +394,7 @@ export default function LiquidGlassDemoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   glowOrb: {
     position: 'absolute',

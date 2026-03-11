@@ -310,7 +310,7 @@ export default function ActorProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   errorContainer: {
     flex: 1,

@@ -326,7 +326,7 @@ function getDefaultDescription(index: number): string {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   skipButton: {
     position: 'absolute',

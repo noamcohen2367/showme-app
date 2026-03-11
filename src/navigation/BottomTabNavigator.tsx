@@ -49,14 +49,14 @@ const TAB_ICONS: Record<keyof MainTabParamList, { active: string; inactive: stri
 function GlassTabBarBackground() {
   if (Platform.OS === 'ios') {
     return (
-      <BlurView intensity={80} tint="dark" style={styles.blurBackground}>
-        <View style={styles.blurBorder} />
+      <BlurView intensity={70} tint="dark" style={styles.blurBackground}>
+        <View style={styles.islandBorder} />
       </BlurView>
     );
   }
   return (
     <View style={styles.androidBackground}>
-      <View style={styles.androidBorder} />
+      <View style={styles.islandBorder} />
     </View>
   );
 }
@@ -192,33 +192,35 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'transparent',
     borderTopWidth: 0,
-    elevation: 0,
-    height: Platform.OS === 'ios' ? 88 : 70,
-    paddingTop: spacing.sm,
-    paddingBottom: Platform.OS === 'ios' ? 28 : spacing.sm,
+    elevation: 20,
+    height: 64,
+    marginHorizontal: 24,
+    borderRadius: 32,
+    bottom: Platform.OS === 'ios' ? 32 : 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.45,
+    shadowRadius: 24,
   },
   blurBackground: {
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
+    borderRadius: 32,
   },
-  blurBorder: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 0.5,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+  islandBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 32,
+    borderWidth: 1,
+    borderColor: 'rgba(168,85,247,0.25)',
   },
   androidBackground: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(18,18,26,0.98)',
+    backgroundColor: 'rgba(20,10,35,0.92)',
+    borderRadius: 32,
+    overflow: 'hidden',
   },
-  androidBorder: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 1,
-    backgroundColor: colors.dark[500],
-  },
-  tabBarLabel:         { ...typography.labelSmall, marginTop: spacing.xxs },
-  tabBarItem:          { paddingTop: spacing.xs },
+  tabBarLabel:         { ...typography.labelSmall, marginTop: 2 },
+  tabBarItem:          { paddingTop: 4, paddingBottom: 0 },
   iconContainer:       { alignItems: 'center' },
   activeIconContainer: { alignItems: 'center' },
   glowDot: {

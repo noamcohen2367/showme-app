@@ -23,7 +23,8 @@
       "package": "com.showmi.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "backgroundColor": "#1A0A2E"
     },
     "extra": {
       "supportsRTL": true

@@ -80,7 +80,7 @@ export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<ProfileNavigationProp>();
   const insets = useSafeAreaInsets();
-  const { logout, userProfile, refreshProfile } = useAuth();
+  const { logout, userProfile, profileLoading, refreshProfile } = useAuth();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showPhotoViewer, setShowPhotoViewer] = useState(false);
@@ -195,7 +195,9 @@ export default function ProfileScreen() {
       if (uploadError) { Alert.alert('Upload failed', uploadError.message); return; }
 
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path);
-      await supabase.from('USER').update({ profileImageUrl: publicUrl }).eq('id', userProfile.id);
+      // Append timestamp to bust expo-image cache (same path = same URL = stale cache)
+      const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
+      await supabase.from('USER').update({ profileImageUrl: urlWithCacheBust }).eq('id', userProfile.id);
       await refreshProfile();
     } catch {
       Alert.alert('Error', 'Failed to upload image.');
@@ -229,7 +231,7 @@ export default function ProfileScreen() {
     );
   };
 
-  if (!userProfile) {
+  if (profileLoading || !userProfile) {
     return (
       <View style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator size="large" color={colors.primary.main} />
@@ -250,15 +252,6 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
       
-      {/* Aurora Background */}
-      <View style={styles.auroraBackground}>
-        <LinearGradient
-          colors={['rgba(168, 85, 247, 0.2)', 'rgba(236, 72, 153, 0.1)', 'transparent']}
-          style={styles.auroraGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0.5 }}
-        />
-      </View>
 
       <ScrollView 
         style={styles.content}
@@ -275,6 +268,7 @@ export default function ProfileScreen() {
                 style={styles.avatar}
                 contentFit="cover"
                 transition={200}
+                cachePolicy="none"
               />
             ) : (
               <LinearGradient
@@ -516,6 +510,7 @@ export default function ProfileScreen() {
             source={{ uri: userProfile?.profileImageUrl ?? '' }}
             style={{ width: '100%', height: '100%' }}
             contentFit="cover"
+            cachePolicy="none"
           />
         </Animated.View>
 
@@ -615,17 +610,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
-  },
-  auroraBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 300,
-  },
-  auroraGradient: {
-    flex: 1,
+    backgroundColor: 'transparent',
   },
   content: {
     flex: 1,

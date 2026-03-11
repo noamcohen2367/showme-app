@@ -406,6 +406,8 @@ export default {
     title: 'הגדרות',
     personalDetails: 'פרטים אישיים',
     fullName: 'שם מלא',
+    editFullName: 'עריכת שם',
+    fullNamePlaceholder: 'הכנס את שמך המלא',
     email: 'אימייל',
     phone: 'טלפון',
     location: 'מיקום מועדף',

@@ -15,6 +15,7 @@ import { changeLanguage, LanguageCode } from '../i18n/i18n';
 
 interface AuthContextValue {
   isLoggedIn: boolean;
+  profileLoading: boolean;
   userProfile: User | null;
   login: () => void;
   logout: () => void;
@@ -45,13 +46,9 @@ async function fetchUserProfile(authId: string): Promise<User | null> {
     createdAt: data.createdAt ?? '',
   };
 
-  // Apply the user's saved language
+  // Apply the user's saved language (non-blocking)
   if (profile.language && profile.language in { en: 1, he: 1, ru: 1 }) {
-    try {
-      await changeLanguage(profile.language as LanguageCode);
-    } catch {
-      // ignore language errors
-    }
+    changeLanguage(profile.language as LanguageCode).catch(() => {});
   }
 
   return profile;
@@ -59,25 +56,30 @@ async function fetchUserProfile(authId: string): Promise<User | null> {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [userProfile, setUserProfile] = useState<User | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // onAuthStateChange callback must be synchronous — never await inside it.
+    // Kick off the async profile fetch with .then() so Supabase's internal queue
+    // is never blocked. Only re-fetch on INITIAL_SESSION / SIGNED_IN, not on
+    // TOKEN_REFRESH (which fires every hour and doesn't need a DB round-trip).
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         setIsLoggedIn(true);
-        const profile = await fetchUserProfile(session.user.id);
-        setUserProfile(profile);
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session) {
-        setIsLoggedIn(true);
-        const profile = await fetchUserProfile(session.user.id);
-        setUserProfile(profile);
+        if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+          setProfileLoading(true);
+          fetchUserProfile(session.user.id)
+            .then(profile => {
+              setUserProfile(profile);
+              setProfileLoading(false);
+            })
+            .catch(() => setProfileLoading(false));
+        }
       } else {
         setIsLoggedIn(false);
         setUserProfile(null);
+        setProfileLoading(false);
       }
     });
 
@@ -90,6 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
     setUserProfile(null);
+    setProfileLoading(false);
   };
 
   const refreshProfile = async () => {
@@ -101,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userProfile, login, logout, refreshProfile }}>
+    <AuthContext.Provider value={{ isLoggedIn, profileLoading, userProfile, login, logout, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

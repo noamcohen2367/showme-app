@@ -407,7 +407,7 @@ export default function WatchlistScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
 
   // ── Header ──────────────────────────────────────────────────────────────

@@ -110,15 +110,6 @@ export default function OrderConfirmationScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.neutral.background} />
       
-      {/* Aurora Background Effect */}
-      <View style={styles.auroraBackground}>
-        <LinearGradient
-          colors={['rgba(168, 85, 247, 0.2)', 'rgba(236, 72, 153, 0.15)', 'transparent']}
-          style={styles.auroraGradient}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 0.5 }}
-        />
-      </View>
 
       {/* Success Icon */}
       <View style={[styles.header, { paddingTop: insets.top + spacing.xxl }]}>
@@ -245,17 +236,7 @@ export default function OrderConfirmationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
-  },
-  auroraBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 350,
-  },
-  auroraGradient: {
-    flex: 1,
+    backgroundColor: 'transparent',
   },
   header: {
     alignItems: 'center',

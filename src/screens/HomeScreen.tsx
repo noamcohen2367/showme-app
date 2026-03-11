@@ -11,7 +11,6 @@ import {
   StatusBar,
   FlatList,
   TouchableOpacity,
-  Dimensions,
   Animated,
   Modal,
   TouchableWithoutFeedback,
@@ -50,7 +49,6 @@ import {
   SectionHeader,
 } from '../components/components';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SCREEN_WIDTH = getAppWidth();
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -924,20 +922,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.dark[900]} />
-      <View style={styles.auroraBackground}>
-        <LinearGradient
-          colors={[
-            'rgba(168, 85, 247, 0.15)',
-            'rgba(75, 27, 91, 0.05)',
-            colors.dark[900],
-            'transparent',
-          ]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.auroraGradient}
-        />
-      </View>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
       {/* ── Sticky bar ── absolute overlay, always on top ── */}
       {(loading && shows.length === 0) ||
@@ -1692,15 +1677,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.dark[900] },
-  auroraBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: SCREEN_HEIGHT * 0.4,
-  },
-  auroraGradient: { flex: 1 },
+  container: { flex: 1, backgroundColor: 'transparent' },
   // ─── Sticky bar ───────────────────────────────────────────────────
   stickyBar: {
     position: 'absolute',
@@ -1711,7 +1688,7 @@ const styles = StyleSheet.create({
   },
   stickyBarBg: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.dark[900],
+    backgroundColor: 'rgba(10,5,20,0.85)',
     borderBottomWidth: 1,
     borderBottomColor: colors.dark[500],
   },
@@ -1812,7 +1789,7 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: colors.dark[900],
+    backgroundColor: 'transparent',
     padding: 2,
   },
   storyAvatar: { width: '100%', height: '100%', borderRadius: 29 },

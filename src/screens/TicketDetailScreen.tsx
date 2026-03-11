@@ -406,13 +406,13 @@ export default function TicketDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   errorContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   errorText: {
     ...typography.bodyLarge,
@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.neutral.white,
   },
   qrCellFilled: {
-    backgroundColor: colors.dark[900],
+    backgroundColor: '#0A0514',
   },
   qrText: {
     ...typography.bodySmall,

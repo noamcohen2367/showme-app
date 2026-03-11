@@ -266,7 +266,7 @@ export default function DigitalWalletScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingBottom: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.dark[500] },
   backButton: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   headerTitle: { ...typography.headingMedium, color: colors.neutral.text },
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   passInfoValue: { ...typography.labelMedium, color: colors.neutral.text },
   barcodeContainer: { padding: spacing.lg, backgroundColor: colors.neutral.white, alignItems: 'center' },
   barcode: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 60, gap: 2 },
-  barcodeLine: { height: '100%', backgroundColor: colors.dark[900] },
+  barcodeLine: { height: '100%', backgroundColor: 'transparent' },
   barcodeNumber: { ...typography.labelMedium, color: colors.dark[900], marginTop: spacing.sm, letterSpacing: 2 },
   benefitsSection: { marginBottom: spacing.xl },
   sectionTitle: { ...typography.headingSmall, color: colors.neutral.text, marginBottom: spacing.md },

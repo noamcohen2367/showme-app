@@ -609,13 +609,13 @@ export default function ShowDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.dark[900],
+    backgroundColor: 'transparent',
   },
   errorContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.dark[900],
+    backgroundColor: 'transparent',
   },
   errorText: {
     ...typography.bodyLarge,

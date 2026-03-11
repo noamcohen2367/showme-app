@@ -346,7 +346,7 @@ export default function ShareTicketScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingBottom: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.dark[500] },
   backButton: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   headerTitle: { ...typography.headingMedium, color: colors.neutral.text },
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   qrPattern: {},
   qrRow: { flexDirection: 'row' },
   qrCell: { width: 16, height: 16, margin: 1, backgroundColor: 'transparent' },
-  qrCellFilled: { backgroundColor: colors.dark[900] },
+  qrCellFilled: { backgroundColor: 'transparent' },
   qrLogo: { position: 'absolute', backgroundColor: colors.neutral.white, padding: spacing.sm, borderRadius: 8 },
   qrHint: { ...typography.bodySmall, color: colors.neutral.textSecondary, marginTop: spacing.md },
   qrActions: { flexDirection: 'row', justifyContent: 'center', gap: spacing.xl },

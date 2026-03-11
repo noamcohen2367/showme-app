@@ -442,7 +442,7 @@ export default function MySubscriptionsScreen() {
 // Styles
 // ──────────────────────────────────────────
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   centered: { alignItems: 'center', justifyContent: 'center' },
   header: {
     flexDirection: 'row',
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
   useButtonDisabled: { borderColor: colors.dark[500], backgroundColor: 'transparent' },
   useButtonText: { ...typography.labelSmall, color: colors.primary.main },
   useButtonTextDisabled: { color: colors.neutral.textTertiary },
-  modalContainer: { flex: 1, backgroundColor: colors.neutral.background },
+  modalContainer: { flex: 1, backgroundColor: 'transparent' },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',

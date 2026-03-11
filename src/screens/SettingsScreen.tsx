@@ -12,6 +12,11 @@ import {
   Switch,
   StatusBar,
   Alert,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -39,9 +44,23 @@ export default function SettingsScreen() {
   const [newShowAlerts, setNewShowAlerts] = useState(true);
   const [showReminders, setShowReminders] = useState(true);
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const [showEditNameModal, setShowEditNameModal] = useState(false);
+  const [editingName, setEditingName] = useState('');
+  const [savingName, setSavingName] = useState(false);
 
-  const handleSave = () => {
-    Alert.alert(t('settings.saved'), '', [{ text: 'OK' }]);
+  const openEditName = () => {
+    setEditingName(userProfile?.fullName ?? '');
+    setShowEditNameModal(true);
+  };
+
+  const saveFullName = async () => {
+    const trimmed = editingName.trim();
+    if (!trimmed || !userProfile) return;
+    setSavingName(true);
+    await supabase.from('USER').update({ fullName: trimmed }).eq('id', userProfile.id);
+    await refreshProfile();
+    setSavingName(false);
+    setShowEditNameModal(false);
   };
 
   const handleLocationSelect = async (location: LocationArea | null) => {
@@ -63,9 +82,7 @@ export default function SettingsScreen() {
           <Ionicons name="arrow-back" size={24} color={colors.neutral.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('settings.title')}</Text>
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>{t('common.save')}</Text>
-        </TouchableOpacity>
+        <View style={styles.backButton} />
       </View>
 
       <ScrollView 
@@ -77,7 +94,7 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('settings.personalDetails')}</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.fieldRow}>
+            <TouchableOpacity style={styles.fieldRow} onPress={openEditName}>
               <View style={styles.fieldIcon}>
                 <Ionicons name="person-outline" size={20} color={colors.primary.main} />
               </View>
@@ -85,7 +102,7 @@ export default function SettingsScreen() {
                 <Text style={styles.fieldLabel}>{t('settings.fullName')}</Text>
                 <Text style={styles.fieldValue}>{userProfile?.fullName ?? '—'}</Text>
               </View>
-              <Ionicons name="chevron-forward" size={18} color={colors.neutral.textTertiary} />
+              <Ionicons name="pencil-outline" size={18} color={colors.neutral.textTertiary} />
             </TouchableOpacity>
 
             <View style={styles.divider} />
@@ -302,6 +319,40 @@ export default function SettingsScreen() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
+
+      {/* Edit Full Name Modal */}
+      <Modal visible={showEditNameModal} transparent animationType="fade" onRequestClose={() => setShowEditNameModal(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+          <View style={styles.editNameCard}>
+            <Text style={styles.editNameTitle}>{t('settings.editFullName')}</Text>
+            <TextInput
+              style={styles.editNameInput}
+              value={editingName}
+              onChangeText={setEditingName}
+              placeholder={t('settings.fullNamePlaceholder')}
+              placeholderTextColor={colors.neutral.textTertiary}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={saveFullName}
+            />
+            <View style={styles.editNameActions}>
+              <TouchableOpacity style={styles.editNameCancel} onPress={() => setShowEditNameModal(false)}>
+                <Text style={styles.editNameCancelText}>{t('common.cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.editNameSave, (!editingName.trim() || savingName) && styles.editNameSaveDisabled]}
+                onPress={saveFullName}
+                disabled={!editingName.trim() || savingName}
+              >
+                {savingName
+                  ? <ActivityIndicator size="small" color="#FFF" />
+                  : <Text style={styles.editNameSaveText}>{t('common.save')}</Text>
+                }
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }
@@ -309,7 +360,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.background,
+    backgroundColor: 'transparent',
   },
   header: {
     flexDirection: 'row',
@@ -460,5 +511,67 @@ const styles = StyleSheet.create({
   dangerText: {
     ...typography.bodyMedium,
     color: colors.semantic.error,
+  },
+  // Edit Name Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  editNameCard: {
+    backgroundColor: colors.dark[700],
+    borderRadius: 16,
+    padding: spacing.xl,
+    borderWidth: 1,
+    borderColor: colors.dark[500],
+  },
+  editNameTitle: {
+    ...typography.headingMedium,
+    color: colors.neutral.text,
+    marginBottom: spacing.lg,
+    textAlign: 'center',
+  },
+  editNameInput: {
+    backgroundColor: colors.dark[800] ?? colors.neutral.background,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.dark[500],
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm + 4,
+    ...typography.bodyMedium,
+    color: colors.neutral.text,
+    marginBottom: spacing.lg,
+  },
+  editNameActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  editNameCancel: {
+    flex: 1,
+    paddingVertical: spacing.sm + 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.dark[500],
+    alignItems: 'center',
+  },
+  editNameCancelText: {
+    ...typography.bodyMedium,
+    color: colors.neutral.textSecondary,
+  },
+  editNameSave: {
+    flex: 1,
+    paddingVertical: spacing.sm + 4,
+    borderRadius: 10,
+    backgroundColor: colors.primary.main,
+    alignItems: 'center',
+  },
+  editNameSaveDisabled: {
+    opacity: 0.4,
+  },
+  editNameSaveText: {
+    ...typography.bodyMedium,
+    color: '#FFF',
+    fontWeight: '600',
   },
 });

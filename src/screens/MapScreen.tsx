@@ -408,7 +408,7 @@ export default function MapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   mapContainer: { flex: 1, position: 'relative' },
   mapImage: {
     ...StyleSheet.absoluteFillObject,

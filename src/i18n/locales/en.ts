@@ -414,6 +414,8 @@ export default {
     title: 'Settings',
     personalDetails: 'Personal Details',
     fullName: 'Full Name',
+    editFullName: 'Edit Name',
+    fullNamePlaceholder: 'Enter your full name',
     email: 'Email',
     phone: 'Phone',
     location: 'Preferred Location',
