@@ -13,9 +13,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -42,24 +42,6 @@ const TAB_ICONS: Record<keyof MainTabParamList, { active: string; inactive: stri
   MySubscriptions: { active: 'card',   inactive: 'card-outline' },
   Profile:         { active: 'person', inactive: 'person-outline' },
 };
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Mobile: iOS 26 Glass Tab Bar Background
-// ─────────────────────────────────────────────────────────────────────────────
-function GlassTabBarBackground() {
-  if (Platform.OS === 'ios') {
-    return (
-      <BlurView intensity={70} tint="dark" style={styles.blurBackground}>
-        <View style={styles.islandBorder} />
-      </BlurView>
-    );
-  }
-  return (
-    <View style={styles.androidBackground}>
-      <View style={styles.islandBorder} />
-    </View>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Web: Sticky Top Navigation Bar
@@ -141,6 +123,24 @@ function WebTopNav({ state, navigation }: BottomTabBarProps) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Mobile: iOS 26 Glass Tab Bar Background
+// ─────────────────────────────────────────────────────────────────────────────
+function GlassTabBarBackground() {
+  if (Platform.OS === 'ios') {
+    return (
+      <BlurView intensity={70} tint="dark" style={styles.blurBackground}>
+        <View style={styles.islandBorder} />
+      </BlurView>
+    );
+  }
+  return (
+    <View style={styles.androidBackground}>
+      <View style={styles.islandBorder} />
+    </View>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Navigator
 // ─────────────────────────────────────────────────────────────────────────────
 export default function BottomTabNavigator() {
@@ -149,13 +149,12 @@ export default function BottomTabNavigator() {
 
   return (
     <Tab.Navigator
-      // On web: replace the bottom tab bar with the sticky top nav
       tabBar={isWeb ? (props) => <WebTopNav {...props} /> : undefined}
       screenOptions={({ route }) => ({
         headerShown: false,
-        // On web: push content below the 64px sticky top nav
+        lazy: true,
+        freezeOnBlur: true,
         contentStyle: isWeb ? { paddingTop: WEB_TOPNAV_HEIGHT } : undefined,
-        // Mobile-only tab bar options (ignored on web since tabBar prop overrides)
         tabBarIcon: ({ focused, color }) => {
           const icon = TAB_ICONS[route.name];
           const name = focused ? icon.active : icon.inactive;
@@ -176,9 +175,9 @@ export default function BottomTabNavigator() {
     >
       <Tab.Screen name="Home"            component={HomeScreen}            options={{ tabBarLabel: t('navigation.home') }} />
       <Tab.Screen name="Search"          component={EnhancedSearchScreen}  options={{ tabBarLabel: t('navigation.search') }} />
-      <Tab.Screen name="Watchlist"       component={WatchlistScreen}        options={{ tabBarLabel: t('navigation.myPerformances') }} />
-      <Tab.Screen name="MySubscriptions" component={MySubscriptionsScreen}  options={{ tabBarLabel: t('navigation.mySubscriptions') }} />
-      <Tab.Screen name="Profile"         component={ProfileScreen}          options={{ tabBarLabel: t('navigation.profile') }} />
+      <Tab.Screen name="Watchlist"       component={WatchlistScreen}       options={{ tabBarLabel: t('navigation.myPerformances') }} />
+      <Tab.Screen name="MySubscriptions" component={MySubscriptionsScreen} options={{ tabBarLabel: t('navigation.mySubscriptions') }} />
+      <Tab.Screen name="Profile"         component={ProfileScreen}         options={{ tabBarLabel: t('navigation.profile') }} />
     </Tab.Navigator>
   );
 }
@@ -224,7 +223,8 @@ const styles = StyleSheet.create({
   iconContainer:       { alignItems: 'center' },
   activeIconContainer: { alignItems: 'center' },
   glowDot: {
-    width: 0, height: 0,
+    width: 4,
+    height: 4,
     borderRadius: 2,
     backgroundColor: colors.primary.main,
     marginTop: spacing.xxs,

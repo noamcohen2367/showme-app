@@ -113,9 +113,9 @@ const STORIES: Story[] = [
     id: 'story-2',
     theaterId: 'theater-2',
     theaterName: 'Cameri',
-    theaterNameHe: 'קאמרי',
+    theaterNameHe: 'הקאמרי',
     avatarUrl:
-      'https://instagram.ftlv6-1.fna.fbcdn.net/v/t51.2885-19/504825389_18512042338048398_8220540474925462190_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby44OTguYzIifQ&_nc_ht=instagram.ftlv6-1.fna.fbcdn.net&_nc_cat=106&_nc_oc=Q6cZ2QFd7qBTJ2forCSRf5sCMD5anhJV3LN1WLkGpcYPUX5WV648h7RBpnKpuJY7DjQ1An67AhrFTToJVyaZ6P1y00gg&_nc_ohc=YlnsDRi0NjUQ7kNvwENdWxI&_nc_gid=8H0UynCQ-9EQjmCC0s-jGw&edm=ALGbJPMBAAAA&ccb=7-5&oh=00_AfsGq8m1gqPTwP-m7cVlTNxt-KkdZM2x06UdlkrWkTb4Kw&oe=69A22B7D&_nc_sid=7d3ac5',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEr83dTRXS4gQqH2wNqV7-yF0z_WRb25JaRQ&s',
     isNew: true,
     slides: [
       {
@@ -136,7 +136,7 @@ const STORIES: Story[] = [
     theaterName: 'Gesher',
     theaterNameHe: 'גשר',
     avatarUrl:
-      'https://instagram.ftlv5-1.fna.fbcdn.net/v/t51.2885-19/431240385_445052554525139_9079172447912972365_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4zMjAuYzIifQ&_nc_ht=instagram.ftlv5-1.fna.fbcdn.net&_nc_cat=111&_nc_oc=Q6cZ2QGOiix0sGmGn5sie9a92c3yXMPfcKNugfD0wgotfnt7n96C1MLLMa196T3xs3tTjH2rlM_IqJyI_XRcg_nrrZ2n&_nc_ohc=MmnJNRoJVsoQ7kNvwFeSoTP&_nc_gid=41X3OUT9geCQ-3yDhzLF5w&edm=ALGbJPMBAAAA&ccb=7-5&oh=00_AfshR0DEVmZc_hMBjaJ8xNHvQp2-_hswaGo9tmpPku79Xw&oe=69A2198E&_nc_sid=7d3ac5',
+      'https://www.gesher-theatre.co.il/Warehouse/userUploadFiles/Image/gesher_theatre_logo.jpg',
     isNew: false,
     slides: [
       {
@@ -156,7 +156,7 @@ const STORIES: Story[] = [
     theaterName: 'Beit Lessin',
     theaterNameHe: 'בית לסין',
     avatarUrl:
-      'https://instagram.ftlv6-1.fna.fbcdn.net/v/t51.2885-19/414679194_1427841121419458_2142738653125387011_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby42MDEuYzIifQ&_nc_ht=instagram.ftlv6-1.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2QEc81seHN2lKD0VU8h_lUJFKYEKZc9Eu5ZIbxfxJXXAmTnemU7MnYjNbEh2sm4mBT5LReYLc1yGwCG9sTM46q3F&_nc_ohc=TMHBlw5TD0wQ7kNvwHpT7KV&_nc_gid=SCamWSY4D2jDMAU6pAeJoQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AfsvqC1NioM_zCygH2peS52jBBXPuS0M09Ju98x9yoEglQ&oe=69A23113&_nc_sid=7a9f4b',
+      'https://yoter.co.il/wp-content/uploads/2023/06/5955107f91c9a0f612dca739fb68e7e7.jpg',
     isNew: true,
     slides: [
       {
@@ -176,25 +176,6 @@ const STORIES: Story[] = [
         titleHe: 'מאחורי הקלעים',
         subtitle: 'Exclusive backstage tour',
         subtitleHe: 'סיור בלעדי מאחורי הקלעים',
-        duration: 5000,
-      },
-    ],
-  },
-  {
-    id: 'story-5',
-    theaterId: 'theater-5',
-    theaterName: 'Khan',
-    theaterNameHe: 'חאן',
-    avatarUrl: 'https://picsum.photos/seed/khan/100/100',
-    isNew: false,
-    slides: [
-      {
-        id: 'slide-5-1',
-        imageUrl: 'https://picsum.photos/seed/khan1/1080/1920',
-        title: 'Jerusalem Nights',
-        titleHe: 'לילות ירושלים',
-        subtitle: 'Experience the magic',
-        subtitleHe: 'חוו את הקסם',
         duration: 5000,
       },
     ],
@@ -922,7 +903,11 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
 
       {/* ── Sticky bar ── absolute overlay, always on top ── */}
       {(loading && shows.length === 0) ||
@@ -1023,7 +1008,9 @@ export default function HomeScreen() {
                 size={20}
                 color={colors.neutral.white}
               />
-              {hasUnreadNotifications && <View style={styles.notificationDot} />}
+              {hasUnreadNotifications && (
+                <View style={styles.notificationDot} />
+              )}
             </TouchableOpacity>
           </Animated.View>
         </Animated.View>
@@ -1093,7 +1080,9 @@ export default function HomeScreen() {
                   size={24}
                   color={colors.neutral.white}
                 />
-                {hasUnreadNotifications && <View style={styles.notificationDot} />}
+                {hasUnreadNotifications && (
+                  <View style={styles.notificationDot} />
+                )}
               </TouchableOpacity>
             </View>
             <View style={styles.heroFiltersRow}>

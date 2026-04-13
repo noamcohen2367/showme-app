@@ -268,7 +268,6 @@ export default function ProfileScreen() {
                 style={styles.avatar}
                 contentFit="cover"
                 transition={200}
-                cachePolicy="none"
               />
             ) : (
               <LinearGradient
@@ -510,7 +509,6 @@ export default function ProfileScreen() {
             source={{ uri: userProfile?.profileImageUrl ?? '' }}
             style={{ width: '100%', height: '100%' }}
             contentFit="cover"
-            cachePolicy="none"
           />
         </Animated.View>
 

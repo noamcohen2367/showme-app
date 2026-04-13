@@ -295,7 +295,7 @@ function transformHabimaShows(apiResponse: HabimaApiResponse): Show[] {
         totalSeats: 200,
         price: 0,
         isLastMinuteDeal: false,
-        purchaseLink: showHe.url || 'https://www.habima.co.il/tickets',
+        purchaseLink: `https://tickets.habima.co.il/order/${showId}`,
       });
       dateMap.set(datePart, existing);
     }
@@ -342,6 +342,7 @@ function transformHabimaShows(apiResponse: HabimaApiResponse): Show[] {
       availableDates,
       isActive: true,
       premiereDate: availableDates[0]?.date || new Date().toISOString().split('T')[0],
+      purchaseLink: `https://tickets.habima.co.il/order/${showId}`,
     };
 
     shows.push(show);

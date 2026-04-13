@@ -73,9 +73,14 @@ export default function RootNavigator() {
           backgroundColor: colors.dark[800],
         },
         contentStyle: {
-          backgroundColor: '#1A0A2E',
+          backgroundColor: '#160a27',
         },
-        animation: Platform.OS === 'web' ? 'none' : (rtl ? 'slide_from_left' : 'slide_from_right'),
+        animation:
+          Platform.OS === 'web'
+            ? 'none'
+            : rtl
+              ? 'slide_from_left'
+              : 'slide_from_right',
       }}
     >
       {/* Main Tab Navigator */}

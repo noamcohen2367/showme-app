@@ -7,6 +7,8 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useCallback,
+  useMemo,
   ReactNode,
 } from 'react';
 import { supabase } from '../lib/supabase';
@@ -86,28 +88,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const login = () => setIsLoggedIn(true);
+  const login = useCallback(() => setIsLoggedIn(true), []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
     setUserProfile(null);
     setProfileLoading(false);
-  };
+  }, []);
 
-  const refreshProfile = async () => {
+  const refreshProfile = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       const profile = await fetchUserProfile(session.user.id);
       setUserProfile(profile);
     }
-  };
+  }, []);
 
-  return (
-    <AuthContext.Provider value={{ isLoggedIn, profileLoading, userProfile, login, logout, refreshProfile }}>
-      {children}
-    </AuthContext.Provider>
+  // Memoize context value so consumers don't re-render on unrelated parent renders.
+  const value = useMemo<AuthContextValue>(
+    () => ({ isLoggedIn, profileLoading, userProfile, login, logout, refreshProfile }),
+    [isLoggedIn, profileLoading, userProfile, login, logout, refreshProfile],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextValue {

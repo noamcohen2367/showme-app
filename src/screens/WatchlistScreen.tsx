@@ -15,7 +15,7 @@ import {
 import { Image } from 'expo-image';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -241,12 +241,6 @@ export default function WatchlistScreen() {
   } = useWatchlist();
 
   const { shows: allShows } = useShows();
-
-  useFocusEffect(
-    React.useCallback(() => {
-      reload();
-    }, [reload]),
-  );
 
   const currentIds = activeTab === 'watchlist' ? watchlist : watched;
   const shows: Show[] = currentIds

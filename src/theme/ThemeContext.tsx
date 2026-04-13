@@ -63,15 +63,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [systemScheme, setSystemScheme] = useState<ColorSchemeName>(
     Appearance.getColorScheme()
   );
-  const [ready, setReady] = useState(false);
 
-  // Load persisted mode on mount
+  // Hydrate persisted mode in the background — render immediately with the
+  // default so AsyncStorage never blocks first paint.
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY).then((stored) => {
       if (stored === 'light' || stored === 'dark' || stored === 'system') {
         setModeState(stored);
       }
-      setReady(true);
     });
   }, []);
 
@@ -90,9 +89,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const theme = resolveTheme(mode, systemScheme);
   const isDark = theme === darkTheme;
-
-  // Avoid flash: render nothing until mode is loaded from storage
-  if (!ready) return null;
 
   return (
     <ThemeContext.Provider value={{ theme, mode, isDark, setMode }}>

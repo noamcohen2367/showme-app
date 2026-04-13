@@ -2,7 +2,7 @@
 // ShowME App - Enhanced Search Screen
 // ============================================
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -114,8 +114,8 @@ export default function EnhancedSearchScreen() {
   const [isListening, setIsListening] = useState(false);
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
-  // Filter results
-  const filteredShows = shows.filter(show => {
+  // Filter results (memoized — recomputes only when inputs change)
+  const filteredShows = useMemo(() => shows.filter(show => {
     // Text search
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -143,17 +143,17 @@ export default function EnhancedSearchScreen() {
     }
 
     return show.isActive;
-  });
+  }), [shows, searchQuery, selectedCategories, selectedLocations, selectedPriceRange]);
 
-  // Sort results
-  const sortedShows = [...filteredShows].sort((a, b) => {
+  // Sort results (memoized)
+  const sortedShows = useMemo(() => [...filteredShows].sort((a, b) => {
     switch (selectedSort) {
       case 'price_low': return a.startingPrice - b.startingPrice;
       case 'price_high': return b.startingPrice - a.startingPrice;
       case 'rating': return b.rating - a.rating;
       default: return 0;
     }
-  });
+  }), [filteredShows, selectedSort]);
 
   const activeFiltersCount = selectedCategories.length + selectedLocations.length + 
     (selectedPriceRange !== 'any' ? 1 : 0) + (showAccessibleOnly ? 1 : 0);
