@@ -40,6 +40,30 @@ export default {
     myPerformances: 'Список просмотра',
     mySubscriptions: 'Подписки',
     profile: 'Профиль',
+    theaterDashboard: 'Управление',
+  },
+
+  // Theater Dashboard
+  theaterDashboard: {
+    theaterAccount: 'Театральный аккаунт',
+    managementDashboard: 'Панель управления',
+    stats: {
+      activeShows: 'Активные спектакли',
+      thisMonth: 'В этом месяце',
+      avgRating: 'Средний рейтинг',
+      soldThisWeek: 'Продано за неделю',
+    },
+    manage: 'Управление',
+    addNewShow: 'Добавить спектакль',
+    myShows: 'Мои спектакли',
+    scheduleAndDates: 'Расписание и даты',
+    mediaAndGallery: 'Медиа и галерея',
+    analytics: 'Аналитика',
+    salesReport: 'Отчёт о продажах',
+    viewsAndImpressions: 'Просмотры и охват',
+    settings: 'Настройки',
+    theaterProfile: 'Профиль театра',
+    notifications: 'Уведомления',
   },
 
   // Home Screen

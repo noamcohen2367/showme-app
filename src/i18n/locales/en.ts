@@ -50,6 +50,30 @@ export default {
     myPerformances: 'Watchlist',
     mySubscriptions: 'Subscriptions',
     profile: 'Profile',
+    theaterDashboard: 'Manage',
+  },
+
+  // Theater Dashboard
+  theaterDashboard: {
+    theaterAccount: 'Theater Account',
+    managementDashboard: 'Management Dashboard',
+    stats: {
+      activeShows: 'Active Shows',
+      thisMonth: 'This Month',
+      avgRating: 'Avg Rating',
+      soldThisWeek: 'Sold This Week',
+    },
+    manage: 'Manage',
+    addNewShow: 'Add New Show',
+    myShows: 'My Shows',
+    scheduleAndDates: 'Schedule & Dates',
+    mediaAndGallery: 'Media & Gallery',
+    analytics: 'Analytics',
+    salesReport: 'Sales Report',
+    viewsAndImpressions: 'Views & Impressions',
+    settings: 'Settings',
+    theaterProfile: 'Theater Profile',
+    notifications: 'Notifications',
   },
 
   // Home Screen

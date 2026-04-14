@@ -24,11 +24,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MainTabParamList, RootStackParamList } from '../types/types';
 import { colors, typography, spacing } from '../theme/theme';
 import { useNotificationBadge } from '../hooks/useNotificationBadge';
+import { useAuth } from '../contexts/AuthContext';
 
 import HomeScreen from '../screens/HomeScreen';
 import EnhancedSearchScreen from '../screens/EnhancedSearchScreen';
 import WatchlistScreen from '../screens/WatchlistScreen';
 import MySubscriptionsScreen from '../screens/MySubscriptionsScreen';
+import TheaterDashboardScreen from '../screens/TheaterDashboardScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -36,11 +38,12 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 export const WEB_TOPNAV_HEIGHT = 64;
 
 const TAB_ICONS: Record<keyof MainTabParamList, { active: string; inactive: string }> = {
-  Home:            { active: 'home',   inactive: 'home-outline' },
-  Search:          { active: 'search', inactive: 'search-outline' },
-  Watchlist:       { active: 'heart',  inactive: 'heart-outline' },
-  MySubscriptions: { active: 'card',   inactive: 'card-outline' },
-  Profile:         { active: 'person', inactive: 'person-outline' },
+  Home:              { active: 'home',     inactive: 'home-outline' },
+  Search:            { active: 'search',   inactive: 'search-outline' },
+  Watchlist:         { active: 'heart',    inactive: 'heart-outline' },
+  MySubscriptions:   { active: 'card',     inactive: 'card-outline' },
+  TheaterDashboard:  { active: 'business', inactive: 'business-outline' },
+  Profile:           { active: 'person',   inactive: 'person-outline' },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -145,6 +148,7 @@ function GlassTabBarBackground() {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function BottomTabNavigator() {
   const { t } = useTranslation();
+  const { isTheater } = useAuth();
   const isWeb = Platform.OS === 'web';
 
   return (
@@ -176,7 +180,24 @@ export default function BottomTabNavigator() {
       <Tab.Screen name="Home"            component={HomeScreen}            options={{ tabBarLabel: t('navigation.home') }} />
       <Tab.Screen name="Search"          component={EnhancedSearchScreen}  options={{ tabBarLabel: t('navigation.search') }} />
       <Tab.Screen name="Watchlist"       component={WatchlistScreen}       options={{ tabBarLabel: t('navigation.myPerformances') }} />
-      <Tab.Screen name="MySubscriptions" component={MySubscriptionsScreen} options={{ tabBarLabel: t('navigation.mySubscriptions') }} />
+      <Tab.Screen
+        name="MySubscriptions"
+        component={MySubscriptionsScreen}
+        options={{
+          tabBarLabel: t('navigation.mySubscriptions'),
+          tabBarButton: isTheater ? () => null : undefined,
+          tabBarItemStyle: isTheater ? { display: 'none' } : undefined,
+        }}
+      />
+      <Tab.Screen
+        name="TheaterDashboard"
+        component={TheaterDashboardScreen}
+        options={{
+          tabBarLabel: t('navigation.theaterDashboard'),
+          tabBarButton: isTheater ? undefined : () => null,
+          tabBarItemStyle: isTheater ? undefined : { display: 'none' },
+        }}
+      />
       <Tab.Screen name="Profile"         component={ProfileScreen}         options={{ tabBarLabel: t('navigation.profile') }} />
     </Tab.Navigator>
   );

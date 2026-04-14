@@ -57,7 +57,7 @@ export default function SettingsScreen() {
     const trimmed = editingName.trim();
     if (!trimmed || !userProfile) return;
     setSavingName(true);
-    await supabase.from('USER').update({ fullName: trimmed }).eq('id', userProfile.id);
+    await supabase.from('profiles').update({ full_name: trimmed }).eq('id', userProfile.id);
     await refreshProfile();
     setSavingName(false);
     setShowEditNameModal(false);
@@ -66,8 +66,8 @@ export default function SettingsScreen() {
   const handleLocationSelect = async (location: LocationArea | null) => {
     if (!userProfile) return;
     await supabase
-      .from('USER')
-      .update({ preferredLocation: location })
+      .from('profiles')
+      .update({ preferred_location: location })
       .eq('id', userProfile.id);
     await refreshProfile();
   };

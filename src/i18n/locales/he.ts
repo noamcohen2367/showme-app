@@ -50,6 +50,30 @@ export default {
     myPerformances: 'רשימת צפייה',
     mySubscriptions: 'מנויים',
     profile: 'פרופיל',
+    theaterDashboard: 'ניהול',
+  },
+
+  // Theater Dashboard
+  theaterDashboard: {
+    theaterAccount: 'חשבון תאטרון',
+    managementDashboard: 'לוח ניהול',
+    stats: {
+      activeShows: 'הצגות פעילות',
+      thisMonth: 'החודש',
+      avgRating: 'דירוג ממוצע',
+      soldThisWeek: 'נמכר השבוע',
+    },
+    manage: 'ניהול',
+    addNewShow: 'הוסף הצגה חדשה',
+    myShows: 'ההצגות שלי',
+    scheduleAndDates: 'לוח זמנים ותאריכים',
+    mediaAndGallery: 'מדיה וגלריה',
+    analytics: 'אנליטיקה',
+    salesReport: 'דוח מכירות',
+    viewsAndImpressions: 'צפיות וחשיפות',
+    settings: 'הגדרות',
+    theaterProfile: 'פרופיל תאטרון',
+    notifications: 'התראות',
   },
 
   // Home Screen

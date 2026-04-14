@@ -90,7 +90,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function EnhancedSearchScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigation = useNavigation<SearchNavigationProp>();
   const insets = useSafeAreaInsets();
   const searchInputRef = useRef<TextInput>(null);
@@ -216,24 +216,25 @@ export default function EnhancedSearchScreen() {
 
   const renderSearchResult = ({ item }: { item: Show }) => {
     const theater = theaters.find(t => t.id === item.theaterId);
-    
+    const rtl = i18n.language === 'he';
+
     return (
       <TouchableOpacity
-        style={styles.resultCard}
+        style={[styles.resultCard, rtl && styles.resultCardRTL]}
         onPress={() => navigation.navigate('ShowDetails', { showId: item.id })}
       >
         <Image source={{ uri: item.imageUrl }} style={styles.resultImage} contentFit="cover" transition={200} recyclingKey={item.id} />
         <View style={styles.resultContent}>
-          <Text style={styles.resultTitle} numberOfLines={1}>{item.title}</Text>
-          <Text style={styles.resultTheater} numberOfLines={1}>{theater?.name}</Text>
-          <View style={styles.resultMeta}>
-            <View style={styles.resultRating}>
+          <Text style={[styles.resultTitle, rtl && styles.textRTL]} numberOfLines={1}>{item.title}</Text>
+          <Text style={[styles.resultTheater, rtl && styles.textRTL]} numberOfLines={1}>{theater?.name}</Text>
+          <View style={[styles.resultMeta, rtl && styles.resultMetaRTL]}>
+            <View style={[styles.resultRating, rtl && styles.resultRatingRTL]}>
               <Ionicons name="star" size={14} color={colors.accent.main} />
               <Text style={styles.resultRatingText}>{item.rating}</Text>
             </View>
             <Text style={styles.resultPrice}>From ₪{item.startingPrice}</Text>
           </View>
-          <View style={styles.resultCategories}>
+          <View style={[styles.resultCategories, rtl && styles.resultCategoriesRTL]}>
             {item.categories.slice(0, 2).map((cat, idx) => (
               <View key={idx} style={styles.resultCategoryBadge}>
                 <Text style={styles.resultCategoryText}>{cat}</Text>
@@ -686,15 +687,20 @@ const styles = StyleSheet.create({
   sortButtonText: { ...typography.labelSmall, color: colors.neutral.textSecondary },
   resultsList: { paddingHorizontal: spacing.lg, paddingBottom: 100 },
   resultCard: { flexDirection: 'row', backgroundColor: colors.dark[700], borderRadius: 16, marginBottom: spacing.md, overflow: 'hidden', borderWidth: 1, borderColor: colors.dark[500] },
+  resultCardRTL: { flexDirection: 'row-reverse' },
   resultImage: { width: 100, height: 130 },
   resultContent: { flex: 1, padding: spacing.md },
   resultTitle: { ...typography.labelLarge, color: colors.neutral.text, marginBottom: spacing.xxs },
   resultTheater: { ...typography.bodySmall, color: colors.neutral.textSecondary, marginBottom: spacing.sm },
+  textRTL: { textAlign: 'right' },
   resultMeta: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm },
+  resultMetaRTL: { flexDirection: 'row-reverse' },
   resultRating: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  resultRatingRTL: { flexDirection: 'row-reverse' },
   resultRatingText: { ...typography.labelSmall, color: colors.neutral.text },
   resultPrice: { ...typography.labelMedium, color: colors.primary.main },
   resultCategories: { flexDirection: 'row', gap: spacing.xs },
+  resultCategoriesRTL: { flexDirection: 'row-reverse' },
   resultCategoryBadge: { backgroundColor: colors.dark[600], paddingHorizontal: spacing.sm, paddingVertical: spacing.xxs, borderRadius: 6 },
   resultCategoryText: { ...typography.caption, color: colors.neutral.textSecondary, textTransform: 'capitalize' },
   emptyState: { alignItems: 'center', paddingVertical: spacing.xxl * 2 },

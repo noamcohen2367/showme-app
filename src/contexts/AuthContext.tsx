@@ -19,6 +19,7 @@ interface AuthContextValue {
   isLoggedIn: boolean;
   profileLoading: boolean;
   userProfile: User | null;
+  isTheater: boolean;
   login: () => void;
   logout: () => void;
   refreshProfile: () => Promise<void>;
@@ -28,24 +29,32 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 async function fetchUserProfile(authId: string): Promise<User | null> {
   const { data, error } = await supabase
-    .from('USER')
-    .select('id, email, phone, fullName, profileImageUrl, level, totalPurchases, preferredLocation, language, createdAt')
+    .from('profiles')
+    .select('id, email, phone, full_name, profile_image_url, level, total_purchases, preferred_location, language, created_at, role, theater_id')
     .eq('id', authId)
     .single();
 
-  if (error || !data) return null;
+  if (!data) {
+    // PGRST116 = row not found → profile doesn't exist, caller will sign the user out
+    if (error?.code === 'PGRST116') return null;
+    // Any other DB error (e.g. missing column before migration) — throw so the
+    // caller's .catch() fires and does NOT sign the user out.
+    throw new Error(error?.message ?? 'Failed to load profile');
+  }
 
   const profile: User = {
     id: data.id,
     email: data.email ?? '',
     phone: data.phone ?? '',
-    fullName: data.fullName ?? '',
-    profileImageUrl: data.profileImageUrl ?? '',
+    fullName: data.full_name ?? '',
+    profileImageUrl: data.profile_image_url ?? '',
     level: data.level ?? 'bronze',
-    totalPurchases: data.totalPurchases ?? 0,
-    preferredLocation: data.preferredLocation,
-    language: data.language ?? 'en',
-    createdAt: data.createdAt ?? '',
+    totalPurchases: data.total_purchases ?? 0,
+    preferredLocation: data.preferred_location,
+    language: data.language ?? 'he',
+    createdAt: data.created_at ?? '',
+    role: data.role ?? 'user',
+    theaterId: data.theater_id ?? undefined,
   };
 
   // Apply the user's saved language (non-blocking)
@@ -73,6 +82,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setProfileLoading(true);
           fetchUserProfile(session.user.id)
             .then(profile => {
+              if (!profile) {
+                // No profile row — sign out so auth gate redirects to login
+                supabase.auth.signOut();
+                return;
+              }
               setUserProfile(profile);
               setProfileLoading(false);
             })
@@ -106,9 +120,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Memoize context value so consumers don't re-render on unrelated parent renders.
+  const isTheater = userProfile?.role === 'theater';
+
   const value = useMemo<AuthContextValue>(
-    () => ({ isLoggedIn, profileLoading, userProfile, login, logout, refreshProfile }),
-    [isLoggedIn, profileLoading, userProfile, login, logout, refreshProfile],
+    () => ({ isLoggedIn, profileLoading, userProfile, isTheater, login, logout, refreshProfile }),
+    [isLoggedIn, profileLoading, userProfile, isTheater, login, logout, refreshProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

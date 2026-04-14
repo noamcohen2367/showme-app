@@ -13,7 +13,6 @@ import {
   TouchableWithoutFeedback,
   Modal,
   Linking,
-  I18nManager,
   Alert,
   ActivityIndicator,
   Animated,
@@ -45,28 +44,32 @@ interface MenuItemProps {
   onPress?: () => void;
   showChevron?: boolean;
   destructive?: boolean;
+  rtl?: boolean;
 }
 
-function MenuItem({ icon, label, value, onPress, showChevron = true, destructive = false }: MenuItemProps) {
+function MenuItem({ icon, label, value, onPress, showChevron = true, destructive = false, rtl = false }: MenuItemProps) {
   return (
-    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-      <View style={styles.menuItemLeft}>
+    <TouchableOpacity
+      style={[styles.menuItem, rtl && styles.menuItemRTL]}
+      onPress={onPress}
+    >
+      <View style={[styles.menuItemLeft, rtl && styles.menuItemLeftRTL]}>
         <View style={[styles.menuIcon, destructive && styles.menuIconDestructive]}>
-          <Ionicons 
-            name={icon} 
-            size={20} 
-            color={destructive ? colors.semantic.error : colors.primary.main} 
+          <Ionicons
+            name={icon}
+            size={20}
+            color={destructive ? colors.semantic.error : colors.primary.main}
           />
         </View>
         <Text style={[styles.menuItemLabel, destructive && styles.menuItemDestructive]}>
           {label}
         </Text>
       </View>
-      <View style={styles.menuItemRight}>
+      <View style={[styles.menuItemRight, rtl && styles.menuItemRightRTL]}>
         {value && <Text style={styles.menuItemValue}>{value}</Text>}
         {showChevron && (
           <Ionicons
-            name={I18nManager.isRTL ? 'chevron-back' : 'chevron-forward'}
+            name={rtl ? 'chevron-back' : 'chevron-forward'}
             size={18}
             color={colors.neutral.textTertiary}
           />
@@ -78,6 +81,7 @@ function MenuItem({ icon, label, value, onPress, showChevron = true, destructive
 
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
+  const rtl = i18n.language === 'he';
   const navigation = useNavigation<ProfileNavigationProp>();
   const insets = useSafeAreaInsets();
   const { logout, userProfile, profileLoading, refreshProfile } = useAuth();
@@ -197,7 +201,7 @@ export default function ProfileScreen() {
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path);
       // Append timestamp to bust expo-image cache (same path = same URL = stale cache)
       const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
-      await supabase.from('USER').update({ profileImageUrl: urlWithCacheBust }).eq('id', userProfile.id);
+      await supabase.from('profiles').update({ profile_image_url: urlWithCacheBust }).eq('id', userProfile.id);
       await refreshProfile();
     } catch {
       Alert.alert('Error', 'Failed to upload image.');
@@ -211,7 +215,7 @@ export default function ProfileScreen() {
     setUploadingImage(true);
     try {
       await supabase.storage.from('avatars').remove([`${userProfile.id}/avatar.jpg`]);
-      await supabase.from('USER').update({ profileImageUrl: null }).eq('id', userProfile.id);
+      await supabase.from('profiles').update({ profile_image_url: null }).eq('id', userProfile.id);
       await refreshProfile();
     } catch {
       Alert.alert('Error', 'Failed to remove image.');
@@ -380,23 +384,23 @@ export default function ProfileScreen() {
 
         {/* Explore Section – MVP hidden temporarily: My Stats planned for future release */}
         {/* <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Explore</Text>
+          <Text style={[styles.sectionTitle, rtl && styles.sectionTitleRTL]}>Explore</Text>
           <View style={styles.menuCard}>
-            <MenuItem icon="stats-chart" label="My Stats" onPress={() => navigation.navigate('Analytics')} />
+            <MenuItem rtl={rtl}icon="stats-chart" label="My Stats" onPress={() => navigation.navigate('Analytics')} />
             <View style={styles.menuDivider} />
-            <MenuItem icon="people" label="Community" onPress={() => navigation.navigate('Social')} />
+            <MenuItem rtl={rtl}icon="people" label="Community" onPress={() => navigation.navigate('Social')} />
             <View style={styles.menuDivider} />
-            <MenuItem icon="map" label="Theater Map" onPress={() => navigation.navigate('Map')} />
+            <MenuItem rtl={rtl}icon="map" label="Theater Map" onPress={() => navigation.navigate('Map')} />
             <View style={styles.menuDivider} />
-            <MenuItem icon="business" label="Hall Library" onPress={() => navigation.navigate('HallLibrary')} />
+            <MenuItem rtl={rtl}icon="business" label="Hall Library" onPress={() => navigation.navigate('HallLibrary')} />
           </View>
         </View> */}
 
         {/* Account Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('profile.settings')}</Text>
+          <Text style={[styles.sectionTitle, rtl && styles.sectionTitleRTL]}>{t('profile.settings')}</Text>
           <View style={styles.menuCard}>
-            <MenuItem 
+            <MenuItem rtl={rtl}
               icon="person-outline" 
               label={t('profile.editProfile')}
               onPress={() => navigation.navigate('Settings')}
@@ -406,18 +410,21 @@ export default function ProfileScreen() {
             {/* <MenuItem icon="card-outline" label={t('profile.paymentMethods')} value="•••• 4242" onPress={() => navigation.navigate('PaymentMethods')} />
             <View style={styles.menuDivider} /> */}
             <MenuItem
+              rtl={rtl}
               icon="notifications-outline"
               label={t('profile.notifications')}
               onPress={() => navigation.navigate('NotificationPreferences')}
             />
             <View style={styles.menuDivider} />
             <MenuItem
+              rtl={rtl}
               icon="color-palette-outline"
               label="Appearance"
               onPress={() => navigation.navigate('Appearance')}
             />
             <View style={styles.menuDivider} />
             <MenuItem
+              rtl={rtl}
               icon="language-outline"
               label={t('profile.language')}
               value={i18n.language === 'he' ? 'עברית' : i18n.language === 'ru' ? 'Русский' : 'English'}
@@ -428,21 +435,23 @@ export default function ProfileScreen() {
 
         {/* Support Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('profile.support')}</Text>
+          <Text style={[styles.sectionTitle, rtl && styles.sectionTitleRTL]}>{t('profile.support')}</Text>
           <View style={styles.menuCard}>
-            <MenuItem 
+            <MenuItem rtl={rtl}
               icon="chatbubbles-outline" 
               label="Live Chat"
               onPress={() => navigation.navigate('LiveChat')}
             />
             <View style={styles.menuDivider} />
             <MenuItem
+              rtl={rtl}
               icon="help-circle-outline"
               label={t('profile.faq')}
               onPress={() => navigation.navigate('FAQ')}
             />
             <View style={styles.menuDivider} />
             <MenuItem
+              rtl={rtl}
               icon="logo-instagram"
               label={t('profile.contactUs')}
               onPress={() => Linking.openURL('https://www.instagram.com/showmiapp').catch(() =>
@@ -450,12 +459,12 @@ export default function ProfileScreen() {
               )}
             />
             <View style={styles.menuDivider} />
-            <MenuItem 
+            <MenuItem rtl={rtl}
               icon="document-text-outline" 
               label={t('profile.termsOfUse')}
             />
             <View style={styles.menuDivider} />
-            <MenuItem 
+            <MenuItem rtl={rtl}
               icon="shield-outline" 
               label={t('profile.privacyPolicy')}
             />
@@ -466,6 +475,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <View style={styles.menuCard}>
             <MenuItem
+              rtl={rtl}
               icon="log-out-outline"
               label={t('profile.logout')}
               showChevron={false}
@@ -518,7 +528,7 @@ export default function ProfileScreen() {
             {/* Action bar — RTL-aware, fades in after image expands */}
             <Animated.View style={[
               styles.photoViewerBar,
-              { opacity: animActionsOpacity, flexDirection: I18nManager.isRTL ? 'row' : 'row-reverse' },
+              { opacity: animActionsOpacity, flexDirection: rtl ? 'row' : 'row-reverse' },
             ]}>
               <TouchableOpacity
                 style={styles.photoViewerAction}
@@ -569,7 +579,7 @@ export default function ProfileScreen() {
                   style={[styles.languageOption, index > 0 && styles.languageOptionBorder]}
                   onPress={async () => {
                     const needsRestart = await changeLanguage(lang.code as LanguageCode);
-                    await supabase.from('USER').update({ language: lang.code }).eq('id', userProfile.id);
+                    await supabase.from('profiles').update({ language: lang.code }).eq('id', userProfile.id);
                     setShowLanguageModal(false);
                     if (needsRestart) {
                       Alert.alert(
@@ -774,9 +784,12 @@ const styles = StyleSheet.create({
     ...typography.labelMedium,
     color: colors.neutral.textTertiary,
     marginBottom: spacing.sm,
-    marginStart: spacing.sm,
+    marginHorizontal: spacing.sm,
     textTransform: 'uppercase',
     letterSpacing: 1,
+  },
+  sectionTitleRTL: {
+    textAlign: 'right',
   },
   menuCard: {
     backgroundColor: colors.dark[700],
@@ -790,11 +803,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  menuItemRTL: {
+    flexDirection: 'row-reverse',
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: spacing.md,
+  },
+  menuItemLeftRTL: {
+    flexDirection: 'row-reverse',
   },
   menuIcon: {
     width: 36,
@@ -810,7 +830,6 @@ const styles = StyleSheet.create({
   menuItemLabel: {
     ...typography.bodyMedium,
     color: colors.neutral.text,
-    marginStart: spacing.md,
   },
   menuItemDestructive: {
     color: colors.semantic.error,
@@ -818,16 +837,19 @@ const styles = StyleSheet.create({
   menuItemRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: spacing.xs,
+  },
+  menuItemRightRTL: {
+    flexDirection: 'row-reverse',
   },
   menuItemValue: {
     ...typography.bodySmall,
     color: colors.neutral.textTertiary,
-    marginEnd: spacing.xs,
   },
   menuDivider: {
     height: 1,
     backgroundColor: colors.dark[500],
-    marginStart: 68,
+    marginHorizontal: spacing.md,
   },
   versionText: {
     ...typography.caption,

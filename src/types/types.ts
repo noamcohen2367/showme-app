@@ -110,6 +110,8 @@ export interface Show {
   availableDates: ShowDate[];
   isActive: boolean;
   premiereDate: string;
+  /** Direct URL to the theater's ticket purchase page for this show */
+  purchaseLink?: string;
 }
 
 export interface ShowDate {
@@ -181,6 +183,8 @@ export interface User {
   preferredLocation?: LocationArea;
   language: 'en' | 'he' | 'ru';
   createdAt: string;
+  role?: 'user' | 'theater' | 'admin';
+  theaterId?: string;
 }
 
 export interface UserSubscription {
@@ -336,5 +340,6 @@ export type MainTabParamList = {
   Search: undefined;
   Watchlist: undefined;
   MySubscriptions: undefined;
+  TheaterDashboard: undefined;
   Profile: undefined;
 };

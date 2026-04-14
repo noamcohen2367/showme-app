@@ -81,28 +81,11 @@ export default function SignUpScreen({ onSignedUp, onGoToLogin }: SignUpScreenPr
     setIsLoading(true);
 
     try {
-      // Check if email or phone already exists in USER table
-      const { data: existing } = await supabase
-        .from('USER')
-        .select('email, phone')
-        .or(`email.eq.${email.trim()},phone.eq.${phone.trim()}`)
-        .limit(1);
-
-      if (existing && existing.length > 0) {
-        const match = existing[0];
-        if (match.email === email.trim()) {
-          setErrors(e => ({ ...e, email: 'Email is already registered' }));
-        } else {
-          setErrors(e => ({ ...e, phone: 'Phone number is already registered' }));
-        }
-        return;
-      }
-
-      // Create auth user — metadata passed to DB trigger
+      // Create auth user — metadata is picked up by the DB trigger that creates the profiles row
       const { error: authError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
-        options: { data: { fullName: name.trim(), phone: phone.trim() } },
+        options: { data: { full_name: name.trim(), phone: phone.trim() } },
       });
 
       if (authError) {
