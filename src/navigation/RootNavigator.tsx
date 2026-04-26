@@ -53,6 +53,9 @@ import HallLibraryScreen from '../screens/HallLibraryScreen';
 import HallDetailsScreen from '../screens/HallDetailsScreen';
 import ShowListScreen from '../screens/ShowListScreen';
 
+// Theater management screens
+import TheaterProfileScreen from '../screens/TheaterProfileScreen';
+
 // MVP screens
 import FAQScreen from '../screens/FAQScreen';
 
@@ -251,6 +254,13 @@ export default function RootNavigator() {
       <Stack.Screen
         name="ShowList"
         component={ShowListScreen}
+        options={{ headerShown: false }}
+      />
+
+      {/* Theater management screens */}
+      <Stack.Screen
+        name="TheaterProfile"
+        component={TheaterProfileScreen}
         options={{ headerShown: false }}
       />
 

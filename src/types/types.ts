@@ -319,6 +319,8 @@ export type RootStackParamList = {
   AddToCalendar: { ticketId?: string } | undefined;
   NotificationPreferences: undefined;
   LiveChat: undefined;
+  // Theater management screens
+  TheaterProfile: undefined;
   // Stage 19 screens - Hall Library
   HallLibrary: undefined;
   HallDetails: { hallId: string };

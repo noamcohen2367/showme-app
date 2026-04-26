@@ -36,6 +36,7 @@ import {
 import { theaters } from '../data/theaters';
 import { useShows } from '../hooks/useShows';
 import { useNotificationBadge } from '../hooks/useNotificationBadge';
+import { useHomeStories } from '../hooks/useHomeStories';
 import { useAuth } from '../contexts/AuthContext';
 import { HomeScreenSkeleton } from '../components/Skeleton';
 import NetworkBanner from '../components/NetworkBanner';
@@ -500,6 +501,15 @@ export default function HomeScreen() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [storyViewerVisible, setStoryViewerVisible] = useState(false);
   const [selectedStoryIndex, setSelectedStoryIndex] = useState(0);
+
+  // Live stories from Supabase, prepended before mock stories.
+  // Mock stories whose theaterId matches a live story are hidden.
+  const { stories: liveStories } = useHomeStories();
+  const liveTheaterIds = new Set(liveStories.map(s => s.theaterId));
+  const mergedStories = [
+    ...liveStories,
+    ...STORIES.filter(s => !liveTheaterIds.has(s.theaterId)),
+  ] as Story[];
   // const [activePromoIndex, setActivePromoIndex] = useState(0); // PromoBanner v1
   // const promoScrollRef = useRef<FlatList>(null); // PromoBanner v1
   const heroFilterRef = useRef<ScrollView>(null);
@@ -1171,7 +1181,7 @@ export default function HomeScreen() {
           >
             <View style={styles.storiesSection}>
               <FlatList
-                data={STORIES}
+                data={mergedStories}
                 renderItem={renderStoryItem}
                 keyExtractor={(item) => item.id}
                 horizontal
@@ -1655,7 +1665,7 @@ export default function HomeScreen() {
 
       <StoryViewer
         visible={storyViewerVisible}
-        stories={STORIES}
+        stories={mergedStories}
         initialStoryIndex={selectedStoryIndex}
         onClose={() => setStoryViewerVisible(false)}
         onNavigateToShow={navigateToShow}
